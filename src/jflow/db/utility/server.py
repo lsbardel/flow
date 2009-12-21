@@ -2,7 +2,7 @@ from django.conf import settings
 from models import Server
 
 def userproxyserver(user):
-    from jsonrpc.proxy import ServiceProxy
+    from unuk.core.jsonrpc import Proxy
     #TODO    Create user specific servers
     
     debug = getattr(settings,'DEBUG_DATA_SERVER',False)
@@ -19,5 +19,5 @@ def userproxyserver(user):
             return None
         url = str(se.url)
         
-    return ServiceProxy(url)
+    return Proxy(url)
     
