@@ -1,0 +1,4 @@
+{% extends "flowrepo/base.html" %}{% load mastertags %}
+
+{% block body-extra-scripts %}
+$.prospero.decorate_report_site('.report-extras', {{ cl.relateditems }}, "{% media_url %}js/tsplot/");{% endblock %}

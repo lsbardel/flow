@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load orbited %}
+{% block extra-head %}
+<style>
+h1 {
+        margin: 0px;
+        padding: 0px;
+        font-family: sans-serif;
+        background-color: #f3ffe2;
+    }{% block extra-stomp-style %}{% endblock %}
+</style>
+{% orbited_header %}
+{% endblock %}
+
+{% block html-container %}
+{% if cl.title %}<h1>{{ cl.title }}</h1>{% endif %}
+{% block content-main-post-title %}{% endblock %}
+{% endblock %}
+
+{% block body-scripts %}
+$(document).ready(function() {
+{% block body-extra-scripts %}{% endblock %}
+});{% endblock %}

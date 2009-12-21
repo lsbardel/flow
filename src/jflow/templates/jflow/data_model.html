@@ -1,0 +1,5 @@
+{% extends "djcms/components/model.html" %}{% block body-object-model %}
+{{ html.plotcontainer.render }}
+{{ html.infocontainer.render }}
+{% for co in html.components %}{{ co.render }}{% endfor %}
+{% endblock %}
