@@ -3,8 +3,6 @@ import datetime
 from django.core.exceptions import *
 from django.contrib.auth import authenticate
 
-from jsonrpc import service
-
 from jflow.core.dates import get_livedate
 from jflow.db.tagutils import clean as cleantag
 from jflow.db.trade.models import Position, FundHolder
@@ -19,11 +17,33 @@ from jflow.db.instdata.models.data import DataField
 
 from jflow.rates import get_cache, get_analysis, log
 
+from unuk.core.jsonrpc.txweb import JSONRPC
+
 
 cache = get_cache()
 
 
-class jsonService(service.jsonrpc):
+def setup_dataserver():
+    from jflow.core.timeseries import operators
+    from jflow import rates
+    from jflow import vendors
+    
+    # Get the rate cache handle
+    cache = rates.get_cache()
+    # set the live rate handle
+    cache.vendorHandle = vendors.get_vendor
+    
+    from twisted.internet import reactor
+    reactor.addSystemEventTrigger('before',
+                                  'shutdown',
+                                   cache.loaderpool.stop)
+
+
+class jsonService(JSONRPC):
+
+    def __init__(self):
+        self.setup_dataserver()
+        super(jsonService,self).__init__()
         
     def log(self, msg, obj = None, verbose = 0):
         log.msg(msg, obj = obj or self, verbose = verbose)
