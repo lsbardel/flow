@@ -9,6 +9,7 @@ cash_types = (
               (1,'Principal'),
               (2,'Income'),
               (3,'Margin'),
+              (4,'Call Account'),
               )
 
 cash_type_dict = dict_from_choices(cash_types)
