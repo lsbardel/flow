@@ -10,7 +10,6 @@ from jflow.db.instdata.id import getid, getidobj
 from jflow.db.utils import function_module
 from jflow.utils.tx import ThreadPool
 
-#from jflow.utils.tx import runInThread
 from twisted.python import log as twisted_log
 import factory
 import fields

@@ -41,9 +41,9 @@ def setup_dataserver():
 
 class jsonService(JSONRPC):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         setup_dataserver()
-        super(jsonService,self).__init__()
+        super(jsonService,self).__init__(**kwargs)
         
     def log(self, msg, obj = None, verbose = 0):
         log.msg(msg, obj = obj or self, verbose = verbose)
