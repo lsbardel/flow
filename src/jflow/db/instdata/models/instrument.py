@@ -140,7 +140,8 @@ class FincialInstrumentBase(InstrumentInterface):
     Base Abstract class for Financial Instruments
     '''
     #show_in_dblist  = False
-    id  = models.IntegerField(primary_key = True, editable = False)
+    #id  = models.IntegerField(primary_key = True, editable = False)
+    id  = models.IntegerField(primary_key = True)
     
     class Meta:
         abstract = True

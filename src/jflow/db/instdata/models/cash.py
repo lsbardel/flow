@@ -51,6 +51,8 @@ class FwdCash(NoDataInstrumentBase):
     value_date = models.DateField()
     
     class Meta:
+        verbose_name = 'Forward Cash'
+        verbose_name_plural = 'Forward Cash'
         app_label  = current_app_label
         
     def description(self):

@@ -67,6 +67,8 @@ class IcAdmin(admin.ModelAdmin):
     search_fields = ('code',)
 admin.site.register(InstrumentCode,IcAdmin)
 
+admin.site.register(FwdCash, list_display = ('id','curncy','value_date'))
+
 #class EquityAdmin(admin.ModelAdmin):
 #    pass
 #admin.safe_register(Equity,EquityAdmin)
