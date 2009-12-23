@@ -10,7 +10,7 @@ from django.utils.importlib import import_module
  
 from jflow.db.instdata.models import InstrumentCode
  
-_special_tags = {}
+
  
 class Command(BaseCommand):
     help = "Clean prospero instruments"
