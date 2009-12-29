@@ -1,5 +1,5 @@
 
-import ccy
+from ccy import data as ccy
 
 __all__ = ['country','countryccy','countrycode','country_tuples']
 

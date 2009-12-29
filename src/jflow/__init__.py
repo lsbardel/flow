@@ -1,15 +1,17 @@
-VERSION = (0, 2, 0)
-
-
+ 
+VERSION = (0, 2)
+ 
 def get_version():
-    version = '%s.%s' % (VERSION[0], VERSION[1])
-    if VERSION[2]:
-        version = '%s.%s' % (version, VERSION[2])
-    #from django.utils.version import get_svn_revision
-    #svn_rev = get_svn_revision()
-    #if svn_rev != u'SVN-unknown':
-    #    version = "%s %s" % (version, svn_rev)
-    return version
-
-
+    if len(VERSION) == 3:
+        try:
+            int(VERSION[2])
+            v  = '%s.%s.%s' % VERSION
+        except:
+            v = '%s.%s_%s' % VERSION
+    else:
+        v = '%s.%s' % VERSION[:2]
+    return v
+ 
 __version__ = get_version()
+
+
