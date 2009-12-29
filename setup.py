@@ -9,8 +9,10 @@ from distutils.core import setup
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
     
-root_dir    = os.path.join(os.path.dirname(__file__),'src')
-package_dir = os.path.join(root_dir, 'jflow')
+    
+package_name = 'jflow'
+root_dir     = os.path.join(os.path.dirname(__file__),'src')
+package_dir  = os.path.join(root_dir, package_name)
  
 def get_version():
     if root_dir not in sys.path:
@@ -56,7 +58,7 @@ for dirpath, dirnames, filenames in os.walk(package_dir):
  
 
 setup(
-        name         = 'jflow',
+        name         = package_name,
         version      = get_version(),
         author       = 'Luca Sbardella',
         author_email = 'luca.sbardella@gmail.com',
