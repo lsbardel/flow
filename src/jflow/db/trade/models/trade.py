@@ -4,7 +4,7 @@ from django.db.models import Q
 
 from jflow.db import geo
 
-from base import *
+from managers import *
 
 
 __all__ = ['CustodyAccount',
@@ -175,6 +175,8 @@ class CustodyAccount(models.Model):
     name   = models.CharField(max_length=50)
     dummy  = models.BooleanField(default = False)
     fund   = models.ForeignKey(Fund)
+    
+    objects = CustodyAccountManager()
     
     def __unicode__(self):
         return u'%s' % self.code

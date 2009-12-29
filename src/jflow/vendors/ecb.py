@@ -1,6 +1,6 @@
 from jflow.db.instdata.models import DataField, VendorId
 from base import DataVendor, DateFromString
-from ccy import ecbzipccy
+from ccy.data import ecbzipccy
 
 
 class ecbwriter(object):
