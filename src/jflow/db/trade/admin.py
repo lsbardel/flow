@@ -27,6 +27,7 @@ class PositionAdmin(admin.ModelAdmin):
     list_display = ('instrumentCode','fund','status','open_date','close_date','custodian')
     list_filter  = ('status','fund',)
     ordering = ('instrumentCode',)
+    search_fields = ('instrumentCode__code',)
 admin.site.register(Position,PositionAdmin)
 
 class PortfolioViewAdmin(admin.ModelAdmin):

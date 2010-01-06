@@ -23,6 +23,13 @@ from unuk.core.jsonrpc.txweb import JSONRPC
 cache = get_cache()
 
 
+def flush_portfolio(code = None):
+    from jflow.db.trade.aggregate import get_cache
+    cache = get_cache()
+    cache.flush(code)
+
+
+
 def setup_dataserver():
     from jflow.core.timeseries import operators
     from jflow import rates
@@ -144,13 +151,11 @@ class jsonService(JSONRPC):
         return cache.aggregates(team, valdate, rjson = True)
         
     def jsonrpc_flushportfolio(self, request, code = None):
-        from jflow.db.trade.aggregate import get_cache
-        cache = get_cache()
-        cache.flush(code)
+        flush_portfolio(code)
             
     def jsonrpc_flush(self, request):
-        self.jsonrpc_flushportfolio(request)
         from jflow.rates import get_cache
+        flush_portfolio()
         cache = get_cache()
         cache.clear()
         

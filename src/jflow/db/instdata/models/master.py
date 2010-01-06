@@ -16,7 +16,6 @@ __all__ = ['Exchange',
            'CollateralType']
 
 
-
 class Exchange(models.Model):
     code = models.CharField(unique=True, max_length=12)
     name = models.CharField(max_length=50, blank=True)
