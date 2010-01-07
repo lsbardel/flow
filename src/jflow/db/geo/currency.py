@@ -1,5 +1,5 @@
 
-from ccy.data import *
+from ccy import *
 
 __all__ = ['currency',
            'currency_tuples',
