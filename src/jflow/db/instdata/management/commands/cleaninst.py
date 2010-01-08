@@ -15,9 +15,7 @@ from jflow.db.instdata.models import InstrumentCode
 class Command(BaseCommand):
     help = "Clean prospero instruments"
  
-    def handle(self, *args, **options):
-        # Determine the project_name a bit naively -- by looking at the name of
-        # the parent directory.        
+    def handle(self, *args, **options):     
         tr = 0
         for ic in InstrumentCode.objects.all():
             inst = ic.instrument()
