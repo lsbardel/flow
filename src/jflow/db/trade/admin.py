@@ -43,9 +43,10 @@ class PortfolioAdmin(admin.ModelAdmin):
 admin.site.register(Portfolio,PortfolioAdmin)
 
 class PositionHistoryAdmin(admin.ModelAdmin):
+    #date_hierarchy = 'dt'
+    ordering = ('-dt',)
+    #list_filter   = ('dt',)
     list_display = ('position','dt','size','value','dirty_value')
-    ordering = ['position','dt']
-    #list_filter  = ('position__status',)
     search_fields = ('position',)
 admin.site.register(PositionHistory,PositionHistoryAdmin)
 

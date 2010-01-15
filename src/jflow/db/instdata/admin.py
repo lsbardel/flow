@@ -64,7 +64,7 @@ admin.site.register(FundManager,FundManagerAdmin)
 
 class IcAdmin(admin.ModelAdmin):
     list_display = ('id','code','firm_code','instype','data_id')
-    search_fields = ('code',)
+    search_fields = ('code','firm_code')
 admin.site.register(InstrumentCode,IcAdmin)
 
 admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
