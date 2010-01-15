@@ -26,7 +26,7 @@ admin.site.register(CustodyAccount,CustodyAccountAdmin)
 class PositionAdmin(admin.ModelAdmin):
     list_display = ('instrumentCode','fund','status','open_date','close_date','custodian')
     list_filter  = ('status','fund',)
-    ordering = ('instrumentCode',)
+    ordering = ('-open_date',)
     search_fields = ('instrumentCode__code',)
 admin.site.register(Position,PositionAdmin)
 
