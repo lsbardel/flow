@@ -43,6 +43,8 @@ class loaderMeta(type):
         return new_class
 
 
+
+
 class instrumentLoader(object):
     source     = None
     vendorcode = None
@@ -454,24 +456,40 @@ class instrumentLoader(object):
             self.saveinstrument()
             
     def saveinstrument(self):
+        '''
+        Finally save the instrument.
+        We check first if an instrument with code is given.
+        If it exist we check the ISIN number (if it exist)
+        '''
         code = self.id.code 
         try:
             ic = InstrumentCode.objects.get(code = code)
-            self.ic = ic
-            if self.firm_code and not ic.firm_code:
-                ic.firm_code = self.firm_code
-                ic.save()
-                self.result = 'UPDATED %s' % code
-            else:
-                self.result = 'UNCHANGED %s' % code
+            inst = ic.instrument()
+            if not inst:
+                ic.delete()
+                raise ValueError
+            isin = getattr(inst,'ISIN',None)
+            ISIN = self.idata.get('ISIN',None)
+            if ISIN and (not isin or isin == ISIN):
+                self.ic = ic
+                if self.firm_code:
+                    ic.firm_code = self.firm_code
+                    ic.save()
+                    self.result = 'UPDATED %s' % code
+                else:
+                    self.result = 'UNCHANGED %s' % code
+                return
+            self.result = 'CODE ALREADY USED %s' % code
             return
         except:
-            # Not there, create the new instrument
-            self.ic = InstrumentCode(content_type=self.modelct,
-                                     code = code,
-                                     firm_code = self.firm_code,
-                                     data_id = self.id)
-            self.ic.save()
+            pass
+        
+        # Not there, create the new instrument
+        self.ic = InstrumentCode(content_type=self.modelct,
+                                 code = code,
+                                 firm_code = self.firm_code,
+                                 data_id = self.id)
+        self.ic.save()
         
         try:
             ct = self.ic.content_type
