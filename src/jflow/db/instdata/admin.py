@@ -70,6 +70,11 @@ admin.site.register(InstrumentCode,IcAdmin)
 admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
 admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
 
+class BondAdmin(admin.ModelAdmin):
+    list_display = ('code','bond_class','ISIN','coupon','maturity_date')
+    search_fields = ('ISIN',)
+admin.site.register(Bond,BondAdmin)
+
 #class EquityAdmin(admin.ModelAdmin):
 #    pass
 #admin.safe_register(Equity,EquityAdmin)

@@ -434,22 +434,56 @@ class instrumentLoader(object):
     def preprocess(self, data):
         pass
     
+    def _create_did(self,code):
+        tags = ' '.join(self.tags)
+        id = DataId(code = code, tags = tags, **self.ddata)
+        id.save()
+        return id
+    
+    def _get_unique_did(self,code):
+        '''
+        creates a data id for which there isn't an instrument code
+        with the same isin
+        
+        @param code: string representation for code in Dataid object
+          
+        '''
+        current_isin = self.idata.get('ISIN','')
+            
+        i = 0
+        new_code = code
+        while True:
+            dids = DataId.objects.filter(code = new_code)
+            if not dids:
+                return self._create_did(new_code)
+            else:
+                id = dids[0]
+            
+            ic = InstrumentCode.objects.filter(code = new_code)
+            if ic:
+                ic = ic[0]
+                inst = ic.instrument()
+                if not inst:
+                    ic.delete()
+                else:
+                    inst_isin = getattr(inst,'ISIN',None)
+                
+                if inst_isin == current_isin:
+                    return id
+            
+            i += 1
+            new_code = '_'.join([code, str(i)])
+    
     def save(self,data):
         '''
-        Save data to database
+        Save data to database.
+        First we save the dataid
         '''
         code = self.code
         if not code:
             raise ValueError("Could not save. Code missing")
         code = str(self.code)
-        id = DataId.objects.filter(code = code)
-        if id:
-            id = id[0]
-        else:
-            tags = ' '.join(self.tags)
-            id = DataId(code = code, tags = tags, **self.ddata)
-            id.save()
-        self.id = id
+        self.id = self._get_unique_did(code)
         self.make_or_update_vendors(self.id,data)
         
         if self.model:
