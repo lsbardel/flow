@@ -44,10 +44,11 @@ class FutureContractAdmin(admin.ModelAdmin):
 admin.site.register(FutureContract,FutureContractAdmin)
 class BondClassAdmin(admin.ModelAdmin):
     list_display = ('code','bondcode','description','coupon_type','curncy','country','settlement','issuer','sovereign','callable','putable','convertible')
-    search_fields = ('bondcode','description', 'curncy', 'country')
+    search_fields = ('bondcode',)
     list_filter = ('sovereign','callable','putable','convertible','curncy', 'country')
 admin.site.register(BondClass,BondClassAdmin)
 class BondIssuerAdmin(admin.ModelAdmin):
+    search_fields = ('bond_class__code',)
     list_display = ('bond_class','issuer','dt')
 admin.site.register(BondIssuer,BondIssuerAdmin)
 class CollateralTypeAdmin(admin.ModelAdmin):
