@@ -284,6 +284,9 @@ class BondIssuer(models.Model):
         unique_together = (("bond_class", "issuer", "dt"),)
         ordering = ('bond_class',)
         
+    def ccy(self):
+        return self.bond_class.curncy
+        
     def __get_data_id(self):
         return self.issuer.data_id
     data_id = property(fget = __get_data_id)
