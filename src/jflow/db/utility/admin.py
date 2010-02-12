@@ -1,6 +1,6 @@
-from djpcms import adminsite as admin
+from django.contrib import admin
 from models import *
 
 class ServerAdmin(admin.ModelAdmin):
     list_display = ('name','url')
-admin.safe_register(Server,ServerAdmin)
+admin.site.register(Server,ServerAdmin)
