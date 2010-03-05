@@ -5,7 +5,9 @@
       {{ item.code }} &mdash; {{ item.name }}{% endif %}
     </h3>{% endblock %}
   </div>
-  {{ item.description|safe }}{% if tagurls %}
+  <div class="bd">
+  {{ item.description|truncatewords:30 }}
+  </div>{% if tagurls %}
   <div class="tags">{% for tag in tagurls %}
     <a href="{{ tag.url }}" title="tag {{ tag.name }}">{{ tag.name }}</a>{% endfor %}
   </div>{% endif %}
