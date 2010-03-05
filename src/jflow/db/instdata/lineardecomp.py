@@ -2,7 +2,6 @@
 Linear decomposition of an financial security
 '''
 from jflow.db.geo import currency, countryccy
-from models import DataId
 
 
 
@@ -147,6 +146,7 @@ class LinearDecomp(object):
             return ccy
     
     def underlying(self, val):
+        from models import DataId
         code = val.upper()
         return DataId.objects.get(code = code)
         

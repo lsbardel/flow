@@ -1,0 +1,12 @@
+<div class="jflow-dataid{% block extraclass %} list{% endblock %}">
+  <div class="hd">{% block title-wrap %}
+    <h3>{% if viewurl %}
+      <a href="{{ viewurl }}">{{ item.code }} &mdash; {{ item.name }}</a>{% else %}
+      {{ item.code }} &mdash; {{ item.name }}{% endif %}
+    </h3>{% endblock %}
+  </div>
+  {{ item.description|safe }}{% if tagurls %}
+  <div class="tags">{% for tag in tagurls %}
+    <a href="{{ tag.url }}" title="tag {{ tag.name }}">{{ tag.name }}</a>{% endfor %}
+  </div>{% endif %}
+</div>
