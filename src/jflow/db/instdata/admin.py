@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from models import *
+from forms import DataIdForm
 
 
 #_______________________________________ INLINES
@@ -26,7 +27,8 @@ class VendorIdAdmin(admin.ModelAdmin):
 
 class DataIdAdmin(admin.ModelAdmin):
     list_display  = ('code', 'name', 'live', 'get_country', 'tags')
-    inlines = [VendorIdInline]
+    form          = DataIdForm
+    #inlines = [VendorIdInline]
     search_fields = ('code', 'name', 'description', 'tags')
 
 class ExchangeAdmin(admin.ModelAdmin):

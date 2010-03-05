@@ -2,8 +2,6 @@ from django import forms
 from django.utils.text import capfirst
 from django.db.models import Q
 
-from djpcms.html import UniqueCodeField
-
 from tagging.forms import TagField
 
 from scripts.instrument import dbmodels
@@ -22,6 +20,30 @@ def Instrument_Choices():
         meta = ii._meta
         inst_options.append((meta.module_name,capfirst(meta.verbose_name)))
     return inst_options
+
+
+class UniqueCodeField(forms.CharField):
+    
+    def __init__(self, model = None, codename = 'code',
+                 lower = True, rtf = '_', extrafilters = None, *args, **kwargs):
+        self.model = model
+        self.lower = lower
+        self.rtf   = rtf
+        self.extrafilters = extrafilters
+        self.codename     = codename
+        super(UniqueCodeField,self).__init__(*args, **kwargs)
+        
+    def clean(self, value):
+        c = super(UniqueCodeField,self).clean(value)
+        if self.model:
+            c = self.trimcode(c)
+            kwargs = self.extrafilters or {}
+            kwargs[self.codename] = c
+            obj = self.model.objects.filter(**kwargs)
+            if obj.count():
+                raise forms.ValidationError('%s with %s code already available' % (self.model,c))
+        return c
+
 
 class DataCodeField(UniqueCodeField):
     
@@ -44,6 +66,17 @@ class ShortAddForm(forms.Form):
                                required = False,
                                initial  = 'no-instrument')
     tags   = TagField(label = 'Labels', required = False)
+    
+    
+class DataIdForm(forms.ModelForm):
+    
+    class Meta:
+        model   = datamodels.DataId
+    
+    @classmethod
+    def make(cls, user, data = None, instance = None, **kwargs):
+        f1 = cls(data = data, instance = instance, **kwargs)
+        return (f1,None,None,None)
     
     
     
