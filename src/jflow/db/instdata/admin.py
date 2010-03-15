@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from models import *
+from utils import ctids
 from forms import DataIdForm
 
 
@@ -31,6 +32,13 @@ class DataIdAdmin(admin.ModelAdmin):
     form          = DataIdForm
     #inlines = [VendorIdInline]
     search_fields = ('code', 'name', 'description', 'tags')
+    list_filter = ('content_type',)
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "content_type":
+            kwargs["queryset"] = ctids()
+            return db_field.formfield(**kwargs)
+        return super(DataIdAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ExchangeAdmin(admin.ModelAdmin):
     list_display = ('code','name',)

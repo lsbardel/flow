@@ -12,7 +12,7 @@ from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
 from jflow.db.instdata import settings
 from jflow.db.instdata.managers import DataIdManager
-from jflow.db.instdata.fields import SlugCode
+from jflow.db.instdata.fields import SlugCode, InstrumentKey
 
 
 field_type = (('numeric','Numeric'),
@@ -89,7 +89,7 @@ class DataId(BaseModel):
     
     # New stuff
     hasdata        = models.BooleanField(default = True)
-    content_type   = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type   = InstrumentKey(ContentType, blank=True, null=True)
     object_id      = models.PositiveIntegerField(default = 0, editable = False)
     firm_code      = models.CharField(blank=True,
                                       max_length=50,
@@ -488,8 +488,8 @@ class Cash(InstrumentInterface):
             return va
     
     class Meta:
-        verbose_name = 'Cash'
-        verbose_name_plural = 'Cash'
+        verbose_name = 'cash'
+        verbose_name_plural = 'cash'
         
     def ccy(self):
         return self.curncy
@@ -506,8 +506,8 @@ class FwdCash(InstrumentInterface):
     value_date = models.DateField()
     
     class Meta:
-        verbose_name = 'Forward Cash'
-        verbose_name_plural = 'Forward Cash'
+        verbose_name = 'forward cash'
+        verbose_name_plural = 'forward cash'
         
     def description(self):
         return 'Forward %s cash %s' % (self.curncy, self.value_date)

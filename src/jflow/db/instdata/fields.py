@@ -37,6 +37,12 @@ class SlugCode(models.CharField):
         return value
 
 
+class InstrumentKey(models.ForeignKey):
+    
+    def get_choices(self, **kwargs):
+        return super(InstrumentKey,self).get_choices(**kwargs)
+
+
 import math
 
 from jflow.core.field import fieldproxy
