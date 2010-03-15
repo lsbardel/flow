@@ -202,6 +202,12 @@ class Bond(SecurityBase):
     maturity_date       = models.DateField(null = True, blank = True)
     collateral_type     = models.ForeignKey(CollateralType)
     
+    #month_frequency  = models.IntegerField(default=12)
+    #day_count        = models.CharField(choices = dayCount_choices, max_length=20)
+    #settlement_delay = models.SmallIntegerField(default = 3)
+    #callable         = models.BooleanField(default=False)
+    #putable          = models.BooleanField(default=False)
+    
     class Meta:
         app_label  = current_app_label
         ordering   = ('bond_class','maturity_date',)

@@ -1,3 +1,42 @@
+import re
+import unicodedata
+
+from django.db import models
+
+
+
+def slugify(value, rtx = '-'):
+    """
+    Normalizes string, converts to lowercase, removes non-alpha characters,
+    and converts spaces to hyphens.
+    """
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+    value = unicode(re.sub('[^\w\s-]', '', value).strip())
+    return re.sub('[-\s]+', rtx, value)
+
+class SlugCode(models.CharField):
+    
+    def __init__(self, rtxchar='-', lower=False, upper = False, **kwargs):
+        self.rtxchar = u'%s' % rtxchar
+        self.lower   = lower
+        self.upper   = upper
+        super(SlugCode,self).__init__(**kwargs)
+        
+    def trim(self, value):
+        value = slugify(u'%s'%value, rtx = self.rtxchar)
+        if self.lower:
+            value = value.lower()
+        elif self.upper:
+            value = value.upper()
+        return value
+        
+    def pre_save(self, model_instance, add):
+        value = getattr(model_instance, self.attname)
+        value = self.trim(value)
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 import math
 
 from jflow.core.field import fieldproxy

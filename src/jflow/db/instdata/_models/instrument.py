@@ -41,14 +41,14 @@ class InstrumentCode(InstrumentInterface):
     '''
     A table which relate an instrument code with an instrument table
     '''
-    code            = models.CharField(unique=True, max_length=32)
-    firm_code       = models.CharField(blank=True, max_length=50, verbose_name = settings.FIRM_CODE_NAME)
-    content_type    = models.ForeignKey(ContentType, blank=True, null=True)
-    #data_id         = models.OneToOneField('dataid', blank = True, null = True)
-    #Modification for MSSQL
-    data_id         = models.ForeignKey('dataid', blank = True, null = True)
+    code          = models.CharField(unique=True, max_length=32)
+    firm_code     = models.CharField(blank=True,
+                                     max_length=50,
+                                     verbose_name = settings.FIRM_CODE_NAME)
+    content_type  = models.ForeignKey(ContentType, blank=True, null=True)
+    data_id       = models.ForeignKey('dataid', blank = True, null = True)
     
-    objects         = InstrumentCodeManager()
+    objects       = InstrumentCodeManager()
     
     class Meta:
         app_label    = current_app_label
@@ -139,8 +139,6 @@ class FincialInstrumentBase(InstrumentInterface):
     '''
     Base Abstract class for Financial Instruments
     '''
-    #show_in_dblist  = False
-    #id  = models.IntegerField(primary_key = True, editable = False)
     id  = models.IntegerField(primary_key = True)
     
     class Meta:
@@ -152,11 +150,11 @@ class FincialInstrumentBase(InstrumentInterface):
     def has_firm_code(self):
         return True
     
-    def __get_code(self):
-        if not hasattr(self,'_code'):
-            self.__check()
-        return self._code
-    code = property(fget = __get_code)
+    #def __get_code(self):
+    #    if not hasattr(self,'_code'):
+    #        self.__check()
+    #    return self._code
+    #code = property(fget = __get_code)
     
     def __get_data_id(self):
         return self.code.data_id

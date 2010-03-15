@@ -4,7 +4,6 @@ from django.db.models import Q
 
 from tagging.forms import TagField
 
-from scripts.instrument import dbmodels
 import models as datamodels
 
 
@@ -14,6 +13,7 @@ def Instrument_Choices():
     '''
     Return a list of 2-elements tuple
     '''
+    from scripts.instrument import dbmodels
     insts = dbmodels()
     inst_options = [('',noselection_string)]
     for ii in insts:
@@ -54,18 +54,18 @@ class DataCodeField(UniqueCodeField):
         return datamodels.TrimCode(value)
 
 
-class ShortAddForm(forms.Form):
-    '''
-    Form used to load a DataID from Google or Yahoo finance
-    '''
-    default_vendor = forms.ModelChoiceField(label = 'Vendor',
-                                            queryset = datamodels.Vendor.objects.filter(Q(code = 'google') | Q(code = 'yahoo')))
-    ticker = forms.CharField(min_length = 3, max_length = 32)
-    code   = DataCodeField(min_length = 3, max_length = 32, required = False)
-    type   = forms.ChoiceField(choices  = Instrument_Choices(),
-                               required = False,
-                               initial  = 'no-instrument')
-    tags   = TagField(label = 'Labels', required = False)
+#class ShortAddForm(forms.Form):
+#    '''
+#    Form used to load a DataID from Google or Yahoo finance
+#    '''
+#    default_vendor = forms.ModelChoiceField(label = 'Vendor',
+#                                            queryset = datamodels.Vendor.objects.filter(Q(code = 'google') | Q(code = 'yahoo')))
+#    ticker = forms.CharField(min_length = 3, max_length = 32)
+#    code   = DataCodeField(min_length = 3, max_length = 32, required = False)
+#    type   = forms.ChoiceField(choices  = Instrument_Choices(),
+#                               required = False,
+#                               initial  = 'no-instrument')
+#    tags   = TagField(label = 'Labels', required = False)
     
     
 class DataIdForm(forms.ModelForm):

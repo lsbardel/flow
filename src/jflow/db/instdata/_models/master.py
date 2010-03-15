@@ -102,6 +102,7 @@ class CouponType(models.Model):
     day_count       = models.CharField(choices = dayCount_choices, max_length=20)
     
     class Meta:
+        abstract  = True
         app_label = current_app_label
         unique_together = (("code", "month_frequency", "day_count"),)
         ordering = ('code','month_frequency')
@@ -128,15 +129,15 @@ class BondClass(models.Model):
     code             = models.CharField(unique=True,max_length=12)
     curncy           = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
     country          = models.CharField(max_length = 2, choices = geo.country_tuples())
-    exchange         = models.ForeignKey(Exchange,null=True,blank=True)
+    #exchange         = models.ForeignKey(Exchange,null=True,blank=True)
     description      = models.CharField(max_length=60,blank=True)
     price_type       = models.CharField(max_length=10,choices=Future_Price_Types,blank=True)
     index            = models.ForeignKey('DataId',null=True,blank=True)
-    coupon_type      = models.ForeignKey(CouponType)
-    settlement_delay = models.SmallIntegerField(default = 3)
+    #coupon_type      = models.ForeignKey(CouponType)
+    #settlement_delay = models.SmallIntegerField(default = 3)
     sovereign        = models.BooleanField(default=False)
-    callable         = models.BooleanField(default=False)
-    putable          = models.BooleanField(default=False)
+    #callable         = models.BooleanField(default=False)
+    #putable          = models.BooleanField(default=False)
     convertible      = models.BooleanField(default=False)
     bondcode         = models.CharField(null=True,max_length=12)
     

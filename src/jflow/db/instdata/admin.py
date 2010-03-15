@@ -9,7 +9,8 @@ class VendorIdInline(admin.TabularInline):
     model = VendorId
 
 class BondIssuerInline(admin.TabularInline):
-    model = BondIssuer
+    pass
+    #model = BondIssuer
 
 #_______________________________________ ADMINS
 class VendorAdmin(admin.ModelAdmin):
@@ -26,7 +27,7 @@ class VendorIdAdmin(admin.ModelAdmin):
     list_display  = ('ticker', 'vendor', 'dataid',)
 
 class DataIdAdmin(admin.ModelAdmin):
-    list_display  = ('code', 'name', 'live', 'get_country', 'tags')
+    list_display  = ('code', 'name', 'live', 'get_country', 'content_type', 'firm_code', 'tags')
     form          = DataIdForm
     #inlines = [VendorIdInline]
     search_fields = ('code', 'name', 'description', 'tags')
@@ -89,21 +90,21 @@ admin.site.register(VendorId,VendorIdAdmin)
 admin.site.register(DataField,DataFieldAdmin)
 admin.site.register(DataId,DataIdAdmin)
 
-admin.site.register(Exchange,ExchangeAdmin)
-admin.site.register(BondMaturityType,BondMaturityTypeAdmin)
-admin.site.register(CouponType,CouponTypeAdmin)
-admin.site.register(FutureContract,FutureContractAdmin)
-admin.site.register(BondClass,BondClassAdmin)
-admin.site.register(BondIssuer,BondIssuerAdmin)
-admin.site.register(CollateralType,CollateralTypeAdmin)
-admin.site.register(FundManager,FundManagerAdmin)
-admin.site.register(FundType,FundTypeAdmin)
+#admin.site.register(Exchange,ExchangeAdmin)
+#admin.site.register(BondMaturityType,BondMaturityTypeAdmin)
+#admin.site.register(CouponType,CouponTypeAdmin)
+#admin.site.register(FutureContract,FutureContractAdmin)
+#admin.site.register(BondClass,BondClassAdmin)
+#admin.site.register(BondIssuer,BondIssuerAdmin)
+#admin.site.register(CollateralType,CollateralTypeAdmin)
+#admin.site.register(FundManager,FundManagerAdmin)
+#admin.site.register(FundType,FundTypeAdmin)
 
-admin.site.register(InstrumentCode,IcAdmin)
-admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
-admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
-admin.site.register(Bond,BondAdmin)
+#admin.site.register(InstrumentCode,IcAdmin)
+#admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
+#admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
+#admin.site.register(Bond,BondAdmin)
 
-admin.site.register(InstDecomp,InstDecompAdmin)
-admin.site.register(InstDecompHistory,InstDecompHistoryAdmin)
-admin.site.register(MktData,MktDataAdmin)
+#admin.site.register(InstDecomp,InstDecompAdmin)
+#admin.site.register(InstDecompHistory,InstDecompHistoryAdmin)
+#admin.site.register(MktData,MktDataAdmin)
