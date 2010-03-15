@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from jflow.db.utils import django_choices
@@ -154,16 +156,13 @@ class BondClass(models.Model):
         return 'T + %s' % self.settlement_delay
     
     def issuer(self, dt = None):
-        iss = self.bondissuer_set.all()
-        N = iss.count()
+        dt = dt or datetime.date.today()
+        iss = self.issuers.filter(dt__lte = dt)
         if iss:
-            if dt == None:
-                return iss[N-1]
-            else:
-                return iss[N-1]
+            return iss.latest
         else:
             return None
-    
+            
 class CollateralType(models.Model):
     name = models.CharField(max_length=60,unique=True)
     order = models.PositiveIntegerField(default = 1)

@@ -273,7 +273,7 @@ class Bond(SecurityBase):
     
 class BondIssuer(models.Model):
     bond_class = models.ForeignKey(BondClass)
-    issuer     = models.ForeignKey(Equity)
+    issuer     = models.ForeignKey(Equity, related_name = 'issuers')
     dt         = models.DateField()
     
     def __unicode__(self):
@@ -283,6 +283,7 @@ class BondIssuer(models.Model):
         app_label  = current_app_label
         unique_together = (("bond_class", "issuer", "dt"),)
         ordering = ('bond_class',)
+        get_latest_by = 'dt'
         
     def ccy(self):
         return self.bond_class.curncy
