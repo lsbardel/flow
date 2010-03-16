@@ -74,9 +74,6 @@ class Vendor(BaseModel):
         return module.get_vendor(self.code)
 
 
-
-
-
 class DataId(BaseModel):
     '''
     Database ID
@@ -88,8 +85,12 @@ class DataId(BaseModel):
                               help_text = "Insert keywords separated by space")
     
     # New stuff
-    hasdata        = models.BooleanField(default = True)
-    content_type   = InstrumentKey(ContentType, blank=True, null=True)
+    hasdata        = models.BooleanField(default = True, editable = False)
+    content_type   = InstrumentKey(ContentType,
+                                   blank=True,
+                                   null=True,
+                                   verbose_name="instrument")
+    #content_type.instrument_filter = True
     object_id      = models.PositiveIntegerField(default = 0, editable = False)
     firm_code      = models.CharField(blank=True,
                                       max_length=50,
@@ -463,6 +464,26 @@ class Bond(Security):
     
     def get_multiplier(self):
         return self.multiplier
+
+
+class BondIssuer(models.Model):
+    bond_class = models.ForeignKey(BondClass)
+    issuer     = models.ForeignKey(Equity, related_name = 'issuers')
+    dt         = models.DateField()
+    
+    def __unicode__(self):
+        return u'%s' % self.issuer
+    
+    class Meta:
+        unique_together = (("bond_class", "issuer", "dt"),)
+        get_latest_by = 'dt'
+        
+    def ccy(self):
+        return self.bond_class.curncy
+        
+    def __get_data_id(self):
+        return self.issuer.data_id
+    data_id = property(fget = __get_data_id)
     
 
 class Cash(InstrumentInterface):

@@ -1,8 +1,9 @@
 <div class="jflow-dataid{% block extraclass %} list{% endblock %}">
   <div class="hd">{% block title-wrap %}
     <h3>{% if viewurl %}
-      <a href="{{ viewurl }}">{{ item.code }} &mdash; {{ item.name }}</a>{% else %}
-      {{ item.code }} &mdash; {{ item.name }}{% endif %}
+      <a href="{{ viewurl }}">{{ item.name }} - {{ item.code }}</a>{% else %}
+      {{ item.name }} - {{ item.code }}{% endif %}{% if item.content_type %}
+      &mdash; {{ item.content_type }}{% endif %}
     </h3>{% endblock %}
   </div>
   <div class="bd">

@@ -4,7 +4,6 @@ import unicodedata
 from django.db import models
 
 
-
 def slugify(value, rtx = '-'):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
@@ -40,7 +39,8 @@ class SlugCode(models.CharField):
 class InstrumentKey(models.ForeignKey):
     
     def get_choices(self, **kwargs):
-        return super(InstrumentKey,self).get_choices(**kwargs)
+        from utils import instrument_ids
+        return instrument_ids(True)
 
 
 import math

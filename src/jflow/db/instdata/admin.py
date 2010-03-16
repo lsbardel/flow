@@ -10,8 +10,7 @@ class VendorIdInline(admin.TabularInline):
     model = VendorId
 
 class BondIssuerInline(admin.TabularInline):
-    pass
-    #model = BondIssuer
+    model = BondIssuer
 
 #_______________________________________ ADMINS
 class VendorAdmin(admin.ModelAdmin):
@@ -30,9 +29,9 @@ class VendorIdAdmin(admin.ModelAdmin):
 class DataIdAdmin(admin.ModelAdmin):
     list_display  = ('code', 'name', 'live', 'get_country', 'content_type', 'firm_code', 'tags')
     form          = DataIdForm
-    #inlines = [VendorIdInline]
-    search_fields = ('code', 'name', 'description', 'tags')
-    list_filter = ('content_type',)
+    inlines       = [VendorIdInline]
+    search_fields = ('code', 'name', 'description', 'tags', 'content_type')
+    list_filter   = ('content_type',)
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "content_type":
@@ -54,9 +53,9 @@ class FutureContractAdmin(admin.ModelAdmin):
     list_display = ('code','description','type','curncy','country','index','exchange')
 
 class BondClassAdmin(admin.ModelAdmin):
-    list_display = ('code','bondcode','description','coupon_type','curncy','country','settlement','issuer','sovereign','callable','putable','convertible')
+    list_display = ('code','bondcode','description','curncy','country','issuer','sovereign','convertible')
     search_fields = ('bondcode',)
-    list_filter = ('sovereign','callable','putable','convertible','curncy', 'country')
+    list_filter = ('sovereign','convertible','curncy', 'country')
     inlines = [BondIssuerInline]
 
 class BondIssuerAdmin(admin.ModelAdmin):
@@ -98,15 +97,15 @@ admin.site.register(VendorId,VendorIdAdmin)
 admin.site.register(DataField,DataFieldAdmin)
 admin.site.register(DataId,DataIdAdmin)
 
-#admin.site.register(Exchange,ExchangeAdmin)
-#admin.site.register(BondMaturityType,BondMaturityTypeAdmin)
+admin.site.register(Exchange,ExchangeAdmin)
+admin.site.register(BondMaturityType,BondMaturityTypeAdmin)
 #admin.site.register(CouponType,CouponTypeAdmin)
-#admin.site.register(FutureContract,FutureContractAdmin)
-#admin.site.register(BondClass,BondClassAdmin)
-#admin.site.register(BondIssuer,BondIssuerAdmin)
-#admin.site.register(CollateralType,CollateralTypeAdmin)
-#admin.site.register(FundManager,FundManagerAdmin)
-#admin.site.register(FundType,FundTypeAdmin)
+admin.site.register(FutureContract,FutureContractAdmin)
+admin.site.register(BondClass,BondClassAdmin)
+admin.site.register(BondIssuer,BondIssuerAdmin)
+admin.site.register(CollateralType,CollateralTypeAdmin)
+admin.site.register(FundManager,FundManagerAdmin)
+admin.site.register(FundType,FundTypeAdmin)
 
 #admin.site.register(InstrumentCode,IcAdmin)
 #admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
