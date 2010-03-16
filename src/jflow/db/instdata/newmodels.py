@@ -111,9 +111,16 @@ class DataId(BaseModel):
     #    code = self.code
     #    self.code = u'%s' % TrimCode(code)
     #    super(DataId,self).save()
+    
+    def type(self):
+        if self.content_type:
+            return self.content_type.name
+        else:
+            return ''
         
     def get_country(self):
         return geo.country(self.country)
+    get_country.short_description = 'country'
     
     def defaultccy(self):
         return geo.countryccy(self.country)
