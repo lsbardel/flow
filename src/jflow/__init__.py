@@ -1,5 +1,5 @@
  
-VERSION = (0, 3, 'beta')
+VERSION = (0, 4, 'alpha')
  
 def get_version():
     if len(VERSION) == 3:
