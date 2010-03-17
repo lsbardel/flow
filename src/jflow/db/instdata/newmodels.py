@@ -11,7 +11,8 @@ from tagging.fields import TagField
 from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
 from jflow.db.instdata import settings
-from jflow.db.instdata.managers import DataIdManager
+from jflow.db.instdata.managers import DataIdManager, \
+                        DecompManager, InstrumentManager
 from jflow.db.instdata.fields import SlugCode, InstrumentKey
 
 
@@ -347,6 +348,8 @@ class InstrumentInterface(models.Model):
     code       = models.CharField(unique=True, max_length=32)
     dataid     = models.OneToOneField(DataId)
     
+    objects    = InstrumentManager()
+    
     class Meta:
         abstract = True
 
@@ -572,4 +575,30 @@ class Depo(InstrumentInterface):
     def make_position(self, **kwargs):
         return FACTORY.cash(inst = self, value_date = self.value_date, **kwargs)
         
+
+class InstDecomp(models.Model):
+    code         = models.CharField(max_length = 255, blank = True)
+    dataid       = models.ForeignKey(DataId)
+    dt           = models.DateField(verbose_name='date')
+    composition  = models.TextField()
+    description  = models.TextField(blank = True)
     
+    objects = DecompManager()
+    
+    def __unicode__(self):
+        return self.composition
+    
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = self.dataid.code
+        super(InstDecomp,self).save(*args, **kwargs)
+    
+    @property
+    def instrument(self):
+        return self.dataid.instrument    
+    
+    class Meta:
+        verbose_name = 'Instrument Decomposition'
+        verbose_name_plural = 'Instrument Decomposition'
+        unique_together = ('code', 'dataid', 'dt')
+        get_latest_by   = 'dt'

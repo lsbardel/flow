@@ -2,6 +2,8 @@
 #    API using django-piston
 #
 from django import http
+from django.utils import simplejson as json
+from django.db import transaction
 
 from piston.resource import Resource
 from piston.handler import BaseHandler, AnonymousBaseHandler
@@ -10,6 +12,12 @@ from piston.doc import documentation_view
 
 from jflow import get_version
 from jflow.db.instdata import models
+
+def strkeys(item):
+    r = {}
+    for key,value in item.items():
+        r[str(key)] = value
+    return r
 
 
 class InfoHandler(AnonymousBaseHandler):
@@ -41,7 +49,7 @@ class DataIdHandler(BaseHandler):
     fields = ('code', 'description', 'type', 'country', 'ccy', 'firm_code', 'instrument')
     #anonymous = 'AnonymousDataIdHandler'
     model = models.DataId
- 
+
     @classmethod
     def resource_uri(cls, code = None):
         return ('data', [ 'json', ])
@@ -60,8 +68,40 @@ class DataIdHandler(BaseHandler):
             else:
                 return base.filter(content_type = None)
     
+    @transaction.commit_manually
     def create(self, request):
-        pass
+        '''
+        The POST dictionary contains
+         - source String indicating the data source
+         - data a JSON string
+        '''
+        base = self.model.objects
+        params = dict(request.POST.items())
+        data   = json.loads(params.get('data',None))
+        user   = request.user
+        if isinstance(data,dict):
+            data = [data]
+        ids = []
+        
+        for item in data:
+            item = strkeys(item)
+            try:
+                id, created = base.get_or_create(**item)
+                if created:
+                    v = 'Created %s' % id.code
+                else:
+                    v = 'Modified %s' % id.code
+                ids.append({'result':v})
+            except Exception, e:
+                ids.append({'error':str(e)})
+        
+        committed = False
+        if user.has_perm('instdata.add_dataid'):
+            transaction.commit()
+            committed = True
+        
+        return {'commited': committed,
+                'result': ids}
     
     
 def urls(auth, baseurl = None):

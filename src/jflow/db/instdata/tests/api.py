@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 
 from django.test import TestCase
 from django.conf import settings
+from django.utils import simplejson as json
+
+import jflow
 
 
 class MainTests(TestCase):
@@ -13,6 +16,7 @@ class MainTests(TestCase):
                 'vendordatafield.json']
     
     def setUp(self):
+        self.baseapi = '/api/instdata/'
         self.user = User.objects.create_user('jflowtest', 'jflowtest@world.com', 'jflowtest')
         self.user.is_active = True
         self.user.save()
@@ -24,5 +28,8 @@ class MainTests(TestCase):
 class ApiTest(MainTests):
         
     def testVersion(self):
-        response = self.client.get('/api/instdata/version/')
-        self.assertTrue(isinstance(response,http.HttpResponse))
+        response = self.client.get('%sversion/' % self.baseapi)
+        val = json.loads(response.content)
+        self.assertEqual(val, jflow.get_version())
+    
+    

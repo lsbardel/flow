@@ -80,10 +80,8 @@ class BondAdmin(admin.ModelAdmin):
     search_fields = ('ISIN',)
 
 class InstDecompAdmin(admin.ModelAdmin):
-    list_display = ('code','instrument','name','composition')
-
-class InstDecompHistoryAdmin(admin.ModelAdmin):
-    list_display = ('inst_decomp','dt','composition')
+    list_display = ('code','dataid','dt','composition')
+    ordering      = ('code','-dt')
 
 class MktDataAdmin(admin.ModelAdmin):
     list_display = ('vendor_id','field','dt','mkt_value')
@@ -112,6 +110,5 @@ admin.site.register(FundType,FundTypeAdmin)
 #admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
 #admin.site.register(Bond,BondAdmin)
 
-#admin.site.register(InstDecomp,InstDecompAdmin)
-#admin.site.register(InstDecompHistory,InstDecompHistoryAdmin)
+admin.site.register(InstDecomp,InstDecompAdmin)
 #admin.site.register(MktData,MktDataAdmin)
