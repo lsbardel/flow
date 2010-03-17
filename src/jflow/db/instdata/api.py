@@ -83,6 +83,10 @@ class DataIdHandler(BaseHandler):
             data = [data]
         ids = []
         
+        committed = False
+        if user.has_perm('instdata.add_dataid'):
+            committed = True
+        
         for item in data:
             item = strkeys(item)
             try:
@@ -95,10 +99,8 @@ class DataIdHandler(BaseHandler):
             except Exception, e:
                 ids.append({'error':str(e)})
         
-        committed = False
-        if user.has_perm('instdata.add_dataid'):
+        if committed:
             transaction.commit()
-            committed = True
         
         return {'commited': committed,
                 'result': ids}
