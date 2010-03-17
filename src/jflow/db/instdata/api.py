@@ -101,6 +101,8 @@ class DataIdHandler(BaseHandler):
         
         if committed:
             transaction.commit()
+        else:
+            transaction.rollback()
         
         return {'commited': committed,
                 'result': ids}

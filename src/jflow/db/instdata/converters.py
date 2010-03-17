@@ -5,6 +5,50 @@ class Converter(object):
     def get_or_create(self, val):
         return self.cdict.get(val,val)        
 
+class CurrencyCreator(Converter):
+    
+    def get_or_create(self, val):
+        from jflow.db.geo import currency
+        c = currency(val)
+        if c:
+            return c.code
+        else:
+            raise ValueError('Currency %s not recognized' % val)
+
+class CountryCreator(Converter):
+    
+    def get_or_create(self, val):
+        from jflow.db.geo import country
+        c = country(val)
+        if c:
+            return val
+        else:
+            raise ValueError('Country %s not recognized' % val)
+
+class VendorCreator(Converter):
+    
+    def get_or_create(self, val):
+        from jflow.db.instdata.models import Vendor
+        if isinstance(val,Vendor):
+            return val
+        else:
+            try:
+                return Vendor.objects.get(code = val.upper())
+            except:
+                raise ValueError('Vendor %s not available' % val)
+        
+
+class DayCountCreator(Converter):
+    cdict = {'ACT/ACT': 'actact',
+             'ACT/ACT NON-EOM': 'actact',
+             'ACT/360': 'act360',
+             '30/360': '30360',
+             'ISMA-30/360': '30360',
+             'ISMA-30/360 NONEOM': '30360',
+             'ACT/365': 'act365',
+             'NL/365': 'act365',
+             'BUS DAYS/252':'bd252'}
+    
 class ExchangeCreator(Converter):
     cdict = {'Athens': 'ASE',
              'BrsaItaliana': 'BIT',
@@ -31,7 +75,10 @@ class ExchangeCreator(Converter):
         return obj
     
 
-_c = {'exchange':ExchangeCreator()}
+_c = {'exchange':ExchangeCreator(),
+      'curncy': CurrencyCreator(),
+      'country': CountryCreator(),
+      'vendor': VendorCreator()}
 
 def convert(key,value):
     cc = _c.get(key,None)

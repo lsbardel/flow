@@ -343,7 +343,6 @@ class FundLiquidity(models.Model):
 
 class InstrumentInterface(models.Model):
     InstrumentFactory = None
-    has_data_id       = True
     
     code       = models.CharField(unique=True, max_length=32)
     dataid     = models.OneToOneField(DataId)
@@ -352,7 +351,14 @@ class InstrumentInterface(models.Model):
     
     class Meta:
         abstract = True
-
+        
+    @property
+    def country(self):
+        return self.dataid.country
+    
+    def ccy(self):
+        return ''
+    
 
 class Security(InstrumentInterface):
     ISIN             = models.CharField(max_length=30,blank=True)
@@ -401,6 +407,9 @@ class Future(InstrumentInterface):
     first_notice        = models.DateField()
     first_delivery      = models.DateField()
     last_delivery       = models.DateField()
+    
+    def ccy(self):
+        return self.contract.curncy
 
 
 class Equity(EquityBase):
@@ -410,9 +419,6 @@ class Equity(EquityBase):
     
     class Meta:
         verbose_name_plural = 'equities'
-        
-    def ccy(self):
-        return self.curncy
     
     def need_value_date(self):
         return True
@@ -474,6 +480,9 @@ class Bond(Security):
     
     def get_multiplier(self):
         return self.multiplier
+    
+    def ccy(self):
+        return self.bond_class.curncy
 
 
 class BondIssuer(models.Model):
