@@ -1,0 +1,128 @@
+[
+    {
+        "pk": 1, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "LAST_PRICE", 
+            "description": "Last Traded Price", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "NAV", 
+            "description": "Fund Net Asset Value", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "OPEN_INTEREST", 
+            "description": "", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "VOLUME", 
+            "description": "", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "ASK_PRICE", 
+            "description": "", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "BID_PRICE", 
+            "description": "", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "OPEN_PRICE", 
+            "description": "", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "HIGH_PRICE", 
+            "description": "Highest price of session", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "LOW_PRICE", 
+            "description": "Lowest session price", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "YIELD", 
+            "description": "Mid current yield", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "AUM", 
+            "description": "Assets under management", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "OAS", 
+            "description": "Option adjusted spread", 
+            "format": "numeric"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "SPRATING", 
+            "description": "", 
+            "format": "string"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "instdata.datafield", 
+        "fields": {
+            "code": "DIRTY_PRICE", 
+            "description": "Bond dirty price", 
+            "format": "numeric"
+        }
+    }
+]

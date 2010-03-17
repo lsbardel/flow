@@ -3,12 +3,63 @@
         "pk": 1, 
         "model": "instdata.vendor", 
         "fields": {
-            "gridsize": 12, 
-            "created": "2009-11-18 21:45:00", 
-            "body_class_name": "", 
-            "container_class_name": "", 
-            "last_modified": "2009-11-18 21:45:00", 
-            "fixed": true
+            "code": "blb", 
+            "name": "Bloomberg", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "ecb", 
+            "name": "European Central Bank", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "google", 
+            "name": "Google Finance", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "manual", 
+            "name": "Internal Data Provider", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "netik", 
+            "name": "netik", 
+            "description": "Netik Data Feed"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "reuters", 
+            "name": "Reuters", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.vendor", 
+        "fields": {
+            "code": "yahoo", 
+            "name": "Yahoo Finance", 
+            "description": ""
         }
     }
 ]

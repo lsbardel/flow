@@ -1,0 +1,182 @@
+[
+    {
+        "pk": 1, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 1, 
+            "code": "1", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 6, 
+            "code": "2", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 5, 
+            "code": "3", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 4, 
+            "code": "7", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 8, 
+            "code": "9", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 3, 
+            "code": "5295", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 9, 
+            "code": "10", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 2, 
+            "code": "3696", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 1, 
+            "code": "Close", 
+            "vendor": 2
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 9, 
+            "code": "Low", 
+            "vendor": 2
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 7, 
+            "code": "Open", 
+            "vendor": 2
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 8, 
+            "code": "High", 
+            "vendor": 2
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 4, 
+            "code": "Volume", 
+            "vendor": 2
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 7, 
+            "code": "45", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 10, 
+            "code": "1059", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 14, 
+            "code": "SPRATING", 
+            "vendor": 4
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 1, 
+            "code": "LAST_PRICE", 
+            "vendor": 4
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 12, 
+            "code": "OAS", 
+            "vendor": 4
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 12, 
+            "code": "1413 ", 
+            "vendor": 1
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "instdata.vendordatafield", 
+        "fields": {
+            "field": 1, 
+            "code": "LAST_PRICE", 
+            "vendor": 7
+        }
+    }
+]
