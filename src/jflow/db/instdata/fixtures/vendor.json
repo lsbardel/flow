@@ -3,7 +3,7 @@
         "pk": 1, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "blb", 
+            "code": "BLB", 
             "name": "Bloomberg", 
             "description": ""
         }
@@ -12,7 +12,7 @@
         "pk": 6, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "ecb", 
+            "code": "ECB", 
             "name": "European Central Bank", 
             "description": ""
         }
@@ -21,7 +21,7 @@
         "pk": 2, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "google", 
+            "code": "GOOGLE", 
             "name": "Google Finance", 
             "description": ""
         }
@@ -30,7 +30,7 @@
         "pk": 4, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "manual", 
+            "code": "MANUAL", 
             "name": "Internal Data Provider", 
             "description": ""
         }
@@ -39,7 +39,7 @@
         "pk": 7, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "netik", 
+            "code": "NETIK", 
             "name": "netik", 
             "description": "Netik Data Feed"
         }
@@ -48,7 +48,7 @@
         "pk": 5, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "reuters", 
+            "code": "REUTERS", 
             "name": "Reuters", 
             "description": ""
         }
@@ -57,7 +57,7 @@
         "pk": 3, 
         "model": "instdata.vendor", 
         "fields": {
-            "code": "yahoo", 
+            "code": "YAHOO", 
             "name": "Yahoo Finance", 
             "description": ""
         }
