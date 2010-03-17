@@ -1,3 +1,4 @@
 
 ccy>=0.1.2
 python-dateutil>=1.4.1
+django-piston

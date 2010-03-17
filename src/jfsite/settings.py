@@ -79,19 +79,28 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "djpcms.core.context_processors.djpcms",
 )
+
+TEMPLATE_DIRS     = (os.path.join(PSETTINGS.LOCDIR, 'templates'))
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
     'django.contrib.messages',
+    'django.contrib.markup',
+    #
+    'djpcms',
+    'jflow.db.instdata'
 )
