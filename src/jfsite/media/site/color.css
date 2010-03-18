@@ -1,0 +1,9 @@
+
+body {
+    background:#D3DBDE;
+}
+#header,
+#footer {
+    background: #111111;
+    color: #ffffff;
+}

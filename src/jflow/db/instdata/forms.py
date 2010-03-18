@@ -67,8 +67,8 @@ class DataCodeField(UniqueCodeField):
 #                               required = False,
 #                               initial  = 'no-instrument')
 #    tags   = TagField(label = 'Labels', required = False)
-    
-    
+
+
 class DataIdForm(forms.ModelForm):
     content_type = forms.ModelChoiceField(queryset = ctids(), 
                                           required = False,
@@ -82,7 +82,7 @@ class DataIdForm(forms.ModelForm):
         css = {
             'all': ('instdata/layout.css',)
         }
-    
+        
     @classmethod
     def make(cls, user, data = None, instance = None, **kwargs):
         f1 = cls(data = data, instance = instance, **kwargs)

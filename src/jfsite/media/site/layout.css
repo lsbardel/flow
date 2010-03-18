@@ -1,0 +1,10 @@
+#header {
+    width: 100%;
+    height: 50px;
+}
+#content {
+	min-height: 700px;
+}
+#footer {
+    min-height: 200px;
+}

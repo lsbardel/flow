@@ -3,6 +3,7 @@ from django.contrib.admin import helpers
 from django import http
 from django.template import loader
 from django.utils.safestring import mark_safe
+from django.contrib.admin.util import unquote
 from django.forms.models import modelform_factory
 from django.utils import simplejson as json
 
@@ -15,14 +16,6 @@ from forms import DataIdForm
 class VendorIdInline(admin.TabularInline):
     model = VendorId
 
-class InstrumentInline(admin.StackedInline):
-    template = 'admin/instdata/dataid/edit_inline/stacked.html'
-    
-class EquityInline(InstrumentInline):
-    model = Equity
-class BondInline(InstrumentInline):
-    model = Bond
-
 class BondIssuerInline(admin.TabularInline):
     model = BondIssuer
 
@@ -32,15 +25,9 @@ class DataIdAdmin(admin.ModelAdmin):
     list_display  = ('code', 'name', 'live', 'get_country', 'content_type', 'firm_code', 'tags')
     form          = DataIdForm
     inlines       = [VendorIdInline]
-    instruments   = [EquityInline,BondInline]
     search_fields = ('code', 'name', 'description', 'tags', 'content_type')
     list_filter   = ('content_type',)
-    save_on_top   = True
-    
-    def __init__(self, model, admin_site):
-        self.inline_models = [inline.model for inline in self.inlines]
-        self.inlines += self.instruments
-        super(DataIdAdmin,self).__init__(model, admin_site)            
+    save_on_top   = True        
 
     def change_instrument(self, request, obj = None):
         if request.method == 'POST':
@@ -49,52 +36,54 @@ class DataIdAdmin(admin.ModelAdmin):
             data = request.GET
         data = dict(data.items())
         ctid = int(data.get('content_type',0))
-        inst = None
-        html = ''
         if ctid:
-            try:
-                ct = ContentType.objects.get(id = ctid)
-                inst = ct.model_class()
-                inst_admin = self.admin_site._instruments.get(inst,None)
-                if inst_admin:
-                    mform = inst_admin.get_form(request)
-                    form = mform()
-                    adminForm = helpers.AdminForm(form, list(inst_admin.get_fieldsets(request)),
-                                                  inst_admin.prepopulated_fields, inst_admin.get_readonly_fields(request),
-                                                  model_admin=inst_admin)
-                    html = loader.render_to_string('admin/instdata/dataid/instrument_form.html',{'adminform':adminForm})
-            except Exception, e:
-                pass
-        
+            ct = ContentType.objects.get(id = ctid)
+        else:
+            ct = None
+        adminForm = self.get_instrument_form(request, ct, obj)
+        if adminForm:
+            html = loader.render_to_string('admin/instdata/dataid/instrument_form.html',{'adminform':adminForm})
+        else:
+            html = ''
         data = {'header':'htmls',
                 'body': [{'identifier':    '.data-id-instrument',
                           'html':          html}]
                 }
         return http.HttpResponse(json.dumps(data), mimetype='application/javascript')
         
+    def get_instrument_form(self, request, ct, obj):
+        if not ct:
+            return ''
+        inst = ct.model_class()
+        inst_admin = self.admin_site._instruments.get(inst,None)
+        if inst_admin:
+            mform = inst_admin.get_form(request)
+            form = mform()
+            return helpers.AdminForm(form, list(inst_admin.get_fieldsets(request)),
+                                     inst_admin.prepopulated_fields, inst_admin.get_readonly_fields(request),
+                                     model_admin=inst_admin)
+        else:
+            return None
+        
     def add_view(self, request, **kwargs):
         if request.is_ajax():
             return self.change_instrument(request)
         else:
             return super(DataIdAdmin,self).add_view(request, **kwargs)
-            
-    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        inlines = context.pop('inline_admin_formsets')
-        new_inlines = []
-        instruments = []
-        for inline in inlines:
-            #new_inlines.append(inline)
-            isin = False
-            for model in self.inline_models:
-                if inline.opts.model == model:
-                    new_inlines.append(inline)
-                    isin = True
-                    break
-            if not isin:
-                instruments.append(inline)                    
-        context.update({'inline_admin_formsets': new_inlines,
-                        'instruments': instruments})
-        return super(DataIdAdmin,self).render_change_form(request, context, add=add, change=change, form_url=form_url, obj=obj)
+    
+    def change_view(self, request, object_id, **kwargs):
+        if request.is_ajax():
+            return self.change_instrument(request, self.get_object(request, unquote(object_id)))
+        else:
+            return super(DataIdAdmin,self).change_view(request, object_id, **kwargs)
+        
+    def save_form(self, request, form, change):
+        """
+        Given a ModelForm return an unsaved instance. ``change`` is True if
+        the object is being changed, and False if it's being added.
+        """
+        data = form.cleaned_data
+        return form.save(commit=False)
         
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "content_type":

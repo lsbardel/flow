@@ -1,7 +1,19 @@
 {% extends "root.html" %}{% load djpcmstags %}
-{% block body-container-bits %}class="{{ grid.container_class }}"{% endblock %}
 
-{% block html-container %}{% block site-navigation %}
+{% block html-container %}
+<div id="header">
+<div class="{{ grid.container_class }}">
+<div class="{{ grid.column1 }}">
+<h1>
+<a href="/">jFlow</a>
+</h1>
+</div>
+{{ grid.clear }}
+</div>
+</div>
+
+<div class="{{ grid.container_class }}">
+{% block site-navigation %}
 <div id="site-navigation-banner" class="topnav {{ grid.column1 }}">
 <ul class="user">{% if edit_content_url %}
     <li><a href="{{ edit_content_url }}">edit</a></li>{% else %}{% if exit_edit_url %}
@@ -20,10 +32,7 @@
 </div>
 {{ grid.clear }}{% endblock %}
 
-<div id="page-header" class="{{ grid.column1 }}">{% block page-header %}
-<h1>
-<a href="/">{{ fullname }}</a>
-</h1>
+<div id="page-header-2" class="{{ grid.column1 }}">
 <div id="site-navigation">
 <ul>{% for navitem in sitenav %}
 <li{% if navitem.classes %} class="{{ navitem.classes }}"{% endif %}>
@@ -31,29 +40,30 @@
 </li>{% endfor %}
 </ul>
 </div>
-{% endblock %}
 </div>
 {{ grid.clear }}
 
-<div id="main-body" class="full-width">{% block page-prebody %}
-<div class="{{ grid.column1 }}">
-{% include "djpcms/bits/breadcrumbs.html" %}
-</div>
-{{ grid.clear }}{% endblock %}
-{% block page-body %}{{ inner }}{% endblock %}
-{% block page-postbody %}{% endblock %}
+
+<div id="content">
+ <div class="{{ grid.container_class }}">
+  {% block page-body %}{{ inner }}{% endblock %}
+  {% block page-postbody %}{% endblock %}
+ </div>
 </div>
 
-<div id="footer" class="{{ grid.column1 }}">{% block page-footer %}
-Copyright &copy; 2008-{{ now.year }} {{ fullname }}.
-<br{{ htmldoc.slash }}>
-<a href="http://creativecommons.org/licenses/by/2.0/uk/" title="Licensed under a Creative Commons Attributes license" rel="license" target="_blank">Some right reserved</a>
-{% endblock %}
+<div id="footer">
+ <div class="{{ grid.container_class }}">
+  <div class="{{ grid.column1 }}">
+   Copyright &copy; 2008-{{ now.year }} <a href="http://www.quantmind.com/">quantmind</a>
+   <br{{ htmldoc.slash }}>
+   <a href="http://creativecommons.org/licenses/by/2.0/uk/" title="Licensed under a Creative Commons Attributes license" rel="license" target="_blank">Some right reserved</a>
+  </div>
+  {{ grid.clear }}{% if user.is_staff %}
+  <div id="validators" class="{{ grid.column1 }}">
+  {{ htmldoc.bluevalidator }}
+  {% blue_css_validator %}
+  </div>{% endif %}
+ </div>
 </div>
-{{ grid.clear }}{% if user.is_staff %}
-<div id="validators" class="{{ grid.column1 }}">
-{{ htmldoc.bluevalidator }}
-{% blue_css_validator %}
-</div>{% endif %}
 {% endblock %}
 
