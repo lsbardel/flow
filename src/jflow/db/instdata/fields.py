@@ -34,13 +34,42 @@ class SlugCode(models.CharField):
         value = self.trim(value)
         setattr(model_instance, self.attname, value)
         return value
-
-
-class InstrumentKey(models.ForeignKey):
     
-    def get_choices(self, **kwargs):
-        from utils import instrument_ids
-        return instrument_ids(True)
+
+class LazyManyToOneRel(models.ManyToOneRel):
+    '''
+    A ManyToOneRel class with lazy limit_choices_to
+    Useful for ContentType filtering 
+    '''
+    def __init__(self, to, field_name, related_name=None,
+            limit_choices_to=None, lookup_overrides=None, parent_link=False):
+        try:
+            to._meta
+        except AttributeError: # to._meta doesn't exist, so it must be RECURSIVE_RELATIONSHIP_CONSTANT
+            assert isinstance(to, basestring), "'to' must be either a model, a model name or the string %r" % RECURSIVE_RELATIONSHIP_CONSTANT
+        self.to, self.field_name = to, field_name
+        self.related_name = related_name
+        self.__limit_choices_to = limit_choices_to
+        self.__lct_val   = None
+        self.lookup_overrides = lookup_overrides or {}
+        self.multiple = True
+        self.parent_link = parent_link
+        
+    @property
+    def limit_choices_to(self):
+        if self.__lct_val is None:
+            c = self.__limit_choices_to
+            if callable(c):
+                c = c()
+            self.__lct_val = c or {}
+        return self.__lct_val
+
+
+class LazyForeignKey(models.ForeignKey):
+    
+    def __init__(self, *args, **kwargs):
+        kwargs['rel_class'] = LazyManyToOneRel
+        super(LazyForeignKey,self).__init__(*args, **kwargs)
 
 
 import math

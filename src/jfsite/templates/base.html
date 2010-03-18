@@ -1,0 +1,59 @@
+{% extends "root.html" %}{% load djpcmstags %}
+{% block body-container-bits %}class="{{ grid.container_class }}"{% endblock %}
+
+{% block html-container %}{% block site-navigation %}
+<div id="site-navigation-banner" class="topnav {{ grid.column1 }}">
+<ul class="user">{% if edit_content_url %}
+    <li><a href="{{ edit_content_url }}">edit</a></li>{% else %}{% if exit_edit_url %}
+    <li><a href="{{ exit_edit_url }}">exit</a></li>{% endif %}{% endif %}{% if user.is_authenticated %}
+    <li><a {% if user_url %}href="{{ user_url }}"{% endif %}>{{ user.username }}</a></li>{% if user.is_staff %}
+    <li><a href="{{ site_admin_url }}">admin</a></li>{% endif %}{% if user_is_staff %}
+    <li><a href="http://partnerpage.google.com/quantmind.com">email</a></li>
+    <li><a href="http://code.dynquant.com/">code</a></li>{% endif %}
+    <li><a href="{{ logout_url }}?next={{ djp.url }}">logout</a></li> {% else %}{% if login_url %}
+    <li><a href="{{ login_url }}?next={{ djp.url }}">login</a></li>{% if register_url %} 
+    <li><a href="{{ register_url }}">register</a></li>{% endif %}{% endif %}{% endif %}
+</ul>{% if toolbox %}
+<ul class="toolbox">{% for item in toolbox %}
+    <li><a href="{{ item.url }}" title="{{ item.title }}">{{ item.name }}</a></li>{% endfor %}
+</ul>{% endif %}
+</div>
+{{ grid.clear }}{% endblock %}
+
+<div id="page-header" class="{{ grid.column1 }}">{% block page-header %}
+<h1>
+<a href="/">{{ fullname }}</a>
+</h1>
+<div id="site-navigation">
+<ul>{% for navitem in sitenav %}
+<li{% if navitem.classes %} class="{{ navitem.classes }}"{% endif %}>
+<a href="{{ navitem.url }}">{{ navitem.name }}</a>
+</li>{% endfor %}
+</ul>
+</div>
+{% endblock %}
+</div>
+{{ grid.clear }}
+
+<div id="main-body" class="full-width">{% block page-prebody %}
+<div class="{{ grid.column1 }}">
+{% include "djpcms/bits/breadcrumbs.html" %}
+</div>
+{{ grid.clear }}{% endblock %}
+{% block page-body %}{{ inner }}{% endblock %}
+{% block page-postbody %}{% endblock %}
+</div>
+
+<div id="footer" class="{{ grid.column1 }}">{% block page-footer %}
+Copyright &copy; 2008-{{ now.year }} {{ fullname }}.
+<br{{ htmldoc.slash }}>
+<a href="http://creativecommons.org/licenses/by/2.0/uk/" title="Licensed under a Creative Commons Attributes license" rel="license" target="_blank">Some right reserved</a>
+{% endblock %}
+</div>
+{{ grid.clear }}{% if user.is_staff %}
+<div id="validators" class="{{ grid.column1 }}">
+{{ htmldoc.bluevalidator }}
+{% blue_css_validator %}
+</div>{% endif %}
+{% endblock %}
+

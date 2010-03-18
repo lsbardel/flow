@@ -102,5 +102,14 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     #
     'djpcms',
+    'tagging',
     'jflow.db.instdata'
 )
+
+
+# DJPCMS SETTINGS
+DJPCMS_PLUGINS  = ['djpcms.plugins.*',
+                   'djpcms.views.apps.tagging.plugins']
+GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
+APPLICATION_URL_MODULE  = 'jfsite.appurls'
+GRID960_DEFAULT_FIXED   = False

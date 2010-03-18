@@ -13,7 +13,7 @@ from jflow.db import geo
 from jflow.db.instdata import settings
 from jflow.db.instdata.managers import DataIdManager, \
                         DecompManager, InstrumentManager
-from jflow.db.instdata.fields import SlugCode, InstrumentKey
+from jflow.db.instdata.fields import SlugCode, LazyForeignKey
 
 
 field_type = (('numeric','Numeric'),
@@ -49,6 +49,10 @@ def cash_tuple():
     for id, cd in cash_codes.items():
         c.append((id,cd['name']))
     return c
+
+def instrument_query():
+    from jflow.db.instdata.utils import instrument_ids
+    return {'pk__in': instrument_ids()}
 
 
 class BaseModel(models.Model):
@@ -87,11 +91,11 @@ class DataId(BaseModel):
     
     # New stuff
     hasdata        = models.BooleanField(default = True, editable = False)
-    content_type   = InstrumentKey(ContentType,
-                                   blank=True,
-                                   null=True,
-                                   verbose_name="instrument")
-    #content_type.instrument_filter = True
+    content_type   = LazyForeignKey(ContentType,
+                                    limit_choices_to = instrument_query,
+                                    blank=True,
+                                    null=True,
+                                    verbose_name="instrument")
     object_id      = models.PositiveIntegerField(default = 0, editable = False)
     firm_code      = models.CharField(blank=True,
                                       max_length=50,
@@ -101,18 +105,26 @@ class DataId(BaseModel):
     _instrument    = generic.GenericForeignKey('content_type', 'object_id')
     
     objects        = DataIdManager()
+    
+    def __unicode__(self):
+        if self.name:
+            return u'%s - %s' % (self.code,self.name)
+        else:
+            return u'%s' % self.code
 
-    def __get_instrument(self):
+    def save(self, **kwargs):
+        code = self.code
+        self.code = u'%s' % TrimCode(code)
+        super(DataId,self).save()
+        
+    @property
+    def instrument(self):
         try:
             return self._instrument
         except:
             return None
-    instrument = property(__get_instrument)
-    #def save(self):
-    #    code = self.code
-    #    self.code = u'%s' % TrimCode(code)
-    #    super(DataId,self).save()
     
+    @property
     def type(self):
         if self.content_type:
             return self.content_type.name
@@ -125,34 +137,6 @@ class DataId(BaseModel):
     
     def defaultccy(self):
         return geo.countryccy(self.country)
-        
-    class Meta:
-        ordering  = ('code','country',)
-        
-    def __unicode__(self):
-        if self.name:
-            return u'%s - %s' % (self.code,self.name)
-        else:
-            return u'%s' % self.code
-        
-    def delete(self):
-        ic = self.ic
-        if ic:
-            ic.delete()
-        super(DataId,self).delete()
-        
-    def __get_ic(self):
-        if not hasattr(self,'_lazy_ic'):
-            ic = self.instrumentcode_set.all()
-            N  = ic.count()
-            if not N:
-                self._layz_ic = None
-            elif N == 1:
-                self._layz_ic = ic[0]
-            else:
-                raise ValueError("Multiple instrument for data id %s" % self)
-        return self._layz_ic
-    ic = property(fget = __get_ic)
     
     def __get_dates_range(self):
         try:
@@ -344,8 +328,8 @@ class FundLiquidity(models.Model):
 class InstrumentInterface(models.Model):
     InstrumentFactory = None
     
-    code       = models.CharField(unique=True, max_length=32)
-    dataid     = models.OneToOneField(DataId)
+    code       = models.CharField(unique=True, max_length=32, editable = False)
+    dataid     = models.OneToOneField(DataId, editable = False)
     
     objects    = InstrumentManager()
     

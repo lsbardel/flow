@@ -5,6 +5,7 @@ from django.db.models import Q
 from tagging.forms import TagField
 
 import models as datamodels
+from jflow.db.instdata.utils import ctids
 
 
 noselection_string = '------------'
@@ -69,9 +70,18 @@ class DataCodeField(UniqueCodeField):
     
     
 class DataIdForm(forms.ModelForm):
+    content_type = forms.ModelChoiceField(queryset = ctids(), 
+                                          required = False,
+                                          label = 'instrument',
+                                          widget = forms.Select({'class':'ajax'}))
     
     class Meta:
         model   = datamodels.DataId
+        
+    class Media:
+        css = {
+            'all': ('instdata/layout.css',)
+        }
     
     @classmethod
     def make(cls, user, data = None, instance = None, **kwargs):
