@@ -11,8 +11,7 @@ from tagging.fields import TagField
 from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
 from jflow.db.instdata import settings
-from jflow.db.instdata.managers import DataIdManager, \
-                        DecompManager, InstrumentManager
+from jflow.db.instdata import managers
 from jflow.db.instdata.fields import SlugCode, LazyForeignKey
 
 
@@ -34,7 +33,8 @@ future_type_choice = (
                       )
 
 equity_type = ((1,'Common Stock'),
-               (2,'Right')
+               (2,'Right'),
+               (3,'Unknown')
                )
 
 cash_codes = {1: {'code':'PRI', 'name':'Principal'},
@@ -104,7 +104,7 @@ class DataId(BaseModel):
     
     _instrument    = generic.GenericForeignKey('content_type', 'object_id')
     
-    objects        = DataIdManager()
+    objects        = managers.DataIdManager()
     
     def __unicode__(self):
         if self.name:
@@ -113,9 +113,7 @@ class DataId(BaseModel):
             return u'%s' % self.code
 
     def save(self, **kwargs):
-        code = self.code
-        self.code = u'%s' % TrimCode(code)
-        super(DataId,self).save()
+        super(DataId,self).save(**kwargs)
         
     @property
     def instrument(self):
@@ -238,7 +236,9 @@ class IndustryCode(models.Model):
     code         = models.CharField(unique=True, max_length=64)
     description  = models.TextField(blank=True)
     parent       = models.ForeignKey('self', null = True, blank = True)
-        
+    
+    objects = managers.IndustryCodeManager()
+    
     def __unicode__(self):
         return u'%s - %s' % (self.id, self.code)
     
@@ -331,8 +331,6 @@ class InstrumentInterface(models.Model):
     code       = models.CharField(unique=True, max_length=32, editable = False)
     dataid     = models.OneToOneField(DataId, editable = False)
     
-    objects    = InstrumentManager()
-    
     class Meta:
         abstract = True
         
@@ -401,6 +399,8 @@ class Equity(EquityBase):
     security_type     = models.SmallIntegerField(choices = equity_type, default = 1, null = True, blank = True)
     related           = models.ForeignKey('self', null = True, blank = True)
     
+    objects = managers.EquityManager()
+    
     class Meta:
         verbose_name_plural = 'equities'
     
@@ -417,6 +417,8 @@ class Equity(EquityBase):
 
 
 class Etf(EquityBase):
+    
+    objects = managers.EtfManager()
         
     class Meta:
         verbose_name = 'ETF'
@@ -433,7 +435,9 @@ class Fund(EquityBase):
     domicile           = models.CharField(max_length = 2, choices = geo.country_tuples(), help_text="Fund domicile")
     status             = models.BooleanField(default=True) # Fund open or closed
     established        = models.DateField(null=True, blank = True)   
-            
+    
+    objects = managers.FundManager()
+    
     def make_position(self, **kwargs):
         return FACTORY.equity(inst = self, **kwargs)
     
@@ -461,6 +465,8 @@ class Bond(Security):
     settlement_delay = models.SmallIntegerField(default = 3)
     callable         = models.BooleanField(default=False)
     putable          = models.BooleanField(default=False)
+    
+    objects = managers.BondManager()
     
     def get_multiplier(self):
         return self.multiplier
@@ -576,7 +582,7 @@ class InstDecomp(models.Model):
     composition  = models.TextField()
     description  = models.TextField(blank = True)
     
-    objects = DecompManager()
+    objects = managers.DecompManager()
     
     def __unicode__(self):
         return self.composition

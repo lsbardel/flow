@@ -70,15 +70,39 @@ class ExchangeCreator(Converter):
     
     def get_or_create(self, val):
         from jflow.db.instdata.models import Exchange
-        code = self.cdict.get(val,val)
-        obj, created = Exchange.objects.get_or_create(code = code)
-        return obj
+        if val:
+            code = self.cdict.get(val,val)
+            obj, created = Exchange.objects.get_or_create(code = code)
+            return obj
+        else:
+            return None
     
+class SecurityType(Converter):
+    cdict = {'common stock': 1,
+             'stock': 1,
+             'common': 1,
+             'right issue': 2,
+             'right': 2}
+    def get_or_create(self, val):
+        if val:
+            try:
+                v = int(val)
+                if v in [1,2]:
+                    return v
+                else:
+                    return 3
+            except:
+                val = val.lower()
+                return cdict.get(val.lower(),3)
+        else:
+            return 3          
+
 
 _c = {'exchange':ExchangeCreator(),
       'curncy': CurrencyCreator(),
       'country': CountryCreator(),
-      'vendor': VendorCreator()}
+      'vendor': VendorCreator(),
+      'security_type': SecurityType()}
 
 def convert(key,value):
     cc = _c.get(key,None)
