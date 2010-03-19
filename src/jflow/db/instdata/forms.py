@@ -82,6 +82,7 @@ class DataIdForm(forms.ModelForm):
         css = {
             'all': ('instdata/layout.css',)
         }
+        js = ['instdata/decorator.js']
         
     @classmethod
     def make(cls, user, data = None, instance = None, **kwargs):
