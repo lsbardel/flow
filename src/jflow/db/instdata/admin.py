@@ -30,40 +30,26 @@ class DataIdAdmin(admin.ModelAdmin):
     save_on_top   = True        
 
     def change_instrument(self, request, obj = None):
-        if request.method == 'POST':
-            data = request.POST
-        else:
-            data = request.GET
-        data = dict(data.items())
-        ctid = int(data.get('content_type',0))
-        if ctid:
-            ct = ContentType.objects.get(id = ctid)
-        else:
-            ct = None
-        adminForm = self.get_instrument_form(request, ct, obj)
-        if adminForm:
-            html = loader.render_to_string('admin/instdata/dataid/instrument_form.html',{'adminform':adminForm})
-        else:
-            html = ''
+        form = self.get_form(request, obj = obj)
+        data = request.POST or request.GET
+        form = form(initial = dict(data.items()))
+        html = self.render_instrument_form(request, form.inst_form)
         data = {'header':'htmls',
                 'body': [{'identifier':    '.data-id-instrument',
                           'html':          html}]
                 }
         return http.HttpResponse(json.dumps(data), mimetype='application/javascript')
         
-    def get_instrument_form(self, request, ct, obj):
-        if not ct:
-            return ''
-        inst = ct.model_class()
-        inst_admin = self.admin_site._instruments.get(inst,None)
-        if inst_admin:
-            mform = inst_admin.get_form(request)
-            form = mform()
-            return helpers.AdminForm(form, list(inst_admin.get_fieldsets(request)),
+    def render_instrument_form(self, request, inst_form):
+        if inst_form:
+            model = inst_form._meta.model
+            inst_admin = self.admin_site._instruments.get(model,None)
+            form = helpers.AdminForm(inst_form, list(inst_admin.get_fieldsets(request)),
                                      inst_admin.prepopulated_fields, inst_admin.get_readonly_fields(request),
                                      model_admin=inst_admin)
+            return loader.render_to_string('admin/instdata/dataid/instrument_form.html',{'adminform':form})
         else:
-            return None
+            return ''
         
     def add_view(self, request, **kwargs):
         if request.is_ajax():
@@ -77,13 +63,10 @@ class DataIdAdmin(admin.ModelAdmin):
         else:
             return super(DataIdAdmin,self).change_view(request, object_id, **kwargs)
         
-    def save_form(self, request, form, change):
-        """
-        Given a ModelForm return an unsaved instance. ``change`` is True if
-        the object is being changed, and False if it's being added.
-        """
-        data = form.cleaned_data
-        return form.save(commit=False)
+    def render_change_form(self, request, context, **kwargs):
+        inst_form = context['adminform'].form.inst_form
+        context['instform'] = self.render_instrument_form(request, inst_form)
+        return super(DataIdAdmin,self).render_change_form(request, context, **kwargs)
         
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "content_type":

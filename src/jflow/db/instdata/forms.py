@@ -1,6 +1,8 @@
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 from django.utils.text import capfirst
 from django.db.models import Q
+from django.forms.models import modelform_factory
 
 from tagging.forms import TagField
 
@@ -75,8 +77,9 @@ class DataIdForm(forms.ModelForm):
                                           label = 'instrument',
                                           widget = forms.Select({'class':'ajax'}))
     
-    class Meta:
-        model   = datamodels.DataId
+    def __init__(self, *args, **kwargs):
+        super(DataIdForm,self).__init__(*args, **kwargs)
+        self.inst_form = self.get_inst_form(*args, **kwargs)
         
     class Media:
         css = {
@@ -84,6 +87,42 @@ class DataIdForm(forms.ModelForm):
         }
         js = ['instdata/decorator.js']
         
+    def is_valid(self):
+        vi = super(DataIdForm,self).is_valid()
+        if self.inst_form:
+            vi = self.inst_form.is_valid() and vi
+            if vi:
+                self.cleaned_data.update(self.inst_form.cleaned_data)
+            else:
+                self.errors.update(self.inst_form.errors)
+        return vi
+    
+    def get_inst_form(self, *args, **kwargs):
+        ct = self.instance.content_type
+        if not ct:
+            data = self.initial
+            if not data:
+                data = dict(self.data.items())
+            ct = data.get('content_type',None)
+            if ct:
+                ct = ContentType.objects.get(id = int(ct))
+        if ct:
+            inst_model = ct.model_class()
+            inst_form  = modelform_factory(inst_model)
+            return inst_form(*args, **kwargs)
+        else:
+            return None        
+        
+    class Meta:
+        model   = datamodels.DataId
+        
+    def save(self, commit = True):
+        base = self._meta.model.objects
+        if self.instance.has_pk():
+            return base.modify(self.instance, commit = commit, **self.cleaned_data)
+        else:
+            return base.create(self.instance, commit = commit, **self.cleaned_data)
+    
     @classmethod
     def make(cls, user, data = None, instance = None, **kwargs):
         f1 = cls(data = data, instance = instance, **kwargs)

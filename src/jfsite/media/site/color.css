@@ -2,8 +2,19 @@
 body {
     background:#D3DBDE;
 }
-#header,
-#footer {
+#branding-banner,
+#page-footer {
     background: #111111;
     color: #ffffff;
+}
+#site-navigation-banner,
+ul.nav.main {
+    background: #666666;
+}
+a:link, a:visited {
+    color:#5B80B2;
+    text-decoration:none;
+}
+a:hover {
+    color:#003366;
 }
