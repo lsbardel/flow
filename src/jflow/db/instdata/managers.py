@@ -57,6 +57,7 @@ class DataIdManager(ModelTaggedItemManager):
             return self.modify(id, **kwargs), False
         
     def create(self, id,
+               commit = True,
                type = None,
                country = None,
                default_vendor = None, **kwargs):
@@ -64,14 +65,14 @@ class DataIdManager(ModelTaggedItemManager):
         id.default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
         id.country = convert('country', country)
         if ct:
-            inst = model.objects.create(id, **kwargs)
+            id._new_content = model.objects.create(id, commit = commit, **kwargs)
             id.content_type = ct
-            id.object_id = inst.id
-            id.curncy = inst.ccy()
-        id.save()
+        if commit:
+            id.save()
         return id
         
     def modify(self, id,
+               commit = True,
                type = None,
                country = None,
                default_vendor = None, **kwargs):
@@ -84,11 +85,12 @@ class DataIdManager(ModelTaggedItemManager):
             inst = id.instrument
             if inst:
                 inst.delete()
-            inst = model.objects.create(id, **kwargs)
+            id._new_content = model.objects.create(id, commit = commit, **kwargs)
             id.content_type = ct
-            id.object_id = inst.id
-            id.curncy = inst.ccy()
-        id.save()
+            id.object_id    = inst.id
+            id.curncy       = inst.ccy()
+        if commit:
+            id.save()
         return id
         
         

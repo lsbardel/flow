@@ -29,43 +29,45 @@ class DataIdAdmin(admin.ModelAdmin):
     list_filter   = ('content_type',)
     save_on_top   = True        
 
-    def change_instrument(self, request, obj = None):
+    def change_content(self, request, obj = None):
         form = self.get_form(request, obj = obj)
         data = request.POST or request.GET
         form = form(initial = dict(data.items()))
-        html = self.render_instrument_form(request, form.inst_form)
+        html = self.render_content_form(request, form.content_form)
         data = {'header':'htmls',
                 'body': [{'identifier':    '.data-id-instrument',
                           'html':          html}]
                 }
         return http.HttpResponse(json.dumps(data), mimetype='application/javascript')
         
-    def render_instrument_form(self, request, inst_form):
-        if inst_form:
-            model = inst_form._meta.model
-            inst_admin = self.admin_site._instruments.get(model,None)
-            form = helpers.AdminForm(inst_form, list(inst_admin.get_fieldsets(request)),
-                                     inst_admin.prepopulated_fields, inst_admin.get_readonly_fields(request),
-                                     model_admin=inst_admin)
+    def render_content_form(self, request, content_form):
+        if content_form:
+            model = content_form._meta.model
+            content_admin = self.admin_site._instruments.get(model,None)
+            form = helpers.AdminForm(content_form,
+                                     list(content_admin.get_fieldsets(request)),
+                                     content_admin.prepopulated_fields,
+                                     content_admin.get_readonly_fields(request),
+                                     model_admin=content_admin)
             return loader.render_to_string('admin/instdata/dataid/instrument_form.html',{'adminform':form})
         else:
             return ''
         
     def add_view(self, request, **kwargs):
         if request.is_ajax():
-            return self.change_instrument(request)
+            return self.change_content(request)
         else:
             return super(DataIdAdmin,self).add_view(request, **kwargs)
     
     def change_view(self, request, object_id, **kwargs):
         if request.is_ajax():
-            return self.change_instrument(request, self.get_object(request, unquote(object_id)))
+            return self.change_content(request, self.get_object(request, unquote(object_id)))
         else:
             return super(DataIdAdmin,self).change_view(request, object_id, **kwargs)
         
     def render_change_form(self, request, context, **kwargs):
-        inst_form = context['adminform'].form.inst_form
-        context['instform'] = self.render_instrument_form(request, inst_form)
+        content_form = context['adminform'].form.content_form
+        context['instform'] = self.render_content_form(request, content_form)
         return super(DataIdAdmin,self).render_change_form(request, context, **kwargs)
         
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

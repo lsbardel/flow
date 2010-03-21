@@ -1,0 +1,33 @@
+[
+    {
+        "pk": 1, 
+        "model": "instdata.bondclass", 
+        "fields": {
+            "bondcode": "DBR", 
+            "index": null, 
+            "code": "DBR", 
+            "description": "", 
+            "price_type": "PRICE", 
+            "country": "DE", 
+            "sovereign": true, 
+            "curncy": "EUR", 
+            "convertible": false
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "instdata.bondmaturitytype", 
+        "fields": {
+            "code": "BULLET", 
+            "description": "Bullet bond"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.bondmaturitytype", 
+        "fields": {
+            "code": "PERPETUAL", 
+            "description": "Perpetual Bond"
+        }
+    }
+]

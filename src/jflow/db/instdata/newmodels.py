@@ -1,10 +1,11 @@
 #
 # Requires django-tagging
 #
+import datetime
+
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.utils.safestring import mark_safe
+from django.contrib.contenttypes.models import ContentType
 
 from tagging.fields import TagField
 
@@ -13,6 +14,7 @@ from jflow.db import geo
 from jflow.db.instdata import settings
 from jflow.db.instdata import managers
 from jflow.db.instdata.fields import SlugCode, LazyForeignKey
+from jflow.db.instdata.dynct import ExtraContentModel
 
 
 field_type = (('numeric','Numeric'),
@@ -79,10 +81,13 @@ class Vendor(BaseModel):
         return module.get_vendor(self.code)
 
 
-class DataId(BaseModel):
+class DataId(ExtraContentModel):
     '''
     Database ID
     '''
+    code           = SlugCode(max_length = 32, unique = True, upper = True, rtxchar = '_')
+    name           = models.CharField(max_length = 64, blank  = True)
+    description    = models.TextField(blank=True)
     country        = models.CharField(max_length = 2, choices = geo.country_tuples())
     live           = models.BooleanField(default=True)
     default_vendor = models.ForeignKey(Vendor, blank = True, null = True)
@@ -96,38 +101,32 @@ class DataId(BaseModel):
                                     blank=True,
                                     null=True,
                                     verbose_name="instrument")
-    object_id      = models.PositiveIntegerField(default = 0, editable = False)
     firm_code      = models.CharField(blank=True,
                                       max_length=50,
                                       verbose_name = settings.FIRM_CODE_NAME)
-    curncy         = models.CharField(max_length=3, editable = False)
-    
-    _instrument    = generic.GenericForeignKey('content_type', 'object_id')
+    curncy         = models.CharField(max_length=3, blank = True, editable = False)
     
     objects        = managers.DataIdManager()
-    
+        
     def __unicode__(self):
         if self.name:
             return u'%s - %s' % (self.code,self.name)
         else:
             return u'%s' % self.code
 
-    def save(self, **kwargs):
-        super(DataId,self).save(**kwargs)
+    def _denormalize(self, ec = None):
+        if ec:
+            ec.dataid = self
+            ec.code   = self.code
+        else:
+            ec = self._new_content
+            ec.dataid = self
+            ec.code   = self.code
+            self.curncy = ec.ccy()
         
     @property
     def instrument(self):
-        try:
-            return self._instrument
-        except:
-            return None
-    
-    @property
-    def type(self):
-        if self.content_type:
-            return self.content_type.name
-        else:
-            return ''
+        return self.extra_content()
         
     def get_country(self):
         return geo.country(self.country)
