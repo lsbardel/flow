@@ -9,7 +9,9 @@ Python package for quantitative finance.
 Running Tests
 ==================
 
-To come.
+to run tests, move into the `jfsite` directory and type::
+
+    python manage.py test instdata
 
 
 

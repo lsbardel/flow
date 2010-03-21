@@ -21,7 +21,7 @@ def install():
     try:
         import machines
     except ImportError:
-        import machines_example as machines
+        import machines_test as machines
     
     # Get server setting
     sett    = machines.get_machine(site.__path__[0])
