@@ -1,4 +1,7 @@
 import datetime
+import csv
+import base64
+import os
 
 from django import http
 from django.contrib.auth.models import User
@@ -11,25 +14,52 @@ import jflow
 
 
 class MainTests(TestCase):
-    fixtures = ['vendor.json',
-                'datafield.json',
-                'vendordatafield.json']
+    fixtures = ['initial_data.json',
+                'bondclass.json']
     
     def setUp(self):
         self.baseapi = '/api/instdata/'
-        self.user = User.objects.create_user('jflowtest', 'jflowtest@world.com', 'jflowtest')
-        self.user.is_active = True
-        self.user.save()
+        self.su = User.objects.create_superuser('superuser', 'test@example.com', 'superpw')
+        self.auth_string = 'Basic %s' % base64.encodestring('superuser:superpw').rstrip()
         
     def tearDown(self):
-        self.user.delete()
+        self.su.delete()
 
 
 class ApiTest(MainTests):
-        
+    
     def testVersion(self):
         response = self.client.get('%sversion/' % self.baseapi)
         val = json.loads(response.content)
         self.assertEqual(val, jflow.get_version())
-    
-    
+        
+    def loadids(self):
+        name = os.path.join(os.path.dirname(__file__),'dataid.csv')
+        f = open(name,'r')
+        rows =  csv.DictReader(f)
+        data = []
+        res  = []
+        for row in rows:
+            d = {}
+            for key,val in row.items():
+                if key == 'result':
+                    res.append(val)
+                else:
+                    if val == 'TRUE':
+                        val = True
+                    elif val == 'FALSE':
+                        val = False
+                    d[key] = val
+            data.append(d)
+        return data,res
+
+    def testCreateBond(self):
+        '''
+        Full Bond creation with bondclass and issuer
+        '''
+        data,res = self.loadids()
+        data = {'data': json.dumps(data)}
+        response = self.client.post('%sdata/' % self.baseapi, data, HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        
+        

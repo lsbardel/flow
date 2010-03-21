@@ -1,4 +1,4 @@
-
+from dateutil.parser import parse as dataparse
 
 class Converter(object):
     cdict = {}
@@ -95,14 +95,36 @@ class SecurityType(Converter):
                 val = val.lower()
                 return cdict.get(val.lower(),3)
         else:
-            return 3          
+            return 3
 
+class BondDate(Converter):                  
+    
+    def get_or_create(self, val):
+        if val:
+            try:
+                return dataparse(val)
+            except:
+                return None
+        else:
+            return None
+        
+class CollateralCreator(Converter):                  
+    
+    def get_or_create(self, val):
+        from jflow.db.instdata.models import CollateralType
+        if val:
+            obj, created = CollateralType.objects.get_or_create(name = val)
+            return obj
+        else:
+            return None
 
 _c = {'exchange':ExchangeCreator(),
       'curncy': CurrencyCreator(),
       'country': CountryCreator(),
       'vendor': VendorCreator(),
-      'security_type': SecurityType()}
+      'security_type': SecurityType(),
+      'bonddate': BondDate(),
+      'collateral': CollateralCreator()}
 
 def convert(key,value):
     cc = _c.get(key,None)

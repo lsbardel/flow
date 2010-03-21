@@ -144,7 +144,7 @@ class FundManager(SecurityManager):
     def create(self, id, curncy = '', multiplier = 1,
                settlement_delay = 2,  security_type = 1,
                **kwargs):
-        obj = super(EquityManager,self).create(id, **kwargs)
+        obj = super(FundManager,self).create(id, **kwargs)
         obj.curncy = convert('curncy',curncy)
         obj.multiplier = multiplier or 1
         obj.settlement_delay = settlement_delay
@@ -154,10 +154,23 @@ class FundManager(SecurityManager):
     
 class BondManager(SecurityManager):
     
-    def create(self, id, curncy = '', multiplier = 1,
+    def create(self, id,
+               curncy = '',
+               collateral_type   = None,
+               announce_date     = None,
+               first_settle_date = None,
+               first_coupon_date = None,
+               accrual_date      = None,
+               maturity_date     = None,
+               multiplier = 1,
                settlement_delay = 2, **kwargs):
-        obj = super(EquityManager,self).create(id, **kwargs)
-        
+        obj = super(BondManager,self).create(id, **kwargs)
+        obj.announce_date       = convert('bonddate',announce_date)
+        obj.first_settle_date   = convert('bonddate',first_settle_date)
+        obj.first_coupon_date   = convert('bonddate',first_coupon_date)
+        obj.accrual_date        = convert('bonddate',accrual_date)
+        obj.maturity_date       = convert('bonddate',maturity_date)
+        obj.collateral_type     = convert('collateral',collateral_type)
         obj.curncy = convert('curncy',curncy)
         obj.multiplier = multiplier or 1
         obj.settlement_delay = settlement_delay

@@ -83,14 +83,23 @@ class DataIdHandler(BaseHandler):
             data = [data]
         ids = []
         
+        self.vendors = models.Vendor.objects.all()
+        self.vdict = {}
+        for v in self.vendors:
+            self.vdict[v.code] = v
+        
         committed = False
         if user.has_perm('instdata.add_dataid'):
             committed = True
         
         for item in data:
             item = strkeys(item)
+            code = item.pop('code',None)
+            idcode, vids = self.vids_from_data(item)
+            if not code:
+                code = idcode
             try:
-                id, created = base.get_or_create(**item)
+                id, created = base.get_or_create(code = code, **item)
                 if created:
                     v = 'Created %s' % id.code
                 else:
@@ -107,6 +116,18 @@ class DataIdHandler(BaseHandler):
         return {'commited': committed,
                 'result': ids}
     
+    def vids_from_data(self, item):
+        idcode = None
+        vids = []
+        for code,v in self.vdict.items():
+            name = item.get(code,None)
+            if name:
+                vids.append({'vendor': v,
+                             'ticker': name})
+                if not idcode:
+                    idcode = name
+        return idcode, vids
+                
     
 def urls(auth, baseurl = None):
     from django.conf.urls.defaults import url
