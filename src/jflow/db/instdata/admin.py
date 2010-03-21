@@ -22,7 +22,7 @@ class BondIssuerInline(admin.TabularInline):
 #_______________________________________ ADMINS
 
 class DataIdAdmin(admin.ModelAdmin):
-    list_display  = ('code', 'name', 'live', 'get_country', 'content_type', 'firm_code', 'tags')
+    list_display  = ('code', 'name', 'live', 'get_country', 'curncy', 'content_type', 'firm_code', 'tags')
     form          = DataIdForm
     inlines       = [VendorIdInline]
     search_fields = ('code', 'name', 'description', 'tags', 'content_type')
@@ -32,7 +32,7 @@ class DataIdAdmin(admin.ModelAdmin):
     def change_content(self, request, obj = None):
         form = self.get_form(request, obj = obj)
         data = request.POST or request.GET
-        form = form(initial = dict(data.items()))
+        form = form(initial = dict(data.items()), instance = obj)
         html = self.render_content_form(request, form.content_form)
         data = {'header':'htmls',
                 'body': [{'identifier':    '.data-id-instrument',

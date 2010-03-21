@@ -104,7 +104,10 @@ class DataId(ExtraContentModel):
     firm_code      = models.CharField(blank=True,
                                       max_length=50,
                                       verbose_name = settings.FIRM_CODE_NAME)
-    curncy         = models.CharField(max_length=3, blank = True, editable = False)
+    curncy         = models.CharField(max_length=3,
+                                      blank = True,
+                                      editable = False,
+                                      verbose_name='currency')
     
     objects        = managers.DataIdManager()
         

@@ -82,12 +82,8 @@ class ExtraContentForm(forms.ModelForm):
     
     def get_content_form(self, *args, **kwargs):
         ct = self.instance.content_type
-        data = None
-        if not ct:
-            data = self.initial
-        if not data:
-            data = dict(self.data.items())
-        ctt = data.get('content_type',None)
+        data = dict(self.data.items())
+        ctt  = data.get('content_type',self.initial.get('content_type',None))
         if ctt:
             ct = ContentType.objects.get(id = int(ctt))
         if ct:
