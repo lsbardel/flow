@@ -4,9 +4,10 @@ from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication
  
 from jflow.db.instdata import api as dataapi
+from jflow.db.trade import api as tradeapi
  
 auth = HttpBasicAuthentication(realm='JFLOW API')
  
-urlpatterns = patterns('',
-    *dataapi.urls(auth)
-)
+apis = dataapi.urls(auth) + tradeapi.urls(auth)
+
+urlpatterns = patterns('', *apis)

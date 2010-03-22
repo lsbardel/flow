@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal
 
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db import models
 
@@ -33,7 +34,18 @@ class aggposition(list):
         pv = p.first_at_or_before(self.dt)
         self.size += pv.size
         super(aggposition,self).append({'position': p,'history': pv})
-        
+
+
+class TraderManager(models.Manager):
+    
+    def create_superuser(self, username, email, password, team):
+        from models import FundHolder
+        u = User.objects.create_superuser(username, email, password)
+        if not isinstance(team,FundHolder):
+            team = FundHolder.objects.get(code = team)
+        t = self.model(user = u, fund_holder = team)
+        t.save()
+        return t    
 
 
 class FundManager(models.Manager):

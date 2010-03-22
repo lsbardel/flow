@@ -1,0 +1,77 @@
+[
+    {
+        "pk": 1, 
+        "model": "trade.fund", 
+        "fields": {
+            "dataid": null, 
+            "code": "BONDUK", 
+            "description": "", 
+            "parent": null, 
+            "fund_holder": 1, 
+            "firm_code": "JDSHCJBSDBCS", 
+            "curncy": "GBP"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "trade.fund", 
+        "fields": {
+            "dataid": null, 
+            "code": "BONDUS", 
+            "description": "US BONDS", 
+            "parent": null, 
+            "fund_holder": 1, 
+            "firm_code": "SKJDBC39874JD", 
+            "curncy": "USD"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "trade.fund", 
+        "fields": {
+            "dataid": null, 
+            "code": "CARRYG10", 
+            "description": "G10 Carry Fund", 
+            "parent": null, 
+            "fund_holder": 2, 
+            "firm_code": "skdnvlkjfdsnckdfj", 
+            "curncy": "EUR"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "trade.fundholder", 
+        "fields": {
+            "fund_manager": true, 
+            "code": "EQ", 
+            "description": "Equity"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "trade.fundholder", 
+        "fields": {
+            "fund_manager": true, 
+            "code": "FI", 
+            "description": "Fixed Income"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "trade.fundholder", 
+        "fields": {
+            "fund_manager": true, 
+            "code": "FX", 
+            "description": "Foreign Exchange"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "trade.fundholder", 
+        "fields": {
+            "fund_manager": false, 
+            "code": "RISK", 
+            "description": "Risk Team"
+        }
+    }
+]

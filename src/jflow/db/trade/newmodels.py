@@ -98,6 +98,13 @@ class Trader(models.Model):
     default_history = models.PositiveIntegerField(default = 12)
     data            = models.TextField(blank = True)
     
+    objects = managers.TraderManager()
+    
+    class Meta:
+        verbose_name = 'people'
+        verbose_name_plural = 'people'
+        
+    
     def fullname(self):
         u = self.user
         if u.first_name and u.last_name:
@@ -150,10 +157,7 @@ class Trader(models.Model):
     def __get_fund_manager(self):
         return self.fund_holder.fund_manager
     fund_manager = property(fget = __get_fund_manager)
-        
-    class Meta:
-        verbose_name = 'people'
-        verbose_name_plural = 'people'
+    
     
 
 class CustodyAccount(models.Model):
