@@ -95,6 +95,15 @@ class DataId(models.Model):
     def get_country(self):
         return geo.country(self.country)
     
+    def content_type(self):
+        return ''
+    
+    def firm_code(self):
+        return ''
+    
+    def curncy(self):
+        return geo.countryccy(self.country)
+    
     def defaultccy(self):
         return geo.countryccy(self.country)
         

@@ -149,7 +149,6 @@ admin.site.register(DataId,DataIdAdmin)
 
 admin.site.register(Exchange,ExchangeAdmin)
 admin.site.register(BondMaturityType,BondMaturityTypeAdmin)
-#admin.site.register(CouponType,CouponTypeAdmin)
 admin.site.register(FutureContract,FutureContractAdmin)
 admin.site.register(BondClass,BondClassAdmin)
 admin.site.register(BondIssuer,BondIssuerAdmin)
@@ -159,10 +158,10 @@ admin.site.register(FundType,FundTypeAdmin)
 
 admin.site.register(InstDecomp,InstDecompAdmin)
 
-#admin.site.register(InstrumentCode,IcAdmin)
-#admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
-#admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
-#admin.site.register(MktData,MktDataAdmin)
+###admin.site.register(InstrumentCode,IcAdmin)
+###admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))
+###admin.site.register(FwdCash, list_display = ('id','code','curncy','value_date'))
+###admin.site.register(MktData,MktDataAdmin)
 
 
 admin.site._instruments = {}
