@@ -135,6 +135,7 @@ class Trader(puser):
     server_active   = models.BooleanField(default = False)
     default_fund    = models.ForeignKey(Fund, null = True, blank = True)
     default_history = models.PositiveIntegerField(default = 12)
+    data            = models.TextField(blank = True)
     
     def servername(self):
         return '%s:%s' % (self.machine, self.port)

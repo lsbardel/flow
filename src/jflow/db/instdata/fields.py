@@ -15,7 +15,7 @@ def slugify(value, rtx = '_'):
 
 class SlugCode(models.CharField):
     
-    def __init__(self, rtxchar='-', lower=False, upper = False, **kwargs):
+    def __init__(self, rtxchar='_', lower=False, upper = True, **kwargs):
         self.rtxchar = u'%s' % rtxchar
         self.lower   = lower
         self.upper   = upper
