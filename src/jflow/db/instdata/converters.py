@@ -72,6 +72,7 @@ class ExchangeCreator(Converter):
         from jflow.db.instdata.models import Exchange
         if val:
             code = self.cdict.get(val,val)
+            code = code[:12]
             obj, created = Exchange.objects.get_or_create(code = code)
             return obj
         else:
@@ -116,7 +117,7 @@ class CollateralCreator(Converter):
             obj, created = CollateralType.objects.get_or_create(name = val)
             return obj
         else:
-            return None
+            raise ValueError('Collateral Type not specified')
 
 class BondclassCreator(Converter):
     

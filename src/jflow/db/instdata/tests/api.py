@@ -13,6 +13,32 @@ from django.utils import simplejson as json
 import jflow
 
 
+def loadtestids():
+    name = os.path.join(os.path.dirname(__file__),'dataid.csv')
+    f = open(name,'r')
+    rows =  csv.DictReader(f)
+    data = []
+    res  = []
+    for row in rows:
+        d = {}
+        for key,val in row.items():
+            if key == 'result':
+                res.append(val)
+            else:
+                if val == 'TRUE':
+                    val = True
+                elif val == 'FALSE':
+                    val = False
+                elif isinstance(val,str):
+                    try:
+                        val = val.encode('utf-8')
+                    except:
+                        val = ''
+                d[key] = val
+        data.append(d)
+    return data,res
+
+
 class MainTests(TestCase):
     fixtures = ['initial_data.json',
                 'bondclass.json']
@@ -32,37 +58,12 @@ class ApiTest(MainTests):
         response = self.client.get('%sversion/' % self.baseapi)
         val = json.loads(response.content)
         self.assertEqual(val, jflow.get_version())
-        
-    def loadids(self):
-        name = os.path.join(os.path.dirname(__file__),'dataid.csv')
-        f = open(name,'r')
-        rows =  csv.DictReader(f)
-        data = []
-        res  = []
-        for row in rows:
-            d = {}
-            for key,val in row.items():
-                if key == 'result':
-                    res.append(val)
-                else:
-                    if val == 'TRUE':
-                        val = True
-                    elif val == 'FALSE':
-                        val = False
-                    elif isinstance(val,str):
-                        try:
-                            val = val.encode('utf-8')
-                        except:
-                            val = ''
-                    d[key] = val
-            data.append(d)
-        return data,res
 
     def testCreateInstruments(self):
         '''
         Full Bond creation with bondclass and issuer
         '''
-        input_data, expres = self.loadids()
+        input_data, expres = loadtestids()
         data = {'data': json.dumps(input_data)}
         response = self.client.post('%sdata/' % self.baseapi, data, HTTP_AUTHORIZATION=self.auth_string)
         self.assertEqual(response.status_code,200)

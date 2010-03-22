@@ -14,6 +14,7 @@ from jflow import get_version
 from jflow.db.instdata import models
 from jflow.db.instdata.fields import slugify
 from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
+from jflow.db.instdata.tests import loadtestids
 
 def strkeys(item):
     r = {}
@@ -24,9 +25,13 @@ def strkeys(item):
 
 class InfoHandler(AnonymousBaseHandler):
     
-    def read(self, request, version = True):
+    def read(self, request, version = False, testdata = False):
         if version:
             return get_version()
+        elif testdata:
+            data, res = loadtestids()
+            return {'data': data,
+                    'results': res}
         else:
             raise http.Http404
 
@@ -89,9 +94,9 @@ class DataIdHandler(BaseHandler):
         for v in self.vendors:
             self.vdict[v.code] = v
         
-        committed = False
+        commit = False
         if user.has_perm('instdata.add_dataid'):
-            committed = True
+            commit = True
         
         # Loop over items
         for item in data:
@@ -105,36 +110,50 @@ class DataIdHandler(BaseHandler):
             
             # Check if we need to create an issuer
             if issuer:
-                issuer, vi = self.createsingle(issuer)
-                vi = ' --- %s' % vi
+                issuer, created, vi = self.createsingle(issuer,commit)
+                if created:
+                    vi = ' --- %s' % vi
+                else:
+                    vi = ''
             else:
-                issuer, vi = None,''
+                issuer, created, vi = None,False,''
             
-            id, v = self.createsingle(item)
+            id, created, v = self.createsingle(item,commit)
             ids.append({'result':'%s%s' % (v,vi)})
         
-        if committed:
+        if commit:
             transaction.commit()
         else:
             transaction.rollback()
         
-        return {'committed': committed,
+        return {'committed': commit,
                 'result': ids}
     
-    def createsingle(self, item):
+    def createsingle(self, item, commit):
         code = item.pop('code',None)
         idcode, vids = self.vids_from_data(item)
         if not code:
             code = idcode
+        else:
+            code = slugify(code).upper()
         try:
-            id, created = self.model.objects.get_or_create(code = code, **item)
+            id, created = self.model.objects.get_or_create(code = code,
+                                                           commit = commit,
+                                                           **item)
             if created:
+                inst = id.instrument
+                if inst:
+                    keys = inst.keywords()
+                    if keys:
+                        id.tags = (' '.join(keys)).lower()
+                        if commit:
+                            id.save()
                 v = 'Created %s' % id.code
             else:
                 v = 'Modified %s' % id.code
-            return id,v
+            return id,created,v
         except Exception, e:
-            return None,str(e)
+            return None,False,str(e)
         
     def vids_from_data(self, item):
         idcode = None
@@ -149,6 +168,7 @@ class DataIdHandler(BaseHandler):
         vidcode = DEFAULT_VENDOR_FOR_SITE
         idcode  = idcodes.get(vidcode,None)
         if not idcode:
+            vidcode = None
             for vidcode,idcode in idcodes:
                 break
         if vidcode:
@@ -180,6 +200,7 @@ def urls(auth, baseurl = None):
     
     return (
             url(r'^%sversion/$' % baseurl, infoapi, {'version': True}),
+            url(r'^%stestdata/$' % baseurl, infoapi, {'testdata': True}),
             url(r'^%sdata/$' % baseurl, dataapi),
             url(r'^%sdata/(?P<code>.+)/$' % baseurl, dataapi),
             url(r'^%svendor/$' % baseurl, vendapi),

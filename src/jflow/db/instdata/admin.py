@@ -25,7 +25,7 @@ class DataIdAdmin(admin.ModelAdmin):
     list_display  = ('code', 'name', 'live', 'get_country', 'curncy', 'content_type', 'firm_code', 'tags')
     form          = DataIdForm
     inlines       = [VendorIdInline]
-    search_fields = ('code', 'name', 'description', 'tags', 'content_type')
+    search_fields = ('code', 'name', 'description', 'tags')
     list_filter   = ('content_type',)
     save_on_top   = True        
 

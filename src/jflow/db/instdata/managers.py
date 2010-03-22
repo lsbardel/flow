@@ -33,7 +33,7 @@ class DataIdManager(ModelTaggedItemManager):
             return self.none()
         return self.filter(content_type = ct)
     
-    def get_or_create(self, **kwargs):
+    def get_or_create(self, commit = True, **kwargs):
         '''
         Override get_or_create.
         
@@ -49,12 +49,19 @@ class DataIdManager(ModelTaggedItemManager):
         code = kwargs.pop('code',None)
         if not code:
             raise ValueError('cannot add data id, code not specified')
-        id, created = super(DataIdManager,self).get_or_create(code = code)
+        try:
+            id = self.get(code = code)
+            created = False
+        except:
+            id = self.model(code = code)
+            if commit:
+                id.save()
+            created = True
         
         if created:
-            return self.create(id, **kwargs), True
+            return self.create(id, commit = commit, **kwargs), True
         else:
-            return self.modify(id, **kwargs), False
+            return self.modify(id, commit = commit, **kwargs), False
         
     def create(self, id,
                commit = True,
@@ -87,11 +94,10 @@ class DataIdManager(ModelTaggedItemManager):
         if ct:
             inst = id.instrument
             if inst:
-                inst.delete()
-            id._new_content = model.objects.create(id, commit = commit, **kwargs)
-            id.content_type = ct
-            id.object_id    = inst.id
-            id.curncy       = inst.ccy()
+                if not isinstance(inst,model):
+                    inst.delete()
+                    inst = model.objects.create(id, commit = commit, **kwargs)
+            id._new_content = inst
         if commit:
             id.save()
         return id
@@ -136,7 +142,8 @@ class EquityManager(SecurityManager):
                settlement_delay = 2,  security_type = 1,
                sector = None, sectorid = None,
                group = None, groupid = None,
-               industry_code = None, **kwargs):
+               industry_code = None,
+               commit = True, **kwargs):
         if not industry_code:
             #TODO remove thid import and obtain moel from self.model 
             from jflow.db.instdata.models import IndustryCode as secmodel
@@ -148,7 +155,8 @@ class EquityManager(SecurityManager):
         obj.multiplier = self.safefloat(multiplier,1)
         obj.settlement_delay = self.safeint(settlement_delay,2)
         obj.security_type = convert('security_type',security_type)
-        obj.save()
+        if commit:
+            obj.save()
         return obj
     
                 
@@ -157,13 +165,15 @@ class FundManager(SecurityManager):
     
     def create(self, id, curncy = '', multiplier = 1,
                settlement_delay = 2,  security_type = 1,
+               commit = True,
                **kwargs):
         obj = super(FundManager,self).create(id, **kwargs)
         obj.curncy = convert('curncy',curncy)
         obj.multiplier = self.safefloat(multiplier,1)
         obj.settlement_delay = self.safeint(settlement_delay,2)
         obj.security_type = convert('security_type',security_type)
-        obj.save()
+        if commit:
+            obj.save()
         return obj
     
 class BondManager(SecurityManager):
@@ -180,6 +190,7 @@ class BondManager(SecurityManager):
                maturity_date     = None,
                multiplier        = None,
                settlement_delay  = None,
+               commit            = True,
                **kwargs):
         obj = super(BondManager,self).create(id, **kwargs)
         obj.announce_date       = convert('bonddate',announce_date)
@@ -207,7 +218,8 @@ class BondManager(SecurityManager):
         
         obj.multiplier = self.safefloat(multiplier,0.01)
         obj.settlement_delay = self.safeint(settlement_delay,3)
-        obj.save()
+        if commit:
+            obj.save()
         return obj
 
 class DecompManager(models.Manager):

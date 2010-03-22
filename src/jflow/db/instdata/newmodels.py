@@ -13,7 +13,7 @@ from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
 from jflow.db.instdata import settings
 from jflow.db.instdata import managers
-from jflow.db.instdata.fields import SlugCode, LazyForeignKey
+from jflow.db.instdata.fields import SlugCode, LazyForeignKey, slugify
 from jflow.db.instdata.dynct import ExtraContentModel
 
 
@@ -244,6 +244,19 @@ class IndustryCode(models.Model):
     def __unicode__(self):
         return u'%s - %s' % (self.id, self.code)
     
+    def keywords(self):
+        key = slugify(self.code.replace('/',' '),'_')
+        keys = key.split('_')
+        kk = []
+        if self.parent:
+            keys.extend(self.parent.keywords())
+        for key in keys:
+            key = key.lower()
+            if key not in kk:
+                kk.append(key)
+        return kk
+                
+    
 class CollateralType(models.Model):
     name = models.CharField(max_length=60,unique=True)
     order = models.PositiveIntegerField(default = 1)
@@ -343,6 +356,9 @@ class InstrumentInterface(models.Model):
     def ccy(self):
         return ''
     
+    def keywords(self):
+        return None
+    
 
 class Security(InstrumentInterface):
     ISIN             = models.CharField(max_length=30,blank=True)
@@ -416,6 +432,15 @@ class Equity(EquityBase):
         if super(Equity,self).check():
             return self._check_id()
         return False
+    
+    def keywords(self):
+        if self.industry_code:
+            keys = self.industry_code.keywords()
+        else:
+            keys = []
+        if 'equity' not in keys:
+            keys.append('equity')
+        return keys
 
 
 class Etf(EquityBase):
