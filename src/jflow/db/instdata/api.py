@@ -169,7 +169,7 @@ class DataIdHandler(BaseHandler):
         idcode  = idcodes.get(vidcode,None)
         if not idcode:
             vidcode = None
-            for vidcode,idcode in idcodes:
+            for vidcode,idcode in idcodes.items():
                 break
         if vidcode:
             return self.code_from_vendor(vidcode,idcode),vids
