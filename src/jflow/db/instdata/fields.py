@@ -4,7 +4,7 @@ import unicodedata
 from django.db import models
 
 
-def slugify(value, rtx = '-'):
+def slugify(value, rtx = '_'):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
     and converts spaces to hyphens.

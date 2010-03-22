@@ -85,7 +85,7 @@ class DataId(ExtraContentModel):
     '''
     Database ID
     '''
-    code           = SlugCode(max_length = 32, unique = True, upper = True, rtxchar = '_')
+    code           = SlugCode(max_length = 32, unique = True, upper = True)
     name           = models.CharField(max_length = 64, blank  = True)
     description    = models.TextField(blank=True)
     country        = models.CharField(max_length = 2, choices = geo.country_tuples())

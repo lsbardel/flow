@@ -61,6 +61,9 @@ class DataIdManager(ModelTaggedItemManager):
                type = None,
                country = None,
                default_vendor = None, **kwargs):
+        '''
+        Create a new instrument
+        '''
         ct, model = self.ctmodel(type)
         id.default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
         id.country = convert('country', country)

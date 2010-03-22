@@ -93,7 +93,7 @@ class SecurityType(Converter):
                     return 3
             except:
                 val = val.lower()
-                return cdict.get(val.lower(),3)
+                return self.cdict.get(val.lower(),3)
         else:
             return 3
 

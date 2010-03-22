@@ -2,7 +2,6 @@ from django.conf import settings
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
-from jflow.db.instdata.forms import DataIdForm
 from jflow.db.instdata import models
 
 ADMIN_URL_PREFIX = getattr(settings, 'ADMIN_URL_PREFIX', '/admin/') 
@@ -31,6 +30,7 @@ class FormTests(TestCase):
                 'callable': False}
         
     def create_equity(self, code = 'abcd', country = 'US', curncy = 'EUR', instance = None):
+        from jflow.db.instdata.forms import DataIdForm
         ct = ContentType.objects.get_for_model(models.Equity)
         f = DataIdForm({'code': code,
                         'country': country,
@@ -43,6 +43,7 @@ class FormTests(TestCase):
         return f.save()
     
     def create_bond(self, code = 'bond', country = 'GE', curncy = 'EUR', instance = None):
+        from jflow.db.instdata.forms import DataIdForm
         f = DataIdForm(self.bond_data(code,country,curncy), instance = instance)
         self.assertTrue(f.is_valid())
         return f.save()
@@ -51,6 +52,7 @@ class FormTests(TestCase):
         return models.DataId.objects.get(code = code)
     
     def testNoInstrument1(self):
+        from jflow.db.instdata.forms import DataIdForm
         f = DataIdForm({'code': 'spxt','country':'US'})
         self.assertTrue(f.is_valid())
         id = f.save()

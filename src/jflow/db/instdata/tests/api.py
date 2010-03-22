@@ -49,11 +49,16 @@ class ApiTest(MainTests):
                         val = True
                     elif val == 'FALSE':
                         val = False
+                    elif isinstance(val,str):
+                        try:
+                            val = val.encode('utf-8')
+                        except:
+                            val = ''
                     d[key] = val
             data.append(d)
         return data,res
 
-    def testCreateBond(self):
+    def testCreateInstruments(self):
         '''
         Full Bond creation with bondclass and issuer
         '''

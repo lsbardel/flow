@@ -5,14 +5,12 @@ This is usually needed during development
 import os
 import sys
 
-from djpcms.ajaxhtml import ajaxhtml
-
 def install():
     path = os.getcwd()
     home = os.path.split(path)[0]
     if home not in sys.path:
         sys.path.append(home)
-        
+     
     # Try to import. If failed throw the error
     import jfsite as site
     
@@ -29,10 +27,3 @@ def install():
     sett.id = machines.Identity()
     
     return sett
-
-
-class mysite(ajaxhtml):
-    
-    def __init__(self):
-        self['aligned'] = 'aligned'
-        super(mysite,self).__init__()

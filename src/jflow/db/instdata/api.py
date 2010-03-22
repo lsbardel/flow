@@ -12,6 +12,8 @@ from piston.doc import documentation_view
 
 from jflow import get_version
 from jflow.db.instdata import models
+from jflow.db.instdata.fields import slugify
+from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
 
 def strkeys(item):
     r = {}
@@ -46,7 +48,7 @@ class VendorHandler(AnonymousBaseHandler):
 
 class DataIdHandler(BaseHandler):
     allowed_methods = ('GET', 'POST', 'PUT')
-    fields = ('code', 'description', 'type', 'country', 'ccy', 'firm_code', 'instrument')
+    fields = ('code', 'description', 'type', 'country', 'curncy', 'firm_code', 'instrument')
     #anonymous = 'AnonymousDataIdHandler'
     model = models.DataId
 
@@ -130,21 +132,31 @@ class DataIdHandler(BaseHandler):
         except Exception, e:
             ids.append({'error':str(e)})
         
-        
-        
-        
     def vids_from_data(self, item):
         idcode = None
         vids = []
+        idcodes = {}
         for code,v in self.vdict.items():
             name = item.get(code,None)
             if name:
                 vids.append({'vendor': v,
                              'ticker': name})
-                if not idcode:
-                    idcode = name
-        return idcode, vids
-                
+                idcodes[code] = name
+        vidcode = DEFAULT_VENDOR_FOR_SITE
+        idcode  = idcodes.get(vidcode,None)
+        if not idcode:
+            for vidcode,idcode in idcodes:
+                break
+        if vidcode:
+            return self.code_from_vendor(vidcode,idcode),vids
+        return None, vids
+    
+    def code_from_vendor(self, vidcode, idcode):
+        if vidcode == 'BLB':
+            idcode = idcode.split(' ')[:-1]
+        else:
+            idcode = idcode.split(' ')
+        return slugify('_'.join(idcode).upper())
     
 def urls(auth, baseurl = None):
     from django.conf.urls.defaults import url
