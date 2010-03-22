@@ -93,6 +93,7 @@ class DataIdHandler(BaseHandler):
         if user.has_perm('instdata.add_dataid'):
             committed = True
         
+        # Loop over items
         for item in data:
             item = strkeys(item)
             
@@ -102,22 +103,25 @@ class DataIdHandler(BaseHandler):
                 if len(ks) == 2 and ks[0] == 'issuer' and v:
                     issuer[ks[1]] = v
             
+            # Check if we need to create an issuer
             if issuer:
-                issuer = self.createsingle(issuer, ids, sec = True)
+                issuer, vi = self.createsingle(issuer)
+                vi = ' --- %s' % vi
             else:
-                issuer = None
+                issuer, vi = None,''
             
-            self.createsingle(item, ids)
+            id, v = self.createsingle(item)
+            ids.append({'result':'%s%s' % (v,vi)})
         
         if committed:
             transaction.commit()
         else:
             transaction.rollback()
         
-        return {'commited': committed,
+        return {'committed': committed,
                 'result': ids}
     
-    def createsingle(self, item, ids, sec = False):
+    def createsingle(self, item):
         code = item.pop('code',None)
         idcode, vids = self.vids_from_data(item)
         if not code:
@@ -128,9 +132,9 @@ class DataIdHandler(BaseHandler):
                 v = 'Created %s' % id.code
             else:
                 v = 'Modified %s' % id.code
-            ids.append({'result':v})
+            return id,v
         except Exception, e:
-            ids.append({'error':str(e)})
+            return None,str(e)
         
     def vids_from_data(self, item):
         idcode = None
@@ -152,6 +156,7 @@ class DataIdHandler(BaseHandler):
         return None, vids
     
     def code_from_vendor(self, vidcode, idcode):
+        #TODO move thid at application level.
         if vidcode == 'BLB':
             idcode = idcode.split(' ')[:-1]
         else:

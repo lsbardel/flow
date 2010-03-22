@@ -44,6 +44,10 @@ class ExtraContentModel(models.Model):
             if ec and ec != nc:
                 ec.delete()
             self.content_type = ContentType.objects.get_for_model(nc)
+            if nc.id:
+                self.object_id = nc.id
+        if not self.object_id:
+            self.object_id = 0
         super(ExtraContentModel,self).save(**kwargs)
         if nc:
             self._denormalize()

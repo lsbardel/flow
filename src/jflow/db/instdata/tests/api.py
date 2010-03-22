@@ -62,9 +62,15 @@ class ApiTest(MainTests):
         '''
         Full Bond creation with bondclass and issuer
         '''
-        data,res = self.loadids()
-        data = {'data': json.dumps(data)}
+        input_data, expres = self.loadids()
+        data = {'data': json.dumps(input_data)}
         response = self.client.post('%sdata/' % self.baseapi, data, HTTP_AUTHORIZATION=self.auth_string)
         self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        self.assertTrue(res["committed"])
+        result = res.get("result",[])
+        self.assertEqual(len(result),len(input_data))
+        for r,re in zip(result,expres):
+            self.assertEqual(r['result'],re)
         
         
