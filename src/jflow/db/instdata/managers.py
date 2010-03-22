@@ -155,15 +155,18 @@ class FundManager(SecurityManager):
 class BondManager(SecurityManager):
     
     def create(self, id,
-               curncy = '',
+               curncy            = '',
+               country           = '',
+               bondclass__code   = None,
                collateral_type   = None,
                announce_date     = None,
                first_settle_date = None,
                first_coupon_date = None,
                accrual_date      = None,
                maturity_date     = None,
-               multiplier = 1,
-               settlement_delay = 2, **kwargs):
+               multiplier        = 0.01,
+               settlement_delay  = 3,
+               **kwargs):
         obj = super(BondManager,self).create(id, **kwargs)
         obj.announce_date       = convert('bonddate',announce_date)
         obj.first_settle_date   = convert('bonddate',first_settle_date)
@@ -171,7 +174,25 @@ class BondManager(SecurityManager):
         obj.accrual_date        = convert('bonddate',accrual_date)
         obj.maturity_date       = convert('bonddate',maturity_date)
         obj.collateral_type     = convert('collateral',collateral_type)
-        obj.curncy = convert('curncy',curncy)
+        
+        ccy = convert('curncy',curncy)
+        country = convert('country',country)
+        bck = {}
+        isu = {}
+        for k,v in kwargs.items():
+            ks = k.split('__')
+            if len(ks) == 2:
+                if ks[0] == 'bondclass':
+                    bck[ks[1]] = v
+                elif ks[0] == 'issuer':
+                    isu[ks[1]] = v
+                    
+        obj.bond_class          = convert('bondclass',
+                                          bondclass__code,
+                                          curncy=ccy,
+                                          country=country,
+                                          **bck)
+        
         obj.multiplier = multiplier or 1
         obj.settlement_delay = settlement_delay
         obj.save()

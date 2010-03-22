@@ -2,12 +2,12 @@ from dateutil.parser import parse as dataparse
 
 class Converter(object):
     cdict = {}
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         return self.cdict.get(val,val)        
 
 class CurrencyCreator(Converter):
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         from jflow.db.geo import currency
         c = currency(val)
         if c:
@@ -17,7 +17,7 @@ class CurrencyCreator(Converter):
 
 class CountryCreator(Converter):
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         from jflow.db.geo import country
         c = country(val)
         if c:
@@ -27,7 +27,7 @@ class CountryCreator(Converter):
 
 class VendorCreator(Converter):
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         from jflow.db.instdata.models import Vendor
         if isinstance(val,Vendor):
             return val
@@ -68,7 +68,7 @@ class ExchangeCreator(Converter):
              'Toronto':'TSX',
              'Xetra': 'XTA'}
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         from jflow.db.instdata.models import Exchange
         if val:
             code = self.cdict.get(val,val)
@@ -83,7 +83,7 @@ class SecurityType(Converter):
              'common': 1,
              'right issue': 2,
              'right': 2}
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         if val:
             try:
                 v = int(val)
@@ -99,7 +99,7 @@ class SecurityType(Converter):
 
 class BondDate(Converter):                  
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         if val:
             try:
                 return dataparse(val)
@@ -110,7 +110,7 @@ class BondDate(Converter):
         
 class CollateralCreator(Converter):                  
     
-    def get_or_create(self, val):
+    def get_or_create(self, val, **kwargs):
         from jflow.db.instdata.models import CollateralType
         if val:
             obj, created = CollateralType.objects.get_or_create(name = val)
@@ -118,17 +118,42 @@ class CollateralCreator(Converter):
         else:
             return None
 
+class BondclassCreator(Converter):
+    
+    def get_or_create(self, val, curncy = '', country='', **kwargs):
+        from jflow.db.instdata.models import BondClass
+        objs = BondClass.objects.filter(bondcode = val)
+        N = objs.count()
+        if N:
+            obj = objs.filter(country=country,
+                              curncy=curncy,
+                              **kwargs)
+            if obj:
+                return obj[0]
+        else:
+            code = val
+            if N:
+                code = '%s_%s' % (val,N)
+            obj = BondClass(code = code,
+                            bondcode = val,
+                            country=country,
+                            curncy=curncy,
+                            **kwargs)
+            obj.save()
+            return obj
+
 _c = {'exchange':ExchangeCreator(),
       'curncy': CurrencyCreator(),
       'country': CountryCreator(),
       'vendor': VendorCreator(),
       'security_type': SecurityType(),
       'bonddate': BondDate(),
-      'collateral': CollateralCreator()}
+      'collateral': CollateralCreator(),
+      'bondclass': BondclassCreator()}
 
-def convert(key,value):
+def convert(key,value,**kwargs):
     cc = _c.get(key,None)
     if cc:
-        return cc.get_or_create(value)
+        return cc.get_or_create(value,**kwargs)
     else:
         return value

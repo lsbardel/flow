@@ -452,7 +452,7 @@ class Fund(EquityBase):
 
 
 class Bond(Security):
-    bond_class          = models.ForeignKey('BondClass',related_name='bondspec')
+    bond_class          = models.ForeignKey(BondClass,related_name='bondspec')
     coupon              = models.DecimalField(max_digits=12, decimal_places = 6, null = True, blank = True)
     announce_date       = models.DateField(null = True, blank = True)
     first_settle_date   = models.DateField(null = True, blank = True)

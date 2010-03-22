@@ -75,7 +75,6 @@ class DataIdHandler(BaseHandler):
          - source String indicating the data source
          - data a JSON string
         '''
-        base = self.model.objects
         params = dict(request.POST.items())
         data   = json.loads(params.get('data',None))
         user   = request.user
@@ -94,19 +93,19 @@ class DataIdHandler(BaseHandler):
         
         for item in data:
             item = strkeys(item)
-            code = item.pop('code',None)
-            idcode, vids = self.vids_from_data(item)
-            if not code:
-                code = idcode
-            try:
-                id, created = base.get_or_create(code = code, **item)
-                if created:
-                    v = 'Created %s' % id.code
-                else:
-                    v = 'Modified %s' % id.code
-                ids.append({'result':v})
-            except Exception, e:
-                ids.append({'error':str(e)})
+            
+            issuer = {}
+            for k,v in item.items():
+                ks = k.split('__')
+                if len(ks) == 2 and ks[0] == 'issuer' and v:
+                    issuer[ks[1]] = v
+            
+            if issuer:
+                issuer = self.createsingle(issuer, ids, sec = True)
+            else:
+                issuer = None
+            
+            self.createsingle(item, ids)
         
         if committed:
             transaction.commit()
@@ -116,6 +115,24 @@ class DataIdHandler(BaseHandler):
         return {'commited': committed,
                 'result': ids}
     
+    def createsingle(self, item, ids, sec = False):
+        code = item.pop('code',None)
+        idcode, vids = self.vids_from_data(item)
+        if not code:
+            code = idcode
+        try:
+            id, created = self.model.objects.get_or_create(code = code, **item)
+            if created:
+                v = 'Created %s' % id.code
+            else:
+                v = 'Modified %s' % id.code
+            ids.append({'result':v})
+        except Exception, e:
+            ids.append({'error':str(e)})
+        
+        
+        
+        
     def vids_from_data(self, item):
         idcode = None
         vids = []
