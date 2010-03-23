@@ -235,12 +235,13 @@ class VendorIdsHandler(BaseHandler):
         else:
             qs = base.filter()
         if type:
-            if type == 'none':
+            type = type.lower()
+            if type == 'none' or type == 'null':
                 ct = None
             else:
                 app_label = self.model._meta.app_label
                 ct = ContentType.objects.get(model = type, app_label = app_label)
-            qs = qs.filter(dataid__type = ct)
+            qs = qs.filter(dataid__content_type = ct)
         return qs
     
     

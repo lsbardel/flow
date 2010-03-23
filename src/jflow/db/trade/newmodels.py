@@ -9,6 +9,7 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import capfirst
 
 from jflow.db.trade import managers
 from jflow.db import geo
@@ -381,7 +382,7 @@ class Position(TimeStamp):
         unique_together = ("dataid", "fund", "dt")
         
     def __unicode__(self):
-        return '%s -- %s -- size: %s' % (self.dt,self.dataid,self.dund)
+        return '%s - %s: %s' % (self.dt,self.fund,self.dataid)
     
     @classmethod
     def get_last_modified(cls):

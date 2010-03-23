@@ -134,6 +134,13 @@ class DataId(ExtraContentModel):
             return inst.isin()
         else:
             return ''
+    
+    def issuer(self, dt = None):
+        inst = self.instrument
+        if inst:
+            return inst.issuer(dt)
+        else:
+            return None
         
     @property
     def instrument(self):
@@ -396,6 +403,9 @@ class InstrumentInterface(models.Model):
     
     def isin(self):
         return ''
+    
+    def issuer(self, dt = None):
+        return None
     
     def add_issuer(self, issuer):
         pass
