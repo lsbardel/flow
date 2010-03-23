@@ -126,6 +126,14 @@ class DataId(ExtraContentModel):
             ec.dataid = self
             ec.code   = self.code
             self.curncy = ec.ccy()
+    
+    @property
+    def isin(self):
+        inst = self.instrument
+        if inst:
+            return inst.isin()
+        else:
+            return ''
         
     @property
     def instrument(self):
@@ -144,7 +152,18 @@ class DataId(ExtraContentModel):
         except:
             return None
     dates_range = property(fget = __get_dates_range)
+    
+    def add_issuer(self, issuer):
+        inst = self.instrument
+        if inst and issuer:
+            inst.add_issuer(issuer)
 
+    def keywords(self):
+        inst = self.instrument
+        if inst:
+            return inst.keywords()
+        else:
+            return None
 
 
 class VendorId(models.Model):
@@ -304,9 +323,25 @@ class BondClass(models.Model):
         dt = dt or datetime.date.today()
         iss = self.issuers.filter(dt__lte = dt)
         if iss:
-            return iss.latest
+            return iss.latest().issuer
         else:
-            return None
+            iss = self.issuers.all()
+            if iss:
+                #TODO: this should not be latest, but the earliest!
+                return iss.latest().issuer
+            else:
+                return None
+        
+    def add_issuer(self, issuer, dt = None):
+        if not issuer:
+            return
+        dt = dt or datetime.date.today()
+        old_issuer = self.issuer(dt)
+        if old_issuer == issuer:
+            return
+        bi = BondIssuer(dt = dt, issuer = issuer, bond_class = self)
+        bi.save()
+        return bi
 
 class FundType(BaseModel):
     openended   = models.BooleanField(default = False)
@@ -359,6 +394,12 @@ class InstrumentInterface(models.Model):
     def keywords(self):
         return None
     
+    def isin(self):
+        return ''
+    
+    def add_issuer(self, issuer):
+        pass
+    
 
 class Security(InstrumentInterface):
     ISIN             = models.CharField(max_length=30,blank=True)
@@ -368,6 +409,9 @@ class Security(InstrumentInterface):
     
     class Meta:
         abstract = True
+    
+    def isin(self):
+        return self.ISIN
     
 
 class EquityBase(Security):
@@ -485,7 +529,6 @@ class Bond(Security):
     accrual_date        = models.DateField(null = True, blank = True)
     maturity_date       = models.DateField(null = True, blank = True)
     collateral_type     = models.ForeignKey(CollateralType)
-    
     multiplier       = models.FloatField(default = 0.01)
     month_frequency  = models.IntegerField(default=12)
     day_count        = models.CharField(choices = dayCount_choices, max_length=20)
@@ -501,10 +544,28 @@ class Bond(Security):
     def ccy(self):
         return self.bond_class.curncy
 
+    def issuer(self, dt = None):
+        return self.bond_class.issuer(dt)
+    
+    def add_issuer(self, issuer):
+        self.bond_class.add_issuer(issuer)
+        
+    def keywords(self):
+        issuer = self.issuer()
+        if issuer:
+            keys = issuer.keywords()
+        if keys:
+            keys.remove('equity')
+        else:
+            keys = []
+        if 'bond' not in keys:
+            keys.append('bond')
+        return keys
+
 
 class BondIssuer(models.Model):
-    bond_class = models.ForeignKey(BondClass)
-    issuer     = models.ForeignKey(Equity, related_name = 'issuers')
+    bond_class = models.ForeignKey(BondClass, related_name = 'issuers')
+    issuer     = models.ForeignKey(DataId, related_name = 'bond_issuers')
     dt         = models.DateField()
     
     def __unicode__(self):

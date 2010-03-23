@@ -1,9 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.forms.models import modelform_factory
 
 from tagging.managers import ModelTaggedItemManager
 
 from jflow.db.instdata.converters import convert
+from jflow.db.instdata.fields import slugify
 from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
 
 
@@ -33,7 +35,12 @@ class DataIdManager(ModelTaggedItemManager):
             return self.none()
         return self.filter(content_type = ct)
     
-    def get_or_create(self, commit = True, **kwargs):
+    def get_or_create(self,
+                      commit = True,
+                      type = None,
+                      country = None,
+                      default_vendor = None,
+                      **kwargs):
         '''
         Override get_or_create.
         
@@ -49,58 +56,29 @@ class DataIdManager(ModelTaggedItemManager):
         code = kwargs.pop('code',None)
         if not code:
             raise ValueError('cannot add data id, code not specified')
+        code = slugify(code.upper())
         try:
             id = self.get(code = code)
             created = False
+            if default_vendor:
+                default_vendor  = convert('vendor', default_vendor)
         except:
-            id = self.model(code = code)
-            if commit:
-                id.save()
+            id = None
+            default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
             created = True
         
-        if created:
-            return self.create(id, commit = commit, **kwargs), True
-        else:
-            return self.modify(id, commit = commit, **kwargs), False
-        
-    def create(self, id,
-               commit = True,
-               type = None,
-               country = None,
-               default_vendor = None, **kwargs):
-        '''
-        Create a new instrument
-        '''
-        ct, model = self.ctmodel(type)
-        id.default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
-        id.country = convert('country', country)
-        if ct:
-            id._new_content = model.objects.create(id, commit = commit, **kwargs)
-            id.content_type = ct
-        if commit:
-            id.save()
-        return id
-        
-    def modify(self, id,
-               commit = True,
-               type = None,
-               country = None,
-               default_vendor = None, **kwargs):
-        ct, model = self.ctmodel(type)
         if default_vendor:
-            id.default_vendor  = convert('vendor', default_vendor)
-        if country:
-            id.country = convert('country', country)
-        if ct:
-            inst = id.instrument
-            if inst:
-                if not isinstance(inst,model):
-                    inst.delete()
-                    inst = model.objects.create(id, commit = commit, **kwargs)
-            id._new_content = inst
-        if commit:
-            id.save()
-        return id
+            default_vendor = default_vendor.id
+        ct, model = self.ctmodel(type)
+        country = convert('country', country)
+        
+        id = model.objects.create(id,
+                                  commit = commit,
+                                  code = code,
+                                  country = country,
+                                  default_vendor = default_vendor,
+                                  **kwargs)
+        return id,created
         
         
 class InstrumentManager(models.Manager):
@@ -116,111 +94,155 @@ class InstrumentManager(models.Manager):
             return float(val)
         except:
             return default
+    
+    def get_data(self, id,
+                 code = '',
+                 default_vendor = None, 
+                 country = None,
+                 firm_code = '',
+                 name = '',
+                 description = '',
+                 tags = '',
+                 **kwargs):
+        live = True
+        if id:
+            live = id.live
+        data = {'code': code,
+                'default_vendor': default_vendor,
+                'country': country,
+                'content_type': ContentType.objects.get_for_model(self.model).id,
+                'live': live}
+        if firm_code:
+            data['firm_code'] = firm_code
+        if name:
+            data['name'] = name
+        if description:
+            data['description'] = description
+        if tags:
+            data['tags'] = tags
+        return data
+        
+    def create(self, id, **kwargs):
+        from jflow.db.instdata.forms import DataIdForm
+        data = self.get_data(id, **kwargs)
+        f = DataIdForm(data,instance=id)
+        if f.is_valid():
+            return f.save()
+        else:
+            return None
+         
 
 class SecurityManager(InstrumentManager):
     
-    def create(self, id, ISIN = '', CUSIP = '', SEDOL = '', exchange = '', **kwargs):
+    def get_data(self, id, ISIN = '', CUSIP = '',
+                 SEDOL = '', exchange = '', **kwargs):
+        data = super(SecurityManager,self).get_data(id, **kwargs)
         exchange = convert('exchange', exchange)
-        return self.model(dataid = id, code = id.code,
-                          ISIN = ISIN, CUSIP = CUSIP,
-                          SEDOL = SEDOL, exchange = exchange)
+        if exchange:
+            exchange = exchange.id
+        data.update({'ISIN': ISIN,
+                     'CUSIP': CUSIP,
+                     'SEDOL': SEDOL,
+                     'exchange': exchange})
+        return data
 
 class EtfManager(SecurityManager):
     
-    def create(self, id, curncy = '', multiplier = 1,
-               settlement_delay = 2, **kwargs):
-        obj = super(EtfManager,self).create(id, **kwargs)
-        obj.curncy = convert('curncy',curncy)
-        obj.multiplier = self.safefloat(multiplier,1)
-        obj.settlement_delay = self.safeint(settlement_delay,2)
-        obj.save()
-        return obj
+    def get_data(self, id, curncy = '', multiplier = 1,
+                 settlement_delay = 2, **kwargs):
+        data = super(EtfManager,self).get_data(id, **kwargs)
+        data.update({'curncy': convert('curncy',curncy),
+                     'multiplier': self.safefloat(multiplier,1),
+                     'settlement_delay': self.safeint(settlement_delay,2)})
+        return data
     
 class EquityManager(SecurityManager):
     
-    def create(self, id, curncy = '', multiplier = 1,
-               settlement_delay = 2,  security_type = 1,
-               sector = None, sectorid = None,
-               group = None, groupid = None,
-               industry_code = None,
-               commit = True, **kwargs):
+    def get_data(self, id, curncy = '', multiplier = 1,
+                 settlement_delay = 2,  security_type = 1,
+                 sector = None, sectorid = None,
+                 group = None, groupid = None,
+                 industry_code = None,
+                 commit = True, **kwargs):
         if not industry_code:
             #TODO remove thid import and obtain moel from self.model 
             from jflow.db.instdata.models import IndustryCode as secmodel
             #secmodel = self.model._name_map.get('industry_code')[0]
             industry_code = secmodel.objects.create(sector, sectorid, group, groupid)
-        obj = super(EquityManager,self).create(id, **kwargs)
-        obj.industry_code = industry_code
-        obj.curncy = convert('curncy',curncy)
-        obj.multiplier = self.safefloat(multiplier,1)
-        obj.settlement_delay = self.safeint(settlement_delay,2)
-        obj.security_type = convert('security_type',security_type)
-        if commit:
-            obj.save()
-        return obj
+            if industry_code:
+                industry_code = industry_code.id
+        data = super(EquityManager,self).get_data(id, **kwargs)
+        data.update({'industry_code': industry_code,
+                     'curncy': convert('curncy',curncy),
+                     'multiplier': self.safefloat(multiplier,1),
+                     'settlement_delay': self.safeint(settlement_delay,2),
+                     'security_type': convert('security_type',security_type)})
+        return data
     
-                
-
 class FundManager(SecurityManager):
     
-    def create(self, id, curncy = '', multiplier = 1,
-               settlement_delay = 2,  security_type = 1,
-               commit = True,
-               **kwargs):
-        obj = super(FundManager,self).create(id, **kwargs)
-        obj.curncy = convert('curncy',curncy)
-        obj.multiplier = self.safefloat(multiplier,1)
-        obj.settlement_delay = self.safeint(settlement_delay,2)
-        obj.security_type = convert('security_type',security_type)
-        if commit:
-            obj.save()
-        return obj
+    def get_data(self, id, curncy = '', multiplier = 1,
+                 settlement_delay = 2,  security_type = 1,
+                 commit = True,
+                 **kwargs):
+        data = super(FundManager,self).get_data(id, **kwargs)
+        data.update({'curncy': convert('curncy',curncy),
+                     'multiplier': self.safefloat(multiplier,1),
+                     'settlement_delay': self.safeint(settlement_delay,2)})
+        return data
     
 class BondManager(SecurityManager):
     
-    def create(self, id,
-               curncy            = '',
-               country           = '',
-               bondclass__code   = None,
-               collateral_type   = None,
-               announce_date     = None,
-               first_settle_date = None,
-               first_coupon_date = None,
-               accrual_date      = None,
-               maturity_date     = None,
-               multiplier        = None,
-               settlement_delay  = None,
-               commit            = True,
-               **kwargs):
-        obj = super(BondManager,self).create(id, **kwargs)
-        obj.announce_date       = convert('bonddate',announce_date)
-        obj.first_settle_date   = convert('bonddate',first_settle_date)
-        obj.first_coupon_date   = convert('bonddate',first_coupon_date)
-        obj.accrual_date        = convert('bonddate',accrual_date)
-        obj.maturity_date       = convert('bonddate',maturity_date)
-        obj.collateral_type     = convert('collateral',collateral_type)
-        
+    def get_data(self, id,
+                 curncy            = '',
+                 bondclass__code   = None,
+                 collateral_type   = None,
+                 announce_date     = None,
+                 first_settle_date = None,
+                 first_coupon_date = None,
+                 accrual_date      = None,
+                 maturity_date     = None,
+                 multiplier        = None,
+                 settlement_delay  = None,
+                 coupon            = None,
+                 month_frequency   = 0,
+                 day_count         = None,
+                 callable          = False,
+                 putable           = False,
+                 commit            = True, 
+                 **kwargs):
+        data = super(BondManager,self).get_data(id, **kwargs)
         ccy = convert('curncy',curncy)
-        country = id.country
+                     
         bck = {}
-        isu = {}
         for k,v in kwargs.items():
             ks = k.split('__')
             if len(ks) == 2 and ks[0] == 'bondclass':
                     bck[ks[1]] = v
         
         bc = bck.pop('bondcode',None)
-        obj.bond_class          = convert('bondclass',
-                                          bc,
-                                          curncy=ccy,
-                                          country=country,
-                                          **bck)
+        co = data.get('country',None)
+        bc = convert('bondclass',bc,curncy=ccy,country=co,**bck)
         
-        obj.multiplier = self.safefloat(multiplier,0.01)
-        obj.settlement_delay = self.safeint(settlement_delay,3)
-        if commit:
-            obj.save()
-        return obj
+        data.update({'curncy':              ccy,
+                     'bond_class':          bc.id,
+                     'announce_date':       convert('bonddate',announce_date),
+                     'first_settle_date':   convert('bonddate',first_settle_date),
+                     'first_coupon_date':   convert('bonddate',first_coupon_date),
+                     'accrual_date':        convert('bonddate',accrual_date),
+                     'maturity_date':       convert('bonddate',maturity_date),
+                     'collateral_type':     convert('collateral',collateral_type).id,
+                     'multiplier':          self.safefloat(multiplier,0.01),
+                     'settlement_delay':    self.safeint(settlement_delay,3),
+                     'coupon':              self.safefloat(coupon,0),
+                     'month_frequency':     self.safeint(month_frequency, 0),
+                     'day_count':           convert('daycount',day_count),
+                     'callable':            callable,            
+                     'putable':             putable,
+                     })
+        return data
+    
+        
 
 class DecompManager(models.Manager):
     

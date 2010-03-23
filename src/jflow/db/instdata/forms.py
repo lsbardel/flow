@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from tagging.forms import TagField
 
-import models as datamodels
+from models import DataId
 from jflow.db.instdata.utils import ctids
 from jflow.db.instdata.dynct import ExtraContentForm
 
@@ -48,15 +48,6 @@ class UniqueCodeField(forms.CharField):
         return c
 
 
-class DataCodeField(UniqueCodeField):
-    
-    def __init__(self, *args, **kwargs):
-        super(DataCodeField,self).__init__(model = datamodels.DataId, *args, **kwargs)
-        
-    def trimcode(self, value):
-        return datamodels.TrimCode(value)
-
-
 #class ShortAddForm(forms.Form):
 #    '''
 #    Form used to load a DataID from Google or Yahoo finance
@@ -85,7 +76,7 @@ class DataIdForm(ExtraContentForm):
         js = ['instdata/decorator.js']
             
     class Meta:
-        model   = datamodels.DataId
+        model   = DataId
         
     
     

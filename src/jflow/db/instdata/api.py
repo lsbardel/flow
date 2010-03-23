@@ -4,6 +4,7 @@
 from django import http
 from django.utils import simplejson as json
 from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 
 from piston.resource import Resource
 from piston.handler import BaseHandler, AnonymousBaseHandler
@@ -21,6 +22,23 @@ def strkeys(item):
     for key,value in item.items():
         r[str(key)] = value
     return r
+
+def updatetags(id, commit = True):
+    if not id:
+        return
+    inst = id.instrument
+    if not inst:
+        return
+    keys = inst.keywords()
+    if keys:
+        tags = id.tags.split(' ')
+        for tag in tags:
+            if tag and tag not in keys:
+                keys.append(tag)
+        id.tags = (' '.join(keys)).lower()
+        if commit:
+            id.save()
+    
 
 
 class InfoHandler(AnonymousBaseHandler):
@@ -111,6 +129,7 @@ class DataIdHandler(BaseHandler):
             # Check if we need to create an issuer
             if issuer:
                 issuer, created, vi = self.createsingle(issuer,commit)
+                updatetags(issuer,commit)
                 if created:
                     vi = ' --- %s' % vi
                 else:
@@ -119,6 +138,11 @@ class DataIdHandler(BaseHandler):
                 issuer, created, vi = None,False,''
             
             id, created, v = self.createsingle(item,commit)
+            if id:
+                inst = id.instrument
+                if inst:
+                    id.add_issuer(issuer)
+                    updatetags(id,commit)
             ids.append({'result':'%s%s' % (v,vi)})
         
         if commit:
@@ -140,14 +164,8 @@ class DataIdHandler(BaseHandler):
             id, created = self.model.objects.get_or_create(code = code,
                                                            commit = commit,
                                                            **item)
+            self.add_vids(id,vids)
             if created:
-                inst = id.instrument
-                if inst:
-                    keys = inst.keywords()
-                    if keys:
-                        id.tags = (' '.join(keys)).lower()
-                        if commit:
-                            id.save()
                 v = 'Created %s' % id.code
             else:
                 v = 'Modified %s' % id.code
@@ -156,14 +174,18 @@ class DataIdHandler(BaseHandler):
             return None,False,str(e)
         
     def vids_from_data(self, item):
+        '''
+        Get vendor Ids ticker from data.
+        It returns a possible code for dataid
+        and a list of tuples (vendor,ticker)
+        '''
         idcode = None
         vids = []
         idcodes = {}
         for code,v in self.vdict.items():
             name = item.get(code,None)
             if name:
-                vids.append({'vendor': v,
-                             'ticker': name})
+                vids.append((v, name))
                 idcodes[code] = name
         vidcode = DEFAULT_VENDOR_FOR_SITE
         idcode  = idcodes.get(vidcode,None)
@@ -183,12 +205,55 @@ class DataIdHandler(BaseHandler):
             idcode = idcode.split(' ')
         return slugify('_'.join(idcode).upper())
     
+    def add_vids(self, id, vids):
+        '''
+        Add vendor ids to dataid id
+        '''
+        for vendor,ticker in vids:
+            try:
+                vid = models.VendorId.objects.get(vendor = vendor,
+                                                  dataid = id)
+                if vid.ticker == ticker:
+                    continue
+                vid.ticker = ticker
+            except:
+                vid = models.VendorId(ticker = ticker,
+                                      vendor = vendor,
+                                      dataid = id)
+            vid.save()
+    
+
+class VendorIdsHandler(BaseHandler):
+    allowed_methods = ('GET', 'POST')
+    model = models.VendorId
+    fields = ('dataid__code', 'dataid__isin', 'vendor', 'ticker')
+    
+    def read(self, request, vendor = None, type = None): 
+        base = self.model.objects
+        if vendor:
+            qs = base.filter(vendor__code = vendor.upper())
+        else:
+            qs = base.filter()
+        if type:
+            if type == 'none':
+                ct = None
+            else:
+                app_label = self.model._meta.app_label
+                ct = ContentType.objects.get(model = type, app_label = app_label)
+            qs = qs.filter(dataid__type = ct)
+        return qs
+    
+    
+
+
+    
 def urls(auth, baseurl = None):
     from django.conf.urls.defaults import url
     
     infoapi = Resource(handler=InfoHandler)
     vendapi = Resource(handler=VendorHandler)
     dataapi = Resource(handler=DataIdHandler, authentication=auth)
+    vidapi  = Resource(handler=VendorIdsHandler, authentication=auth)
     
     if baseurl is None:
         baseurl = models.DataId._meta.app_label
@@ -205,6 +270,9 @@ def urls(auth, baseurl = None):
             url(r'^%sdata/(?P<code>.+)/$' % baseurl, dataapi),
             url(r'^%svendor/$' % baseurl, vendapi),
             url(r'^%svendor/(?P<code>.+)/$' % baseurl, vendapi),
+            url(r'^%svendorid/$' % baseurl, vidapi),
+            url(r'^%svendorid/(?P<vendor>.+)/$' % baseurl, vidapi),
+            url(r'^%svendorid/(?P<vendor>.+)/(?P<type>.+)/$' % baseurl, vidapi),
             #url(r'^data/(?P<emitter_format>.+)/$', dataapi),
             #url(r'^data\.(?P<emitter_format>.+)', dataapi, name='blogposts'),
             # automated documentation

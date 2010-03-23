@@ -37,7 +37,8 @@ class FormTests(TestCase):
                         'content_type': '%s' % ct.id,
                         'curncy': curncy,
                         'multiplier': 1,
-                        'settlement_delay': 2},
+                        'settlement_delay': 2,
+                        'live': True},
                         instance = instance)
         self.assertTrue(f.is_valid())
         return f.save()
@@ -62,6 +63,7 @@ class FormTests(TestCase):
         id = self.create_equity()
         self.assertEqual(id.code,'ABCD')
         self.assertEqual(id.curncy,'EUR')
+        self.assertTrue(id.live)
         self.assertEqual(id.instrument.code,id.code)
         self.assertEqual(id.instrument.ccy(),id.curncy)
         self.assertEqual(id.type,'equity')

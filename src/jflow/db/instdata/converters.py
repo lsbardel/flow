@@ -18,10 +18,10 @@ class CurrencyCreator(Converter):
 class CountryCreator(Converter):
     
     def get_or_create(self, val, **kwargs):
-        from jflow.db.geo import country
-        c = country(val)
+        from jflow.db.geo import country_map
+        c = country_map(val)
         if c:
-            return val
+            return c
         else:
             raise ValueError('Country %s not recognized' % val)
 
@@ -146,6 +146,7 @@ class BondclassCreator(Converter):
         return obj
 
 _c = {'exchange':ExchangeCreator(),
+      'daycount':DayCountCreator(),
       'curncy': CurrencyCreator(),
       'country': CountryCreator(),
       'vendor': VendorCreator(),

@@ -53,6 +53,8 @@ class MainTests(TestCase):
 
 
 class ApiTest(MainTests):
+    VendorTest = 'blb'
+    typetest = 'equity'
     
     def testVersion(self):
         response = self.client.get('%sversion/' % self.baseapi)
@@ -73,5 +75,37 @@ class ApiTest(MainTests):
         self.assertEqual(len(result),len(input_data))
         for r,re in zip(result,expres):
             self.assertEqual(r['result'],re)
+    
+    def testVendorIdFromVendorAllTypes(self):
+        vtest = self.VendorTest.upper()
+        response = self.client.get('%svendorid/%s/' % (self.baseapi,self.VendorTest),
+                                    HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        for r in res:
+            self.assertEqual(r['vendor'],vtest)
+    
+    def testVendorIdFromVendorNullTypes(self):
+        vtest = self.VendorTest.upper()
+        response = self.client.get('%svendorid/%s/none/' % (self.baseapi,self.VendorTest),
+                                    HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        for r in res:
+            id = r['dataid']
+            self.assertEqual(r['vendor'],vtest)
+            self.assertEqual(id['content_type'],None)
+    
+    def testVendorIdFromVendorWithType(self):
+        vtest = self.VendorTest.upper()
+        response = self.client.get('%svendorid/%s/%s/' % (self.baseapi,self.VendorTest,self.typetest),
+                                    HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        for r in res:
+            id = r['dataid']
+            self.assertEqual(r['vendor'],vtest)
+            self.assertEqual(id['content_type'],self.typetest)
+        
         
         
