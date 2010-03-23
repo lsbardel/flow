@@ -133,17 +133,17 @@ class BondclassCreator(Converter):
                               **kwargs)
             if obj:
                 return obj[0]
-        else:
-            code = bondcode
-            if N:
-                code = '%s_%s' % (bondcode,N)
-            obj = BondClass(code = code,
-                            bondcode = bondcode,
-                            country=country,
-                            curncy=curncy,
-                            **kwargs)
-            obj.save()
-            return obj
+        
+        code = bondcode
+        if N:
+            code = '%s_%s' % (bondcode,N)
+        obj = BondClass(code = code,
+                        bondcode = bondcode,
+                        country=country,
+                        curncy=curncy,
+                        **kwargs)
+        obj.save()
+        return obj
 
 _c = {'exchange':ExchangeCreator(),
       'curncy': CurrencyCreator(),
