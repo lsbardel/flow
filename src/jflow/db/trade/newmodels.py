@@ -1,4 +1,11 @@
-import datetime 
+#
+#    Requires:
+#        - jflow.db.instdata
+#        - ccy.basket
+#
+#
+#
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -351,7 +358,6 @@ class Portfolio(TimeStamp):
             return p.last_modified
         except:
             return datetime.date.min
-
 
 
 class Position(TimeStamp):

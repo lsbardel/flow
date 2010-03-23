@@ -227,7 +227,24 @@ class PositionManager(models.Manager):
     '''
     Position manager
     '''
+    def status_date_filter(self, dt = None, status = POSITION_STATUS_SYNCRONIZED, **kwargs):
+        '''
+        This query needs to be cached in an efficient manner
+        '''
+        dt = dt or datetime.date.today()
+        base = self.filter(status = status, dt__lte = dt, **kwargs)
+        if base:
+            dt = base.latest()
+            return base.filter(dt = dt)
+        else:
+            return base
         
+    def positions_for_fund(self, fund, **kwargs):
+        return self.status_date_filter(fund = fund, **kwargs)
+    
+    def positions_for_team(self, team, **kwargs):
+        return self.status_date_filter(fund__fund_holder = team, **kwargs)
+    
     def predate(self, position, dt):
         return self.filter(position = position, dt__lte = dt)
     

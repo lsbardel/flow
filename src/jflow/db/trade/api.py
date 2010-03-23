@@ -39,6 +39,7 @@ class PositionHandler(BaseHandler):
     #anonymous = 'AnonymousDataIdHandler'
     model = models.Position
     
+    
 
 
 def urls(auth, baseurl = None):
