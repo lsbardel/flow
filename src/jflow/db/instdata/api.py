@@ -226,7 +226,8 @@ class DataIdHandler(BaseHandler):
 class VendorIdsHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = models.VendorId
-    fields = ('dataid__code', 'dataid__isin', 'vendor', 'ticker')
+    #fields = ('dataid__code', 'dataid__isin', 'vendor', 'ticker')
+    fields = ('dataid', 'vendor', 'ticker')
     
     def read(self, request, vendor = None, type = None): 
         base = self.model.objects
@@ -234,6 +235,13 @@ class VendorIdsHandler(BaseHandler):
             qs = base.filter(vendor__code = vendor.upper())
         else:
             qs = base.filter()
+        
+        #Added change here
+        if not type:
+            params = dict(request.GET.items()) 
+            type = params.get('type',None) 
+        ############################
+            
         if type:
             type = type.lower()
             if type == 'none' or type == 'null':
@@ -273,7 +281,7 @@ def urls(auth, baseurl = None):
             url(r'^%svendor/(?P<code>.+)/$' % baseurl, vendapi),
             url(r'^%svendorid/$' % baseurl, vidapi),
             url(r'^%svendorid/(?P<vendor>.+)/$' % baseurl, vidapi),
-            url(r'^%svendorid/(?P<vendor>.+)/(?P<type>.+)/$' % baseurl, vidapi),
+            #url(r'^%svendorid/(?P<vendor>.+)/(?P<type>.+)/$' % baseurl, vidapi),
             #url(r'^data/(?P<emitter_format>.+)/$', dataapi),
             #url(r'^data\.(?P<emitter_format>.+)', dataapi, name='blogposts'),
             # automated documentation
