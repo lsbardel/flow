@@ -273,7 +273,7 @@ class FwdCashManager(InstrumentManager):
                  curncy = '',
                  value_date = None,
                  **kwargs):
-        data = super(CashManager,self).get_data(id, **kwargs)
+        data = super(FwdCashManager,self).get_data(id, **kwargs)
         value_date = convert('bonddate',value_date)
         data.update({'curncy': convert('curncy',curncy),
                      'value_date': value_date})

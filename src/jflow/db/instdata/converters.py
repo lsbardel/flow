@@ -1,3 +1,4 @@
+import datetime
 from dateutil.parser import parse as dataparse
 
 class Converter(object):
@@ -101,6 +102,8 @@ class SecurityType(Converter):
 class BondDate(Converter):                  
     
     def get_or_create(self, val, **kwargs):
+        if isinstance(val,datetime.date):
+            return val
         if val:
             try:
                 return dataparse(val)

@@ -85,7 +85,10 @@ class DataId(ExtraContentModel):
     '''
     Database ID
     '''
-    code           = SlugCode(max_length = 32, unique = True, upper = True)
+    code           = SlugCode(max_length = 32,
+                              db_index = True,
+                              unique = True,
+                              upper = True)
     #code           = models.CharField(max_length = 32, unique = True)
     name           = models.CharField(max_length = 64, blank  = True)
     description    = models.TextField(blank=True)
@@ -97,6 +100,7 @@ class DataId(ExtraContentModel):
     isin           = models.CharField(max_length = 32,
                                       blank = True,
                                       default = '',
+                                      db_index = True,
                                       verbose_name = 'ISIN') 
     
     # New stuff
@@ -149,7 +153,7 @@ class DataId(ExtraContentModel):
         if inst:
             return inst.get_multiplier()
         else:
-            return 0
+            return 1
         
     def get_country(self):
         return geo.country(self.country)
