@@ -103,6 +103,7 @@ INSTALLED_APPS = (
     #
     'djpcms',
     'tagging',
+    'ccy.basket',
     'jflow.db.instdata',
     'jflow.db.trade',
 )
