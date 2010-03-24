@@ -572,8 +572,10 @@ class Bond(Security):
         issuer = self.issuer()
         if issuer:
             keys = issuer.keywords()
-        if keys:
-            keys.remove('equity')
+            try:
+                keys.remove('equity')
+            except:
+                pass
         else:
             keys = []
         if 'bond' not in keys:
