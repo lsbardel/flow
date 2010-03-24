@@ -9,6 +9,16 @@ from jflow.db.instdata.fields import slugify
 from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
 
 
+class MktDataCacheManager(models.Manager):
+    
+    def emptycache(self, dataid = None):
+        if isinstance(dataid, models.Model):
+            qs = self.filter(vendor_id__dataid = dataid)
+        else:
+            qs = self.all()
+        qs.delete()
+
+
 class DataIdManager(ModelTaggedItemManager):
     
     def ct_from_type(self, type):
@@ -102,16 +112,19 @@ class InstrumentManager(models.Manager):
                  firm_code = '',
                  name = '',
                  description = '',
+                 isin = '',
                  tags = '',
                  **kwargs):
         live = True
         if id:
             live = id.live
+            isin = isin or id.isin
         data = {'code': code,
                 'default_vendor': default_vendor,
                 'country': country,
                 'content_type': ContentType.objects.get_for_model(self.model).id,
-                'live': live}
+                'live': live,
+                'isin': isin}
         if firm_code:
             data['firm_code'] = firm_code
         if name:
@@ -134,14 +147,13 @@ class InstrumentManager(models.Manager):
 
 class SecurityManager(InstrumentManager):
     
-    def get_data(self, id, ISIN = '', CUSIP = '',
+    def get_data(self, id, CUSIP = '',
                  SEDOL = '', exchange = '', **kwargs):
         data = super(SecurityManager,self).get_data(id, **kwargs)
         exchange = convert('exchange', exchange)
         if exchange:
             exchange = exchange.id
-        data.update({'ISIN': ISIN,
-                     'CUSIP': CUSIP,
+        data.update({'CUSIP': CUSIP,
                      'SEDOL': SEDOL,
                      'exchange': exchange})
         return data

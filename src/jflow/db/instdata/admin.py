@@ -22,10 +22,12 @@ class BondIssuerInline(admin.TabularInline):
 #_______________________________________ ADMINS
 
 class DataIdAdmin(admin.ModelAdmin):
-    list_display  = ('code', 'name', 'live', 'get_country', 'curncy', 'content_type', 'firm_code', 'tags')
+    list_display  = ('code', 'name', 'live', 'get_country', 
+                     'curncy', 'content_type', 'firm_code', 'isin',
+                     'tags')
     form          = DataIdForm
     inlines       = [VendorIdInline]
-    search_fields = ('code', 'name', 'description', 'tags')
+    search_fields = ('code', 'name', 'description', 'isin', 'tags')
     list_filter   = ('content_type',)
     save_on_top   = True        
 

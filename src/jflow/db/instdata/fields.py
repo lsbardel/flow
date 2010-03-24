@@ -2,6 +2,8 @@ import re
 import unicodedata
 
 from django.db import models
+from django.db.models.fields import NOT_PROVIDED
+from django.conf import settings
 
 
 def slugify(value, rtx = '_'):
@@ -34,7 +36,29 @@ class SlugCode(models.CharField):
         value = self.trim(value)
         setattr(model_instance, self.attname, value)
         return value
-    
+
+if 'south' in settings.INSTALLED_APPS:
+    rules = [
+        (
+        (SlugCode, ),
+            [],
+        {
+            "null": ["null", {"default": False}],
+            "blank": ["blank", {"default": False, "ignore_if":"primary_key"}],
+            "primary_key": ["primary_key", {"default": False}],
+            "max_length": ["max_length", {"default": None}],
+            "unique": ["_unique", {"default": False}],
+            "db_index": ["db_index", {"default": False}],
+            "default": ["default", {"default": NOT_PROVIDED}],
+            "db_column": ["db_column", {"default": None}],
+            "db_tablespace": ["db_tablespace", {"default": settings.DEFAULT_INDEX_TABLESPACE}],
+        },
+            ),
+        ]
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(rules, ["^jflow\.db\.instdata"])
+
+
 
 class LazyManyToOneRel(models.ManyToOneRel):
     '''

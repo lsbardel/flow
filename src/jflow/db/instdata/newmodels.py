@@ -86,6 +86,7 @@ class DataId(ExtraContentModel):
     Database ID
     '''
     code           = SlugCode(max_length = 32, unique = True, upper = True)
+    #code           = models.CharField(max_length = 32, unique = True)
     name           = models.CharField(max_length = 64, blank  = True)
     description    = models.TextField(blank=True)
     country        = models.CharField(max_length = 2, choices = geo.country_tuples())
@@ -93,6 +94,10 @@ class DataId(ExtraContentModel):
     default_vendor = models.ForeignKey(Vendor, blank = True, null = True)
     tags           = TagField('labels', blank = True, null = True,
                               help_text = "Insert keywords separated by space")
+    isin           = models.CharField(max_length = 32,
+                                      blank = True,
+                                      default = '',
+                                      verbose_name = 'ISIN') 
     
     # New stuff
     hasdata        = models.BooleanField(default = True, editable = False)
@@ -126,14 +131,6 @@ class DataId(ExtraContentModel):
             ec.dataid = self
             ec.code   = self.code
             self.curncy = ec.ccy()
-    
-    @property
-    def isin(self):
-        inst = self.instrument
-        if inst:
-            return inst.isin()
-        else:
-            return ''
     
     def issuer(self, dt = None):
         inst = self.instrument
@@ -402,7 +399,7 @@ class InstrumentInterface(models.Model):
         return None
     
     def isin(self):
-        return ''
+        return self.dataid.isin
     
     def issuer(self, dt = None):
         return None
@@ -412,16 +409,12 @@ class InstrumentInterface(models.Model):
     
 
 class Security(InstrumentInterface):
-    ISIN             = models.CharField(max_length=30,blank=True)
     CUSIP            = models.CharField(max_length=30,blank=True)
     SEDOL            = models.CharField(max_length=30,blank=True)
     exchange         = models.ForeignKey('exchange',null=True,blank=True)
     
     class Meta:
         abstract = True
-    
-    def isin(self):
-        return self.ISIN
     
 
 class EquityBase(Security):
@@ -698,4 +691,39 @@ class InstDecomp(models.Model):
         verbose_name = 'Instrument Decomposition'
         verbose_name_plural = 'Instrument Decomposition'
         unique_together = ('code', 'dataid', 'dt')
+        get_latest_by   = 'dt'
+
+
+
+#_____________________________________________________ MARKET DATA
+class MktDataBase(models.Model):
+    vendor_id    = models.ForeignKey(VendorId)
+    field        = models.ForeignKey(DataField)
+    dt           = models.DateField(verbose_name='date')
+    
+    class Meta:
+        abstract = True
+        
+
+class MktData(MktDataBase):
+    mkt_value  = models.FloatField(default=0, blank=True, verbose_name='market value')
+    
+    class Meta:
+        verbose_name_plural = 'Market Data'
+        get_latest_by   = 'dt'
+        
+
+class StringMktData(MktDataBase):
+    mkt_value    = models.TextField(blank=True, verbose_name='market value')
+    
+    class Meta:
+        verbose_name_plural = 'Market Data'
+        get_latest_by   = 'dt'
+
+class MktDataCache(MktDataBase):
+    mkt_value    = models.FloatField(default=0, blank=True, verbose_name='market value')
+    
+    objects = managers.MktDataCacheManager()
+    
+    class Meta:
         get_latest_by   = 'dt'
