@@ -142,6 +142,10 @@ class MktDataAdmin(admin.ModelAdmin):
     search_fields = ('vendor_id__ticker',)
     ordering      = ('-dt',)
 
+class IndustryCodeAdmin(admin.ModelAdmin):
+    list_display = ('id' , 'code' , 'description' , 'parent')
+    
+
 #_______________________________________ REGISTERING
 admin.site.register(Vendor,VendorAdmin)
 admin.site.register(VendorDataField,VendorDataFieldAdmin)
@@ -159,6 +163,8 @@ admin.site.register(FundManager,FundManagerAdmin)
 admin.site.register(FundType,FundTypeAdmin)
 
 admin.site.register(InstDecomp,InstDecompAdmin)
+
+admin.site.register(IndustryCode,IndustryCodeAdmin)
 
 ###admin.site.register(InstrumentCode,IcAdmin)
 ###admin.site.register(Cash3, list_display = ('id','code','curncy','type','extended'))

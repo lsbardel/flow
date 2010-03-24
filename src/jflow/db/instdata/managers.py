@@ -299,11 +299,27 @@ class IndustryCodeManager(models.Manager):
                 gid  = int(groupid)
             except:
                 return None
-            sector, created = self.get_or_create(id = sid, code = sector)
-            group, created = self.get_or_create(id = gid, code = group)
-            group.parent = sector
-            group.save()
-            return group
+            sector = (sector or '').lower() 
+            group  = (group or '').lower()
+            try:
+                sec = self.get(id = sid)
+                if sector and sec.code != sector:
+                    sec.code = sector
+                    sec.save()
+            except:
+                sec = self.model(id = sid, code = sector)
+                sec.save()
+            
+            try:
+                grp = self.get(id = gid)
+                if group and grp.code != group:
+                    grp.code = group
+                    grp.save()
+            except:
+                grp = self.model(id = gid , code = group , parent = sec)
+                grp.save()
+                                  
+            return grp
         else:
             return None
 

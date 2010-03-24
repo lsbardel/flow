@@ -71,7 +71,7 @@ class VendorHandler(AnonymousBaseHandler):
 
 class DataIdHandler(BaseHandler):
     allowed_methods = ('GET', 'POST', 'PUT')
-    fields = ('code', 'description', 'type', 'country', 'curncy', 'firm_code', 'instrument')
+    fields = ('code', 'isin', 'description', 'type', 'country', 'curncy', 'firm_code', 'instrument')
     #anonymous = 'AnonymousDataIdHandler'
     model = models.DataId
 
@@ -127,7 +127,7 @@ class DataIdHandler(BaseHandler):
                     issuer[ks[1]] = v
             
             # Check if we need to create an issuer
-            if issuer:
+            if issuer: 
                 issuer, created, vi = self.createsingle(issuer,commit)
                 updatetags(issuer,commit)
                 if created:
@@ -227,7 +227,7 @@ class VendorIdsHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = models.VendorId
     #fields = ('dataid__code', 'dataid__isin', 'vendor', 'ticker')
-    fields = ('dataid', 'vendor', 'ticker')
+    fields = ('id', 'dataid', 'vendor', 'ticker')
     
     def read(self, request, vendor = None, type = None): 
         base = self.model.objects
