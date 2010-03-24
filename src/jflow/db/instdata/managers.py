@@ -67,15 +67,27 @@ class DataIdManager(ModelTaggedItemManager):
         if not code:
             raise ValueError('cannot add data id, code not specified')
         code = slugify(code.upper())
+        id   = None
         try:
             id = self.get(code = code)
             created = False
             if default_vendor:
                 default_vendor  = convert('vendor', default_vendor)
         except:
-            id = None
-            default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
-            created = True
+            isin = kwargs.get('isin',None)
+            if isin:
+                id = self.filter(isin = isin)
+                if id.count() == 1:
+                    id = id[0]
+                    created = False
+                elif id:
+                    return None,False
+                else:
+                    id = None
+            if not id:
+                id = None
+                default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
+                created = True
         
         if default_vendor:
             default_vendor = default_vendor.id
