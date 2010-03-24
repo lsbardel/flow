@@ -124,15 +124,24 @@ class CollateralCreator(Converter):
 
 class BondclassCreator(Converter):
     
-    def get_or_create(self, bondcode, curncy = '', country='', **kwargs):
+    def get_or_create(self, bondcode,
+                      curncy = '',
+                      country='',
+                      convertible = None,
+                      **kwargs):
         from jflow.db.instdata.models import BondClass
         if not bondcode:
             raise ValueError("Bondcode not provided")
         objs = BondClass.objects.filter(bondcode = bondcode)
         N = objs.count()
+        if convertible:
+            convertible = True
+        else:
+            convertible = False
         if N:
             obj = objs.filter(country=country,
                               curncy=curncy,
+                              convertible=convertible,
                               **kwargs)
             if obj:
                 return obj[0]
@@ -144,6 +153,7 @@ class BondclassCreator(Converter):
                         bondcode = bondcode,
                         country=country,
                         curncy=curncy,
+                        convertible=convertible,
                         **kwargs)
         obj.save()
         return obj
