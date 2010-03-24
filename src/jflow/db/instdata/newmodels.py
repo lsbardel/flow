@@ -142,6 +142,14 @@ class DataId(ExtraContentModel):
     @property
     def instrument(self):
         return self.extra_content()
+    
+    @property
+    def multiplier(self):
+        inst = self.instrument
+        if inst:
+            return inst.get_multiplier()
+        else:
+            return 0
         
     def get_country(self):
         return geo.country(self.country)
@@ -395,6 +403,9 @@ class InstrumentInterface(models.Model):
     def ccy(self):
         return ''
     
+    def get_multiplier(self):
+        return 1
+    
     def keywords(self):
         return None
     
@@ -588,8 +599,10 @@ class BondIssuer(models.Model):
 
 class Cash(InstrumentInterface):
     curncy      = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
-    type        = models.IntegerField(choices = cash_tuple())
+    cash_type   = models.IntegerField(choices = cash_tuple(), default = 1)
     extended    = models.TextField(blank = True)
+    
+    objects = managers.CashManager()
     
     def codeinfo(self):
         return cash_codes.get(self.type,None)
@@ -626,6 +639,8 @@ class FwdCash(InstrumentInterface):
     curncy = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
     value_date = models.DateField()
     
+    objects = managers.FwdCashManager()
+    
     class Meta:
         verbose_name = 'forward cash'
         verbose_name_plural = 'forward cash'
@@ -649,7 +664,9 @@ class FwdCash(InstrumentInterface):
 class Depo(InstrumentInterface):
     curncy = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
     value_date = models.DateField()
-        
+    
+    objects = managers.FwdCashManager()
+    
     def description(self):
         return '%s Deposit: expiry %s' % (self.curncy, self.value_date)
     

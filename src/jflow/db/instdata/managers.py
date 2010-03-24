@@ -254,6 +254,30 @@ class BondManager(SecurityManager):
                      })
         return data
     
+class CashManager(InstrumentManager):
+    
+    def get_data(self, id,
+                 curncy = '',
+                 cash_type = 1,
+                 extended = '',
+                 **kwargs):
+        data = super(CashManager,self).get_data(id, **kwargs)
+        data.update({'curncy': convert('curncy',curncy),
+                     'cash_type': cash_type,
+                     'extended': extended})
+        return data
+    
+class FwdCashManager(InstrumentManager):
+    
+    def get_data(self, id,
+                 curncy = '',
+                 value_date = None,
+                 **kwargs):
+        data = super(CashManager,self).get_data(id, **kwargs)
+        value_date = convert('bonddate',value_date)
+        data.update({'curncy': convert('curncy',curncy),
+                     'value_date': value_date})
+        return data
         
 
 class DecompManager(models.Manager):
