@@ -116,15 +116,12 @@ class DataId(ExtraContentModel):
     curncy         = models.CharField(max_length=3,
                                       blank = True,
                                       editable = False,
-                                      verbose_name='currency')
+                                      verbose_name='CCY')
     
     objects        = managers.DataIdManager()
         
     def __unicode__(self):
-        if self.name:
-            return u'%s - %s' % (self.code,self.name)
-        else:
-            return u'%s' % self.code
+        return u'%s' % self.code
 
     def _denormalize(self, ec = None):
         if ec:
