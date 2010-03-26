@@ -4,7 +4,7 @@ from dateutil.parser import parse as dataparse
 class Converter(object):
     cdict = {}
     def get_or_create(self, val, **kwargs):
-        return self.cdict.get(val,val)        
+        return self.cdict.get(val,val)
 
 class CurrencyCreator(Converter):
     
@@ -46,9 +46,17 @@ class DayCountCreator(Converter):
              '30/360': '30360',
              'ISMA-30/360': '30360',
              'ISMA-30/360 NONEOM': '30360',
+             '30/360 NON-EOM': '30360',
              'ACT/365': 'act365',
              'NL/365': 'act365',
              'BUS DAYS/252':'bd252'}
+    def get_or_create(self, val, **kwargs):
+        r = self.cdict.get(val,None)
+        if r is None:
+            raise ValueError("The day count %s is not supported" %val)
+        
+        return r
+    
     
 class ExchangeCreator(Converter):
     cdict = {'Athens': 'ASE',

@@ -212,6 +212,17 @@ class DataField(models.Model):
     def __unicode__(self):
         return '%s' % self.code
     
+    def get_mkt_data_cls(self):
+        format = self.format
+        
+        if format == 'string':
+            return StringMktData
+        elif format == 'numeric':
+            return MktData
+        else:
+            raise ValueError("Format %s is not supported" %format)
+
+    
 
 class VendorDataField(models.Model):
     vendor = models.ForeignKey(Vendor)

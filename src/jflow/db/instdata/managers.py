@@ -17,8 +17,8 @@ class MktDataCacheManager(models.Manager):
         else:
             qs = self.all()
         qs.delete()
-
-
+        
+        
 class DataIdManager(ModelTaggedItemManager):
     
     def ct_from_type(self, type):
@@ -26,18 +26,20 @@ class DataIdManager(ModelTaggedItemManager):
         Return content type object from type name
         '''
         app_label = self.model._meta.app_label
-        return ContentType.objects.get(name = type, app_label = app_label)
+        return ContentType.objects.get(model = type, app_label = app_label)
     
     def ctmodel(self, type):
-        if type:
-            try:
-                ct = self.ct_from_type(type)
-                return ct, ct.model_class()
-            except:
-                raise ValueError('Data type %s not available' % type)
-        else:
-            return None,None
-    
+        if not type:
+            return None, None
+        #if type:
+        try:
+            ct = self.ct_from_type(type)
+            return ct, ct.model_class()
+        except:
+            raise ValueError('Data type %s not available' % type)
+#        else:
+#            return None,None
+#    
     def for_type(self, type):
         try:
             ct = self.ct_from_type(type)
@@ -94,6 +96,8 @@ class DataIdManager(ModelTaggedItemManager):
         ct, model = self.ctmodel(type)
         country = convert('country', country)
         
+        model = model or self.model
+            
         id = model.objects.create(id,
                                   commit = commit,
                                   code = code,
@@ -101,6 +105,46 @@ class DataIdManager(ModelTaggedItemManager):
                                   default_vendor = default_vendor,
                                   **kwargs)
         return id,created
+#Added here
+
+    def get_data(self,
+                 id,
+                 code = '',
+                 country = None,
+                 firm_code = '',
+                 name = '',
+                 description = '',
+                 isin = '',
+                 tags = '',
+                 model = None,
+                 **kwargs):
+        live = True
+        if id:
+            live = id.live
+            isin = isin or id.isin
+        ct = None
+        if model:
+            ct = ContentType.objects.get_for_model(model).id
+        data = {'code': code,
+                'country': country,
+                'content_type': ct,
+                'live': live,
+                'isin': isin}
+        if firm_code:
+            data['firm_code'] = firm_code
+        if name:
+            data['name'] = name
+        if description:
+            data['description'] = description
+        if tags:
+            data['tags'] = tags
+        return data
+        
+    def create(self, id, **kwargs):
+        #from jflow.db.instdata.forms import DataIdForm
+        data = self.get_data(id, **kwargs)
+        return super(DataIdManager,self).create(**data)
+#####################      
         
         
 class InstrumentManager(models.Manager):
@@ -117,35 +161,9 @@ class InstrumentManager(models.Manager):
         except:
             return default
     
-    def get_data(self, id,
-                 code = '',
-                 default_vendor = None, 
-                 country = None,
-                 firm_code = '',
-                 name = '',
-                 description = '',
-                 isin = '',
-                 tags = '',
-                 **kwargs):
-        live = True
-        if id:
-            live = id.live
-            isin = isin or id.isin
-        data = {'code': code,
-                'default_vendor': default_vendor,
-                'country': country,
-                'content_type': ContentType.objects.get_for_model(self.model).id,
-                'live': live,
-                'isin': isin}
-        if firm_code:
-            data['firm_code'] = firm_code
-        if name:
-            data['name'] = name
-        if description:
-            data['description'] = description
-        if tags:
-            data['tags'] = tags
-        return data
+    def get_data(self, id, **kwargs):
+        from jflow.db.instdata.models import DataId
+        return DataId.objects.get_data(id, model = self.model, **kwargs)
         
     def create(self, id, **kwargs):
         from jflow.db.instdata.forms import DataIdForm

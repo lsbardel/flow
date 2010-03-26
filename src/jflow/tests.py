@@ -1,6 +1,6 @@
 
 # Install jflow if not already installed
-import quickutils
+from _legacy import quickutils
 putils  = quickutils.PackageInstaller(__file__)
 putils.install('jflow', up = 1, addname = False)
 

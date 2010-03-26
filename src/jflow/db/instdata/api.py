@@ -164,6 +164,7 @@ class DataIdHandler(BaseHandler):
             id, created = self.model.objects.get_or_create(code = code,
                                                            commit = commit,
                                                            **item)
+            assert id , "Assertion Error: The ID was not created Code: %s Item %s" %(code , item)
             self.add_vids(id,vids)
             if created:
                 v = 'Created %s' % id.code

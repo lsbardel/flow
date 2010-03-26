@@ -89,7 +89,20 @@ class ApiTest(MainTests):
         self.assertEqual(len(result),len(input_data))
         for r,re in zip(result,expres):
             self.assertEqual(r['result'],re)
-        
+
+    def testCreateDataIdWithBadDayCount(self):
+        input_data, expres = loadtestids('dataid_with_bad_day_count.csv')
+        data = {'data': json.dumps(input_data)}
+        response = self.client.post('%sdata/' % self.baseapi, data, 
+                                    HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        self.assertTrue(res["committed"])
+        result = res.get("result",[])
+        self.assertEqual(len(result),len(input_data))
+        for r,re in zip(result,expres):
+            self.assertEqual(r['result'],re)
+     
         
     
     def testVendorIdFromVendorAllTypes(self):
