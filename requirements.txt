@@ -1,5 +1,5 @@
 
-ccy>=0.1.2
+ccy>=0.2
 python-dateutil>=1.4.1
 django-piston
--e svn+http://django-tagging.googlecode.com/svn/trunk/@186#egg=tagging
+-e svn+http://django-tagging.googlecode.com/svn/trunk#egg=tagging

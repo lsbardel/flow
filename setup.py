@@ -69,6 +69,9 @@ setup(
         packages     = packages,
         package_dir  = {'': 'src'},
         data_files   = data_files,
+        install_requires = ['ccy>=0.2',
+                            'ply>=3.3',
+                            'python-dateutil>=1.4.1'],
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
             'Environment :: Plugins',
