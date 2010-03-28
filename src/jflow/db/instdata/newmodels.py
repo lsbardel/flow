@@ -748,7 +748,7 @@ class StringMktData(MktDataBase):
     mkt_value    = models.TextField(blank=True, verbose_name='market value')
     
     class Meta:
-        verbose_name_plural = 'Market Data'
+        verbose_name_plural = 'String Market Data'
         get_latest_by   = 'dt'
 
 class MktDataCache(MktDataBase):
