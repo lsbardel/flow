@@ -4,12 +4,31 @@ This is usually needed during development
 '''
 import os
 import sys
+from django.utils.importlib import import_module
+
+def backdir(path, n):
+    if n:
+        return backdir(os.path.split(path)[0],n-1)
+    else:
+        return path
+    
+def add2path(name, path):
+    try:
+        import_module(name)
+    except:
+        if os.path.exists(path) and path not in sys.path:
+            sys.path.append(path)
 
 def install():
-    path = os.getcwd()
-    home = os.path.split(path)[0]
-    if home not in sys.path:
-        sys.path.append(home)
+    dir     = os.path.dirname(__file__)
+    path    = backdir(dir,1)
+    if path not in sys.path:
+        sys.path.append(path)
+    
+    base    = backdir(path,2)
+    add2path('djpcms', os.path.join(base,'djpcms'))
+    add2path('ccy', os.path.join(base,'ccy'))
+    add2path('tagging', os.path.join(base,'django-tagging'))
      
     # Try to import. If failed throw the error
     import jfsite as site
