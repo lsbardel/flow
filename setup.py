@@ -55,6 +55,11 @@ for dirpath, dirnames, filenames in os.walk(package_dir):
         packages.append('.'.join(fullsplit(dirpath)[len_root_dir:]))
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
+
+if os.name == 'nt':
+    lib_dir = os.path.join(package_dir,'lib')
+    libs = ['_jflib.pyd','blas.dll','boost_python.dll','lapack.dll']
+    data_files.append([lib_dir, [os.path.join(lib_dir, f) for f in libs]])
  
 
 setup(
