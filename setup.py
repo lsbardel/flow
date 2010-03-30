@@ -69,7 +69,7 @@ setup(
         packages     = packages,
         package_dir  = {'': 'src'},
         data_files   = data_files,
-        install_requires = ['ccy>=0.2',
+        install_requires = ['ccy==0.3.2',
                             'ply>=3.3',
                             'python-dateutil>=1.4.1'],
         classifiers = [

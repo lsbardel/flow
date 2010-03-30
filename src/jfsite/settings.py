@@ -92,7 +92,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEMPLATE_DIRS     = (os.path.join(PSETTINGS.LOCDIR, 'templates'))
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -102,7 +102,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     #
     'djpcms',
-    #'djpcms.contrib.admin',
+    'djpcms.contrib.admin',
     #'djpcms.contrib.compressor',
     'tagging',
     #
