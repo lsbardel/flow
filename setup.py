@@ -40,6 +40,14 @@ def fullsplit(path, result=None):
  
 # Compile the list of packages available, because distutils doesn't have
 # an easy way to do this.
+def get_rel_dir(d,base,res=''):
+    if d == base:
+        return res
+    br,r = os.path.split(d)
+    if res:
+        r = os.path.join(r,res)
+    return get_rel_dir(br,base,r)
+
 packages, data_files = [], []
 pieces = fullsplit(root_dir)
 if pieces[-1] == '':
@@ -54,12 +62,14 @@ for dirpath, dirnames, filenames in os.walk(package_dir):
     if '__init__.py' in filenames:
         packages.append('.'.join(fullsplit(dirpath)[len_root_dir:]))
     elif filenames:
-        data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
+        rel_dir = get_rel_dir(dirpath,root_dir)
+        data_files.append([rel_dir, [os.path.join(dirpath, f) for f in filenames]])
 
 if os.name == 'nt':
     lib_dir = os.path.join(package_dir,'lib')
     libs = ['_jflib.pyd','blas.dll','boost_python.dll','lapack.dll']
-    data_files.append([lib_dir, [os.path.join(lib_dir, f) for f in libs]])
+    rel_dir = get_rel_dir(lib_dir,root_dir)
+    data_files.append([rel_dir, [os.path.join(lib_dir, f) for f in libs]])
  
 
 setup(
