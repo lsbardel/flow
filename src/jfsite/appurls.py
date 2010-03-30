@@ -21,6 +21,12 @@ class DataApplication(tagurl.TagApplication):
     edit    = appview.EditView(regex = 'edit/(?P<id>\d+)', parent = None)
     view    = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
     
+    class Media:
+        css = {
+            'all': ('instdata/layout.css',)
+            }
+        js = ['instdata/decorator.js']
+    
     def objectbits(self, obj):
         '''
         Get arguments from model instance used to construct url
