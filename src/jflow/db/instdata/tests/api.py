@@ -41,7 +41,9 @@ def loadtestids(name):
 
 class MainTests(TestCase):
     fixtures = ['initial_data.json',
-                'bondclass.json']
+                'bondclass.json',
+                'futurecontract.json',
+                'exchange.json',]
     
     def setUp(self):
         self.baseapi = '/api/instdata/'
@@ -135,6 +137,18 @@ class ApiTest(MainTests):
             id = r['dataid']
             self.assertEqual(r['vendor'],vtest)
             self.assertEqual(id['content_type'],self.typetest)
-        
+    
+    def testCreateFuture(self):
+        input_data, expres = loadtestids('future.csv')
+        data = {'data': json.dumps(input_data)}
+        response = self.client.post('%sdata/' % self.baseapi, data, 
+                                    HTTP_AUTHORIZATION=self.auth_string)
+        self.assertEqual(response.status_code,200)
+        res = json.loads(response.content)
+        self.assertTrue(res["committed"])
+        result = res.get("result",[])
+        self.assertEqual(len(result),len(input_data))
+        for r,re in zip(result,expres):
+            self.assertEqual(r['result'],re)
         
         

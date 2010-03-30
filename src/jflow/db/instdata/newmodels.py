@@ -481,7 +481,9 @@ class Future(InstrumentInterface):
     def ccy(self):
         return self.contract.curncy
 
-
+    ###Added here ####
+    objects = managers.FutureManager()
+    ##################
 class Equity(EquityBase):
     industry_code     = models.ForeignKey(IndustryCode,null=True,blank=True)
     security_type     = models.SmallIntegerField(choices = equity_type, default = 1, null = True, blank = True)

@@ -220,7 +220,45 @@ class EquityManager(SecurityManager):
                      'settlement_delay': self.safeint(settlement_delay,2),
                      'security_type': convert('security_type',security_type)})
         return data
+
+##### Added here #####
+
+def DateFromBlbString(ds):
+    import datetime
+    dds = ds.split('/')
+    return datetime.date(year = int(dds[2]), month = int(dds[1]), day = int(dds[0]))
+
+class FutureManager(SecurityManager):
+    def get_data(self, id, 
+                 first_trade_date,
+                 last_trade_date,
+                 first_notice_date,
+                 first_delivery_date,
+                 last_delivery_date,
+                  **kwargs):
+                
+                
+                
+            BLB = kwargs.get('BLB' , None)
+                                
+
+            data = super(FutureManager,self).get_data(id, **kwargs)
+            contract = convert('future_contract', BLB)
+            data.update({'contract' : contract.id,
+                         'country' : contract.country,
+                         'exchange' : contract.exchange.id,
+                         'first_trade' : DateFromBlbString(first_trade_date),
+                         'last_trade' : DateFromBlbString(last_trade_date),
+                          'first_notice' :DateFromBlbString(first_notice_date),
+                          'first_delivery':DateFromBlbString(first_delivery_date),
+                          'last_delivery':DateFromBlbString(last_delivery_date),
+                         })
+            return data
+
     
+
+
+##########################
 class FundManager(SecurityManager):
     
     def get_data(self, id, curncy = '', multiplier = 1,

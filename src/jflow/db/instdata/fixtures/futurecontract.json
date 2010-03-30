@@ -1,0 +1,442 @@
+[
+    {
+        "pk": 22, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "CN", 
+            "tick_size": 0.01, 
+            "description": "CAN 10YR BOND FUTURE", 
+            "exchange": 33, 
+            "price_type": "", 
+            "country": "CA", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "", 
+            "type": "bond", 
+            "tick_value": 10.0, 
+            "curncy": "CAD", 
+            "expiry_months": "", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "DU", 
+            "tick_size": 0.0050000000000000001, 
+            "description": "Euro Shatz Future", 
+            "exchange": 12, 
+            "price_type": "PRICE", 
+            "country": "DE", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000 EUR", 
+            "type": "bond", 
+            "tick_value": 5.0, 
+            "curncy": "EUR", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "FV", 
+            "tick_size": 0.0078125, 
+            "description": "US 5 YR BOND FUTURE", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000", 
+            "type": "bond", 
+            "tick_value": 7.8125, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "G_", 
+            "tick_size": 0.01, 
+            "description": "Long Gilt Future", 
+            "exchange": 14, 
+            "price_type": "PRICE", 
+            "country": "UK", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000 GBP", 
+            "type": "bond", 
+            "tick_value": 10.0, 
+            "curncy": "GBP", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "JB", 
+            "tick_size": 0.01, 
+            "description": "JGB 10Y Bond Future", 
+            "exchange": 9, 
+            "price_type": "PRICE", 
+            "country": "JP", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "1,000,000 JPY", 
+            "type": "bond", 
+            "tick_value": 10000.0, 
+            "curncy": "JPY", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "RX", 
+            "tick_size": 0.01, 
+            "description": "Euro-Bund Future", 
+            "exchange": 12, 
+            "price_type": "PRICE", 
+            "country": "DE", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100000", 
+            "type": "bond", 
+            "tick_value": 10.0, 
+            "curncy": "EUR", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "TU", 
+            "tick_size": 0.0078125, 
+            "description": "US 2Y Note Future", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "200,000 USD", 
+            "type": "bond", 
+            "tick_value": 15.625, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "TY", 
+            "tick_size": 0.015625, 
+            "description": "US 10Y Note Future", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000 USD", 
+            "type": "bond", 
+            "tick_value": 15.625, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "UB", 
+            "tick_size": 0.02, 
+            "description": "EURO Buxl 30Y Bond Future", 
+            "exchange": 12, 
+            "price_type": "PRICE", 
+            "country": "DE", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000 EUR", 
+            "type": "bond", 
+            "tick_value": 20.0, 
+            "curncy": "EUR", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "US", 
+            "tick_size": 0.0015625000000000001, 
+            "description": "US Long Bond", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000 USD", 
+            "type": "bond", 
+            "tick_value": 15.625, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "XM", 
+            "tick_size": 0.0050000000000000001, 
+            "description": "Australia 10Y Bond Future", 
+            "exchange": 32, 
+            "price_type": "BILL", 
+            "country": "AU", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100,000", 
+            "type": "bond", 
+            "tick_value": 0.0, 
+            "curncy": "AUD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "YM", 
+            "tick_size": 0.01, 
+            "description": "AUST 3YR BOND FUT", 
+            "exchange": 32, 
+            "price_type": "BILL", 
+            "country": "AU", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "", 
+            "type": "bond", 
+            "tick_value": 0.0, 
+            "curncy": "AUD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "CL", 
+            "tick_size": 0.01, 
+            "description": "WTI Crude Future", 
+            "exchange": 15, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "1,000 US Barrels", 
+            "type": "com", 
+            "tick_value": 10.0, 
+            "curncy": "USD", 
+            "expiry_months": "", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "HG", 
+            "tick_size": 0.050000000000000003, 
+            "description": "Copper Future", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "25,000 LBS", 
+            "type": "com", 
+            "tick_value": 12.5, 
+            "curncy": "USD", 
+            "expiry_months": "", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "NG", 
+            "tick_size": 0.001, 
+            "description": "Natural Gas Future", 
+            "exchange": 15, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "10,000 MMBtu", 
+            "type": "com", 
+            "tick_value": 10.0, 
+            "curncy": "USD", 
+            "expiry_months": "", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "RTA", 
+            "tick_size": 0.10000000000000001, 
+            "description": "Russell 2000 Mini Future", 
+            "exchange": 21, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "100 USD x Index", 
+            "type": "eif", 
+            "tick_value": 10.0, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "SP", 
+            "tick_size": 0.10000000000000001, 
+            "description": "S&P 500 Index Future", 
+            "exchange": 7, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "250 USD x Index", 
+            "type": "eif", 
+            "tick_value": 25.0, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "TP", 
+            "tick_size": 0.5, 
+            "description": "Topix Index Future", 
+            "exchange": 9, 
+            "price_type": "PRICE", 
+            "country": "JP", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "10000 JPY x Index", 
+            "type": "eif", 
+            "tick_value": 5000.0, 
+            "curncy": "JPY", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "VG", 
+            "tick_size": 1.0, 
+            "description": "DJ EURO STOXX 50 Future", 
+            "exchange": 12, 
+            "price_type": "PRICE", 
+            "country": "EU", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "10 EUR x Index", 
+            "type": "eif", 
+            "tick_value": 10.0, 
+            "curncy": "EUR", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "VH", 
+            "tick_size": 1.0, 
+            "description": "DJ STOXX 50 Future", 
+            "exchange": 12, 
+            "price_type": "PRICE", 
+            "country": "EU", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "10 EUR x Index", 
+            "type": "eif", 
+            "tick_value": 10.0, 
+            "curncy": "EUR", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "Z_", 
+            "tick_size": 0.5, 
+            "description": "FTSE 100 Index Future", 
+            "exchange": 14, 
+            "price_type": "PRICE", 
+            "country": "UK", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "\u00a310 x Index", 
+            "type": "eif", 
+            "tick_value": 5.0, 
+            "curncy": "GBP", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "instdata.futurecontract", 
+        "fields": {
+            "index": null, 
+            "code": "UX", 
+            "tick_size": 0.01, 
+            "description": "VIX volatility Future", 
+            "exchange": 6, 
+            "price_type": "PRICE", 
+            "country": "US", 
+            "ticket_cost": 0.0, 
+            "trading_unit": "1000 USD x Index", 
+            "type": "vif", 
+            "tick_value": 10.0, 
+            "curncy": "USD", 
+            "expiry_months": "H,M,U,Z", 
+            "term_structure": 0
+        }
+    }
+]

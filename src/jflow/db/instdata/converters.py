@@ -166,6 +166,44 @@ class BondclassCreator(Converter):
         obj.save()
         return obj
 
+
+class FutureContractConverter(Converter):
+    
+        
+    def _get_future_code(self , code):
+        from jflow.core.finins import future_month_list, future_month_dict
+        blbs = code.split(' ')
+        if len(blbs) == 1:
+            raise ValueError("blb code %s is not recognised" %blbs)
+        blbc = '_'.join(blbs[:-1])
+        N = len(blbc)
+        if N < 4:
+            raise ValueError("blb code %s is not recognised" %blbs)
+        p = 2
+        mc = blbc[N-p]
+        if mc not in future_month_list:
+            p = 3
+            mc = blbc[N-p]
+            if mc not in future_month_list:
+                raise ValueError("blb code %s is not recognised" %mc)
+        cona = blbc[:-p]
+        return cona.upper()
+    
+    def get_or_create(self, code):
+        if not code:
+            raise ValueError("Futures code not provided")
+        
+        fcode = self._get_future_code(code)
+        from jflow.db.instdata.models import FutureContract
+        
+        contracts = FutureContract.objects.filter(code = fcode)
+        if contracts:
+            return contracts[0]
+        else:
+            raise ValueError("The future contract code %s is not in the database" %fcode)
+    
+    
+
 _c = {'exchange':ExchangeCreator(),
       'daycount':DayCountCreator(),
       'curncy': CurrencyCreator(),
@@ -174,7 +212,8 @@ _c = {'exchange':ExchangeCreator(),
       'security_type': SecurityType(),
       'bonddate': BondDate(),
       'collateral': CollateralCreator(),
-      'bondclass': BondclassCreator()}
+      'bondclass': BondclassCreator(),
+      'future_contract' : FutureContractConverter()}
 
 def convert(key,value, **kwargs):
     cc = _c.get(key,None)
