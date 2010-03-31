@@ -13,6 +13,7 @@ MAX_DIGITS = 18
 POSITION_STATUS_DUMMY       = 0
 POSITION_STATUS_SYNCRONIZED = 1
 POSITION_STATUS_MANUAL      = 2
+#POSITION_STATUS_TRADE_TRACK = 3
 #_______________________________________________
 
 
@@ -21,6 +22,7 @@ position_status_choice = (
                           (POSITION_STATUS_DUMMY,'Dummy'),
                           (POSITION_STATUS_SYNCRONIZED,'Syncronized'),
                           (POSITION_STATUS_MANUAL,'Manuall'),
+                          #(POSITION_STATUS_TRADE_TRACK.'TRADE')
                           )
 
 class aggposition(list):

@@ -557,12 +557,12 @@ class Bond(Security):
     accrual_date        = models.DateField(null = True, blank = True)
     maturity_date       = models.DateField(null = True, blank = True)
     collateral_type     = models.ForeignKey(CollateralType)
-    multiplier       = models.FloatField(default = 0.01)
-    month_frequency  = models.IntegerField(default=12)
-    day_count        = models.CharField(choices = dayCount_choices, max_length=20)
-    settlement_delay = models.SmallIntegerField(default = 3)
-    callable         = models.BooleanField(default=False)
-    putable          = models.BooleanField(default=False)
+    multiplier          = models.FloatField(default = 0.01)
+    month_frequency     = models.IntegerField(default=12)
+    day_count           = models.CharField(choices = dayCount_choices, max_length=20)
+    settlement_delay    = models.SmallIntegerField(default = 3)
+    callable            = models.BooleanField(default=False)
+    putable             = models.BooleanField(default=False)
     
     objects = managers.BondManager()
     
