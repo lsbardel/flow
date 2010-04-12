@@ -5,6 +5,7 @@ from django import forms
 from tools import get_trader
 from models import Fund
 
+
 class AddTradeBase(forms.Form):
     '''
     Base Form to add a new trade
