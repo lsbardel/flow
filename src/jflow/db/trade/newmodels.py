@@ -47,6 +47,7 @@ class Fund(models.Model):
                                         blank = True,
                                         null = True,
                                         related_name = 'dataid')
+    #type            = models.CharField(choices = ...)
     
     objects = managers.FundManager()
     
@@ -97,7 +98,7 @@ class Fund(models.Model):
 
 
 class Trader(models.Model):
-    user            = models.ForeignKey(User, unique=True, verbose_name = 'username')
+    user            = models.OneToOneField(User, verbose_name = 'username')
     fund_holder     = models.ForeignKey(FundHolder, verbose_name = 'team')
     machine         = models.CharField(max_length = 50, blank = True)
     port            = models.IntegerField(default = 9080)
@@ -189,8 +190,7 @@ class PortfolioView(TimeStamp):
     A portfolio view.
     This object defines a portfolio view for a particular Fund
     '''
-    code         = models.CharField(max_length=32, blank = True, editable = False)
-    fund         = models.ForeignKey(Fund)
+    fund         = models.ForeignKey(Fund, related_name = 'views')
     name         = models.CharField(max_length=32)
     default      = models.BooleanField(default = False)
     description  = models.TextField(blank = True, null = True)
@@ -207,13 +207,12 @@ class PortfolioView(TimeStamp):
         #    return u'%s: %s' % (self.fund,self.name)
     
     class Meta:
-        ordering  = ('fund',)
+        unique_together = ('fund','name','user')
         
     def save(self):
-        self.code = slugify(u'%s' % self.name)
         default   = self.default
         if default:
-            pviews = self.fund.portfolioview_set.all()
+            pviews = self.fund.views.all()
             for view in pviews:
                 view.default = False
                 view.save()
