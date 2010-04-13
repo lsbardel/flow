@@ -1,8 +1,12 @@
+import json
+
 from jflow.utils.tx import pb, runInThread
-from jflow.core.dates import date2yyyymmdd
-from jflow.quickutils import json
 
 live_key = 'blb_live_feed'
+
+
+def date2yyyymmdd(dte):
+    return dte.day + 100*(dte.month + 100*dte.year)
 
 
 class blbhistory(pb.tempref):

@@ -193,7 +193,7 @@ class VendorId(models.Model):
     '''
     ticker = models.CharField(max_length=30)
     vendor = models.ForeignKey(Vendor)
-    dataid = models.ForeignKey(DataId)
+    dataid = models.ForeignKey(DataId, related_name = 'vendors')
     
     def __unicode__(self):
         return '%s' % self.ticker

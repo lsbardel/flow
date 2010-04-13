@@ -1,5 +1,3 @@
-from jflow.utils.tx import pb
-from jflow.core.dates import todate
 
 from base import *
 import bloomberg
@@ -53,7 +51,7 @@ class blb(DataVendor):
         mmo    = self.cache_factory()
         for d in dates:
             v = vi.next()
-            m = mmo.get_or_create(vendor_id = vid, field = field, dt = todate(d))[0]
+            m = mmo.get_or_create(vendor_id = vid, field = field, dt = DateFromString(d))[0]
             m.mkt_value = v
             m.save()
             

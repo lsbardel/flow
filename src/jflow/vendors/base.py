@@ -1,4 +1,6 @@
-from jflow.core.dates import DateFromString, timedelta
+from datetime import timedelta
+from ccy.tradingcentres import DateFromString
+
 from jflow.db.instdata.models import MktDataCache
 from twisted.internet import defer
 

@@ -1,8 +1,14 @@
-from urllib2 import urlopen
 import csv
+from urllib import urlopen
+from datetime import timedelta
 
-from jflow.core.dates import DateFromString, timedelta, short_month, get_date
-from jflow.lib import numericts, numerictsv, dateseries
+from dateutil.parser import parse as DateFromString
+
+#from jflow.core.dates import DateFromString, get_date
+#from jflow.lib import numericts, numerictsv, dateseries
+
+
+short_month = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')
 
 
 class DataVendor(object):

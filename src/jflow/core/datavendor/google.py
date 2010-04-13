@@ -1,6 +1,6 @@
 
-from jflow.core.dates import short_month
-from base import InternetVendorCsv
+from base import InternetVendorCsv, short_month
+
 
 class google(InternetVendorCsv):
     

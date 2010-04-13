@@ -1,5 +1,5 @@
 
-from jflow.quickutils import json
+import json
 
 
 __all__ = ['jsonbase', 'jsonwrap', 'json']
