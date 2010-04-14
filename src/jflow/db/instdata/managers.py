@@ -7,7 +7,7 @@ from tagging.managers import ModelTaggedItemManager
 from jflow.db.instdata.converters import convert
 from jflow.db.instdata.fields import slugify
 from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
-
+NETIK_CODE = 'NETIK'
 
 class MktDataCacheManager(models.Manager):
     
@@ -173,7 +173,17 @@ class InstrumentManager(models.Manager):
             return f.save()
         else:
             return None
-         
+
+############## Added here #########
+class GenericOTCManager(models.Manager):
+    
+    def get_data(self , id , default_vendor = NETIK_CODE,  **kwargs):
+        kwargs['default_vendor'] = default_vendor 
+        
+        return super(GenericOTCManager ,self).get_data(id , **kwargs)  
+        
+##############
+       
 
 class SecurityManager(InstrumentManager):
     
