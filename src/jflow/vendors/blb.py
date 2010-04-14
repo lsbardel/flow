@@ -1,6 +1,18 @@
+from datetime import date
 
 from base import *
 import bloomberg
+
+
+def yyyymmdd2date(dte):
+    try:
+        y = dte / 10000
+        md = dte % 10000
+        m = md / 100
+        d = md % 100
+        return date(y,m,d)
+    except:
+        raise ValueError, 'Could not convert %s to date' % dte
 
 
 class blb(DataVendor):
@@ -51,7 +63,11 @@ class blb(DataVendor):
         mmo    = self.cache_factory()
         for d in dates:
             v = vi.next()
-            m = mmo.get_or_create(vendor_id = vid, field = field, dt = DateFromString(d))[0]
+            try:
+                dt = yyyymmdd2date(d)
+            except:
+                continue
+            m = mmo.get_or_create(vendor_id = vid, field = field, dt = dt)[0]
             m.mkt_value = v
             m.save()
             

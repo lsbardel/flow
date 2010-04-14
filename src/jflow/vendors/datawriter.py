@@ -41,8 +41,11 @@ def csvToCache(vfid, data, CacheFactory, std):
                 
             val = float(val)
             dt  = std(dt)
-            m = CacheFactory.get_or_create(vendor_id = vid, field = field, dt = dt)[0]
-            m.mkt_value = val
+            try:
+                m = CacheFactory.get(vendor_id = vid, field = field, dt = dt)
+                m.mkt_value = val
+            except:
+                m = CacheFactory(vendor_id = vid, field = field, dt = dt, mkt_value = val)
             m.save()
         except:
             pass

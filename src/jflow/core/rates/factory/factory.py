@@ -19,7 +19,7 @@ __all__ = ['vendorfieldid',
 
 class vendorfieldid(object):
     '''
-    Vendro Field Id object
+    Vendor Field Id object
     '''
     def __init__(self, id, vid, field, vendor_field, vendor, numeric = True):
         self.id           = id

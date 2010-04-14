@@ -7,7 +7,10 @@ from twisted.internet import defer
 
 
 class deferredLoader(defer.Deferred):
-    
+    '''
+    Utility class for handling vendors with asyncronous
+    loading mechanism, such as bloomberg
+    '''
     def __init__(self, ci, vfid, start, end, d):
         defer.Deferred.__init__(self)
         self.ci    = ci
@@ -17,9 +20,15 @@ class deferredLoader(defer.Deferred):
         d.addCallbacks(self.historyarrived,self.historyfailure)
 
     def historyarrived(self, res):
-        self.ci.historyarrived(self.vfid, res)
-        result = self.ci.updatehandler(self.vfid, self.start, self.end)
-        self.callback(result)
+        '''
+        History has arrived from vendor
+        '''
+        try:
+            self.ci.historyarrived(self.vfid, res)
+            result = self.ci.updatehandler(self.vfid, self.start, self.end)
+            self.callback(result)
+        except Exception, e:
+            self.errback(e)
         
     def historyfailure(self, err):
         self.callback()
