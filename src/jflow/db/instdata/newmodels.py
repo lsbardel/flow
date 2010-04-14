@@ -704,7 +704,13 @@ class Depo(InstrumentInterface):
     
     def make_position(self, **kwargs):
         return FACTORY.cash(inst = self, value_date = self.value_date, **kwargs)
-        
+
+##### Added here to manage generic securities
+class GenericOTC(InstrumentInterface):
+    
+    objects = managers.GenericOTCManager()
+
+######       
 
 class InstDecomp(models.Model):
     code         = models.CharField(max_length = 255, blank = True)
