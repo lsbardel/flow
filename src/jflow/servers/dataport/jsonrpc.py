@@ -4,16 +4,9 @@ from django.core.exceptions import *
 from django.contrib.auth import authenticate
 
 from jflow.core.dates import get_livedate
-from jflow.db.tagutils import clean as cleantag
 from jflow.db.trade.models import Position, FundHolder
-from jflow.db.instdata.models import InstrumentCode, Future, FutureContract, InstDecomp
-from jflow.db.instdata.loaders import get_loader
+from jflow.db.instdata.models import Future, FutureContract, InstDecomp
 from jflow.utils.tx import runInThread, runInMainThread
-
-from jflow.db.instdata.id import dbid, getid
-from jflow.db.instdata.models.data import MktData, StringMktData
-
-from jflow.db.instdata.models.data import DataField 
 
 from jflow.rates import get_cache, get_analysis, log
 
@@ -21,6 +14,7 @@ from unuk.core.jsonrpc.txweb import JSONRPC
 
 
 cache = get_cache()
+
 
 
 def flush_portfolio(code = None):

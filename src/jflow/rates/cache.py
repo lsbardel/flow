@@ -5,8 +5,7 @@ from jflow.core import rates as RATES
 from jflow.db.settings import MAX_RATE_LOADING_THREADS, LIVE_CALCULATION
 from jflow.db.settings import LOGGING_VERBOSE, SERVER_LOGGER_MODULE
 from jflow.db.geo import currency
-from jflow.db.instdata.models import get_vendor
-from jflow.db.instdata.id import getid, getidobj
+from jflow.db.instdata.id import getid, get_vendor, getidobj
 from jflow.db.utils import function_module
 from jflow.utils.tx import ThreadPool
 
