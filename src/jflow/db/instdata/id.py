@@ -1,37 +1,77 @@
-from jflow.db.instdata.models import Vendor, DataId
+#
+# High level interfaces for retriving data ids, datafield and vendors
+#
+#
+from datetime import date
+
+from django.core.cache import cache
+from jflow.db.instdata import settings
+from jflow.db.instdata.models import Vendor, DataId, DataField, VendorDataField
+from jflow.core.rates import vendorfieldid
+
+
 
 def TrimCode(code):
-    return str(code).upper()
+    return str(code).upper().replace(' ','')
 
-def get_vendor(code):
-    code = TrimCode(code)
-    try:
-        return Vendor.objects.get(code = code)
-    except:
-        return None
-
-def getidobj(code):
-    if isinstance(code,DataId):
+def get_code_cache(code,model):
+    if isinstance(code,model):
         return code
-    else:
-        code = TrimCode(code)
+    code = TrimCode(code) 
+    key  = '%s:%s' % (model._meta,code)
+    fdb  = cache.get(key,None)
+    if not fdb:
         try:
-            return DataId.objects.get(code = code)
+            fdb = model.objects.get(code = code)
         except:
             return None
+        cache.set(key,fdb)
+    return fdb
+    
+def get_vendor(code = None):
+    if not code:
+        code = settings.DEFAULT_VENDOR_FOR_SITE
+    return get_code_cache(code,Vendor)
         
-def getid(code, vendor = None):
-    id = getidobj(code)
+def get_id(code, vendor = None):
+    id = get_code_cache(code,DataId)
     if id:
         return dbid(id,vendor)
     else:
         return None
+    
+def get_field(field = None):
+    '''
+    Return a valid field proxy object
+    '''
+    if field == None:
+        field = settings.DEFAULT_DATA_FIELD
+    return get_code_cache(field,DataField)
+
+def get_vendorfields_for_field(field):
+    model = VendorDataField
+    key  = '%s:forfield:%s' % (model._meta,field)
+    fdb  = cache.get(key,None)
+    if fdb is None:
+        fdb = model.objects.filter(field = field)
+        cache.set(key,fdb)
+    return fdb
+
+
+
+class vfid(vendorfieldid):
+    
+    def __init__(self, vid, vfield):
+        field = vfield.field
+        numeric = field.format == 'numeric'
+        super(vfid,self).__init__(vid.dataid, vid, vfield.field, vfield, vid.vendor, numeric)
+            
+
 
 class dbid(object):
     '''
     Wrapper for for DataId objects
     '''
-    _default_field   = 'LAST_PRICE'
     fields_shortcuts = {'ASK' :'ASK_PRICE',
                         'BID' :'BID_PRICE',
                         'LOW' :'LOW_PRICE',
@@ -44,22 +84,17 @@ class dbid(object):
         vendor    a Vendor object, a vendor string code or None
         '''
         self.__id = id
-        if vendor and not isinstance(vendor,Vendor):
-            try:
-                vendor = Vendor.objects.get(code = str(vendor))
-            except:
-                pass
+        if vendor:
+            vendor = get_vendor(vendor)
         if not vendor:
             vendor = id.default_vendor
-            
+        if not vendor:
+            vendor = get_vendor()
         self.__def_vendor   = vendor
-        self.vendorids      = id.vendorid_set.all()
+        self.vendorids      = id.vendors.all()
         self.__def_vendorid = self.vendorids.get(vendor = vendor)
         self.vendorList     = Vendor.objects.all()
         self.__vendor       = self.__def_vendor
-    
-    def default_field(self):
-        return self._default_field
     
     def __str__(self):
         return str(self.__id)
@@ -95,13 +130,10 @@ class dbid(object):
         '''
         Return the best possible vendor id and field
         '''
-        if not isinstance(field,DataField):
-            try:
-                field = DataField.objects.get(code = field)
-            except:
-                return None
-        # List of vendor datafield available for field field
-        flist = VendorDataField.objects.filter(field = field)
+        field = get_field(field)
+        if not field:
+            return None
+        flist = get_vendorfields_for_field(field)
 
         # If default vendor is available, start with it first
         vorder = []
@@ -113,7 +145,7 @@ class dbid(object):
         for v in vorder:
             vid    = self.testvendor(v)
             if vid:
-                f      = flist.filter(vendor = v)
+                f = flist.filter(vendor = vid.vendor)
                 if f:
                     return vfid(vid, f[0])
         
@@ -131,6 +163,7 @@ class dbid(object):
     def vendorid(self, field = None, vendor = None):
         vid = self.avaiable_vendorid(field,vendor)
         if not vid:
+            return None
             return buildVendor(self.__id, field)
         else:
             return vid
@@ -183,28 +216,7 @@ class dbid(object):
                 return self.__def_vendorid
             
     def get_field(self, field = None):
-        '''
-        Return a valid field code
-        '''
-        if field == None:
-            field = self.default_field()
-        elif isinstance(field, DataField):
-            return field
-        
-        field = TrimCode(field)
-        
-        try:
-            return DataField.objects.get(code = field)
-        except:
-            field = self.fields_shortcuts.get(field,None)
-            if field:
-                try:
-                    return DataField.objects.get(code = field)
-                except:
-                    return None
-            else:
-                return None        
-    
+        return get_field(field)
         
     
 def parsets(cts, start, end, period = None):
@@ -213,7 +225,7 @@ def parsets(cts, start, end, period = None):
     names  = cpars.names()
     ids    = {}
     for na in names:
-        id = getid(na)
+        id = get_id(na)
         if id:
             h  = id.history(start,end)
             ids[str(na)] = h

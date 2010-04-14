@@ -23,7 +23,6 @@ def flush_portfolio(code = None):
     cache.flush(code)
 
 
-
 def setup_dataserver():
     from jflow.core.timeseries import operators
     from jflow import rates

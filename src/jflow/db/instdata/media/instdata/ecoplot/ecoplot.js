@@ -22,6 +22,8 @@ $.start_ecoplot = function(elem,poptions) {
 		var el   = $(this);
 		var url  = $('a',el).attr('href');
 		var code = $('.code',el);
+		var height = parseInt($('.height',el).html());
+		el.height(height);
 		var cmline;
 		if(code.length) {
 			cmline = {symbol: code.html()};
@@ -490,8 +492,9 @@ ecop.paginate = function($this) {
 	var elems   = options.elems;
 	
 	var _cl     = function(name) {
-		return options.classname + '-' + name;
-	}
+		return name;
+		//return options.classname + '-' + name;
+	};
 	
 	page = $(document.createElement("div")).addClass(_cl("main"));
 	elems.canvas_cont  = $(document.createElement("div")).addClass(options.convasContClass);

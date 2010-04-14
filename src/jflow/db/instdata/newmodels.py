@@ -6,6 +6,7 @@ import datetime
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 from tagging.fields import TagField
 
@@ -766,3 +767,17 @@ class MktDataCache(MktDataBase):
     
     class Meta:
         get_latest_by   = 'dt'
+        
+
+class EconometricAnalysis(models.Model):
+    user    = models.ForeignKey(User)
+    command = models.TextField()
+    title   = models.CharField(max_length = 64, blank = True)
+    description = models.TextField(blank = True)
+    tags        = TagField('labels', blank = True, null = True,
+                           help_text = "Insert keywords separated by space")
+    class Meta:
+        unique_together = ('user','command')
+
+    def __unicode__(self):
+        return self.title or self.command

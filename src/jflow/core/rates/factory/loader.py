@@ -1,5 +1,5 @@
 '''
-Rate Loader classes
+Classes for asyncronous loading of rates
 
 This class derives from Twisted defer.Deferred
 '''
@@ -14,7 +14,7 @@ from twisted.internet import defer
 def histloader(factory, start, end, period, vfid, parent = None):
     '''
     Rate History loader function.
-    Helper function to load rates into memory
+    Helper function to load rates into cache
     '''
     if factory.hrates:
         return mhistloader(factory, start, end, period, vfid, parent)

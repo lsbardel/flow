@@ -5,17 +5,16 @@ from jflow.core import rates as RATES
 from jflow.db.settings import MAX_RATE_LOADING_THREADS, LIVE_CALCULATION
 from jflow.db.settings import LOGGING_VERBOSE, SERVER_LOGGER_MODULE
 from jflow.db.geo import currency
-from jflow.db.instdata.id import getid, get_vendor, getidobj
+from jflow.db.instdata.id import get_id, get_vendor, get_field
 from jflow.db.utils import function_module
 from jflow.utils.tx import ThreadPool
 
 from twisted.python import log as twisted_log
 import factory
-import fields
 
 __all__ = ['log',
            'get_cache',
-           'getid',
+           'get_id',
            'get_rate',
            'get_history',
            'get_analysis',
@@ -37,8 +36,8 @@ def get_cache():
     if cache.factory == None:
         import codes
         cache.get_currency = currency
-        cache.factory      = factory.Factory(cache, codes, getid)
-        cache.get_field    = fields.get_field
+        cache.factory      = factory.Factory(cache, codes, get_id)
+        cache.get_field    = get_field
         cache.get_vendor   = get_vendor
         cache.loopingCall  = None
         cache.log_verbose  = LOGGING_VERBOSE

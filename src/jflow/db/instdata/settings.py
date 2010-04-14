@@ -5,11 +5,9 @@ DATE_FORMAT = settings.DATE_FORMAT
 
 DEFAULT_VENDOR_FOR_SITE = getattr(settings,
                                  'DEFAULT_VENDOR_FOR_SITE',
-                                 'google')
+                                 'GOOGLE')
 
-LOWER_CASE_VENDORS = getattr(settings,
-                             'LOWER_CASE_VENDORS',
-                             True)
+DEFAULT_DATA_FIELD = getattr(settings, 'DEFAULT_DATA_FIELD', 'LAST_PRICE')
 
 FIRM_CODE_NAME = getattr(settings,
                          'FIRM_CODE_NAME',
