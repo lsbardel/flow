@@ -3,6 +3,8 @@ from datetime import datetime
 from jflow.conf import settings
 from jflow.core import dates
 from jflow.core.cache import cache as jflow_cache
+from jflow.core.timeseries import dateseries, numericts, toflot
+from jflow.core.dates import todate
 
 __all__ = ['get_cache']
 
@@ -34,7 +36,6 @@ class rateCache(object):
         self.logger        = None
         self.livecalc      = settings.LIVE_CALCULATION
         self.trimCode      = trimcode or TrimCodeDefault
-        self.__rates       = {}
         if settings.MAX_RATE_LOADING_THREADS > 0:
             from jflow.utils.tx import ThreadPool
             self.loaderpool = ThreadPool(name = "Rate loader pool",
@@ -64,11 +65,7 @@ class rateCache(object):
         if not self.livecalc and dte.live:
             return dates.get_livedate(dates.prevbizday())
         else:
-            return dte            
-    
-    def clearlive(self, live_key):
-        for r in self.__rates.values():
-            r.clearlive(live_key)
+            return dte
             
     def flush(self):
         '''
@@ -85,18 +82,9 @@ class rateCache(object):
                 nr[k] = r
         self.__rates = nr
     
-    def clear(self):
-        '''
-        Close all connections and flush the memory
-        '''
-        for r in self.__rates:
-            r.flush()
-        self.__rates = {}
-    
     def __set(self, code, creator):
         ts = rateHistory(code,creator)
-        self.cache.set(self.ratekey(code),ts)
-        #self.__rates[code] = ts
+        ts.save()
         return ts
     
     def get_rate_holder(self, code):
@@ -156,7 +144,7 @@ class cacheObject(object):
     def __new__(cls, *args, **kwargs):
         obj = super(cacheObject,cls).__new__(cls)
         obj._cache = get_cache()
-        obj.beckend = jflow_cache
+        obj.backend = jflow_cache
         return obj
         
     def __repr__(self):
@@ -168,12 +156,13 @@ class cacheObject(object):
     def __getstate__(self):
         odict = self.__dict__.copy()
         odict.pop('_cache')
+        odict.pop('backend')
         return odict
     
     def __setstate__(self,dict):
         self.__dict__.update(dict)
         self._cache = get_cache()
-        self.beckend = jflow_cache
+        self.backend = jflow_cache
     
     def __get_cache(self):
         return self._cache
@@ -201,20 +190,25 @@ class rateHistory(cacheObject):
         self._factory        = creator
         self._factory.holder = self
         self.live            = None
+        self.start           = None
+        self.end             = None
+        self._timeseries     = {}
+        
+    def save(self):
+        self.backend.set(self.cache.ratekey(self.code),self,settings.RATE_CACHE_SECONDS)
         
     def __repr__(self):
         return '%s: %s' % (self.__class__.__name__,self._factory)
         
+    def __getstate__(self):
+        odict = super(rateHistory,self).__getstate__()
+        odict.pop('_timeseries')
+        return odict
+    
     def __setstate__(self,dict):
         super(rateHistory,self).__setstate__(dict)
+        self._timeseries = {}
         self._factory.holder = self
-                
-    def flush(self):
-        '''
-        Flush the memory cache
-        '''
-        self.__vendors        = {}
-        self.live             = None
         
     def empty(self):
         return not (len(self.__vendors) or self.life) 
@@ -226,29 +220,33 @@ class rateHistory(cacheObject):
         @param vfid: vendor field id
         @see: jflow.core.rates.factory.factory.vendorfieldid 
         '''
-        vendor = str(vfid.vendor)
-        field  = str(vfid.field)
-        self.__lastaccess = datetime.now()
-        nts = None
-        tss = self.__vendors.get(vendor,None)
-            
-        if tss == None:
-            tss = {}
-            self.__vendors[vendor] = tss
-        else:
-            nts = tss.get(field,None)
-                
+        key    = '%s:%s:%s' % (self.cache.ratekey(self.code),vfid.field,vfid.vendor)
+        nts    = self._timeseries.get(key,None)
+             
         if nts == None:
-            name = str(vfid.code())
+            fts  = self.backend.get(key,[])
             if vfid.numeric:
-                nts = numericts(name)
+                nts = numericts(key)
             else:
-                nts = dateseries(name)
+                nts = dateseries(key)
             
-            tss[field] = nts
-                
+            for d,v in fts:
+                nts[todate(d)] = v
+            
+            self._timeseries[key] = nts
+                            
         return nts
     
+    def memorise(self, ts):
+        if ts:
+            self.start = todate(ts.front()[0])
+            self.end   = todate(ts.back()[0])
+            tslist     = [(todate(d),v) for d,v in ts.items()]
+            self.backend.set(ts.name,tslist,settings.RATE_CACHE_SECONDS)
+            self.save()
+        else:
+            self.start = None
+            self.end   = None
         
     def clearlive(self, live_key):
         if self.live:
@@ -361,14 +359,3 @@ class rateHistory(cacheObject):
                 if d>end:
                     break
                 v.attach(observer)
-
-    def start(self):
-        key = '%s:start' % self.cache.ratekey(self.code)
-        return self.backend.get(key)
-
-    def end(self):
-        key = '%s:end' % self.cache.ratekey(self.code)
-        return self.backend.get(key)
-    
-        
-

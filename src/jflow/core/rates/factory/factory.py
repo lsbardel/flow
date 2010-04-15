@@ -130,8 +130,8 @@ class rateFactory(cacheObject):
         if end.live:
             end = get_livedate(dates.prevbizday())
             
-        _start = self.holder.start()
-        _end   = self.holder.end()
+        _start = self.holder.start
+        _end   = self.holder.end
         load = True
         if _start:
             oned = timedelta(days = 1)
@@ -156,7 +156,7 @@ class rateFactory(cacheObject):
         pass
     
     def _handleresult(self, loader, res):
-        raise NotImplementedError
+        return res
     
     def make_rate(self, code, dte):
         #
@@ -231,31 +231,12 @@ class idFactory(rateFactory):
                 self.log('loading "%s"' % vid, verbose = 3)
                 return ci.history(vid,
                                   loader.start.date,
-                                  loader.end.date)
+                                  loader.end.date,
+                                  self.holder)
             else:
                 self.err('Cannot load rate. Vendor "%s" has no interface available' % vid.vendor)
         else:
             self.err('Cannot load rate. No data vendor available')
-    
-    def _handleresult(self, loader, res):
-        '''
-        We have received an update by the loader.
-        If available res is an iterable over Market data objects
-        '''
-        self.log("received result from %s" % loader, verbose = 3)
-        vfid = loader.vfid
-        if res and vfid:
-            nts    = self.holder.timeseries(vfid)
-#            ts     = self.holder.ts
-            for r in res:
-                dt = r.dt
-                nts[dt]   = r.mkt_value
-#                if ts.has_key(dt):
-#                    cr = ts[dt]
-#                else:
-#                    cr = self.make(dt)
-#                    ts[dt] = cr
-#                cr[field] = v
     
     def populate(self):
         '''

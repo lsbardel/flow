@@ -4,9 +4,10 @@ from django.forms.models import modelform_factory
 
 from tagging.managers import ModelTaggedItemManager
 
+from jflow.conf import settings
 from jflow.db.instdata.converters import convert
 from jflow.db.instdata.fields import slugify
-from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
+
 NETIK_CODE = 'NETIK'
 
 class MktDataCacheManager(models.Manager):
@@ -88,7 +89,7 @@ class DataIdManager(ModelTaggedItemManager):
                     id = None
             if not id:
                 id = None
-                default_vendor  = convert('vendor', default_vendor or DEFAULT_VENDOR_FOR_SITE)
+                default_vendor  = convert('vendor', default_vendor or settings.DEFAULT_VENDOR_FOR_SITE)
                 created = True
         
         if default_vendor:

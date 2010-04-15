@@ -25,7 +25,7 @@ class deferredLoader(defer.Deferred):
         '''
         try:
             self.ci.historyarrived(self.vfid, res)
-            result = self.ci.updatehandler(self.vfid, self.start, self.end)
+            result = self.ci.get_result(self.vfid, self.start, self.end)
             self.callback(result)
         except Exception, e:
             self.errback(e)
@@ -92,16 +92,16 @@ class DataVendor(object):
     def get_cache(self, vfid):
         return self.cache_factory().filter(field = vfid.field, vendor_id = vfid.vid)
         
-    def history(self, vfid, start, end):
+    def history(self, vfid, start, end, hcache):
         '''
-        Fetch historical data from vendor
+        Fetch historical data from data provider
+        hcache is an istance to the caching class
         '''
         cache = self.get_cache(vfid)
         st = start
         ed = end
         result = None
         
-        # check the cache
         if cache:
             p0 = cache.filter(dt__lte = st)
             
@@ -112,17 +112,21 @@ class DataVendor(object):
                     result = cache.filter(dt__gte = start).filter(dt__lte = end)
                 else:
                     st = ldt + timedelta(1)
-            
-        if result == None:
+                    
+        if result is None:
             result = self._history(vfid, st, ed)
             
             if isinstance(result,defer.Deferred):
                 return deferredLoader(self, vfid, start, end, result)
             else:
-                return self.updatehandler(vfid, start, end, result)
+                return self.get_result(vfid, start, end, result, hcache)
         else:
             return result
     
+    def get_result(self, vfid, start, end, result, hcache):
+        result = self.updatehandler(vfid, start, end, result, hcache)
+        hcache.memorise(result)
+        return result
     
     def value(self, ticker, dte = None, field = None):
         raise NotImplementedError
@@ -140,7 +144,8 @@ class DataVendor(object):
     def _save(self, res):
         return res
     
-    def updatehandler(self, vfid, start, end, result = None):
+    def updatehandler(self, vfid, start, end, result, hcache):
+        
         return self.get_cache(vfid).filter(dt__gte = start).filter(dt__lte = end)
         
     def historyfailure(self,failure):

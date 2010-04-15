@@ -12,9 +12,9 @@ from piston.utils import rc, throttle
 from piston.doc import documentation_view
 
 from jflow import get_version
+from jflow.conf import settings
 from jflow.db.instdata import models
 from jflow.db.instdata.fields import slugify
-from jflow.db.instdata.settings import DEFAULT_VENDOR_FOR_SITE
 from jflow.db.instdata.tests import loadtestids
 
 def strkeys(item):
@@ -188,7 +188,7 @@ class DataIdHandler(BaseHandler):
             if name:
                 vids.append((v, name))
                 idcodes[code] = name
-        vidcode = DEFAULT_VENDOR_FOR_SITE
+        vidcode = settings.DEFAULT_VENDOR_FOR_SITE
         idcode  = idcodes.get(vidcode,None)
         if not idcode:
             vidcode = None

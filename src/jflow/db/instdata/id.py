@@ -5,7 +5,8 @@
 from datetime import date
 
 from django.core.cache import cache
-from jflow.db.instdata import settings
+
+from jflow.conf import settings
 from jflow.db.instdata.models import Vendor, DataId, DataField, VendorDataField
 from jflow.core.rates import vendorfieldid
 

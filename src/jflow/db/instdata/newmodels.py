@@ -772,6 +772,7 @@ class MktDataCache(MktDataBase):
     objects = managers.MktDataCacheManager()
     
     class Meta:
+        ordering = ('dt',)
         get_latest_by   = 'dt'
         
 

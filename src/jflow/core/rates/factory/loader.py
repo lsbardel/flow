@@ -88,7 +88,6 @@ class bhistloader(DeferredInChain):
         The loader is ready to create the result.
         Call the factory-specific handler
         '''
-        self.factory._handleresult(self, res)
         holder      = self.holder
         if self.realstart == self.realend:
             result = holder.get(self.realstart)
@@ -104,10 +103,10 @@ class bhistloader(DeferredInChain):
         The loader is ready to create the result.
         Call the factory-specific handler
         '''
-        self.factory._handleresult(self, res)
+        res = self.factory._handleresult(self, res)
         holder      = self.holder
         if self.realstart == self.realend:
-            result = holder.get(self.realstart)
+            result = res.get(self.realstart)
         else:
             result = holder.getts(self.realstart,
                                   self.realend,
