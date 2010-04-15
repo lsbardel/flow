@@ -4,8 +4,8 @@ Memcached cache backend
 
 import time
 
-from django.core.cache.backends.base import BaseCache, InvalidCacheBackendError
-from django.utils.encoding import smart_unicode, smart_str
+from jflow.core.cache.backends.base import BaseCache, ImproperlyConfigured
+from jflow.utils.encoding import smart_str
 
 try:
     import cmemcache as memcache
@@ -18,11 +18,12 @@ except ImportError:
     try:
         import memcache
     except:
-        raise InvalidCacheBackendError("Memcached cache backend requires either the 'memcache' or 'cmemcache' library")
+        raise ImproperlyConfigured("Memcached cache backend requires either the 'memcache' or 'cmemcache' library")
 
 class CacheClass(BaseCache):
+    
     def __init__(self, server, params):
-        BaseCache.__init__(self, params)
+        super(CacheClass,self).__init__(params)
         self._cache = memcache.Client(server.split(';'))
 
     def _get_memcache_timeout(self, timeout):

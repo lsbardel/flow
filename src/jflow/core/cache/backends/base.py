@@ -1,7 +1,7 @@
 '''
 Base class for jflow cache
 '''
-
+from jflow.core.exceptions import ImproperlyConfigured
 
 class BaseCache(object):
     

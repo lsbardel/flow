@@ -47,4 +47,4 @@ def get_cache(backend_uri):
     module = import_module(name)
     return getattr(module, 'CacheClass')(host, params)
 
-cache = get_cache(settings.JFLOW_CACHE_BACKEND)
+cache = get_cache(settings.CACHE_BACKEND)

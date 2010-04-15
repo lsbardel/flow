@@ -1,3 +1,3 @@
-JFLOW_CACHE_BACKEND = 'dummy://'
+CACHE_BACKEND = 'dummy://'
 
 BADVALUE = 9999999

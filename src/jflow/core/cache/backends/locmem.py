@@ -13,8 +13,8 @@ from jflow.core.cache.utils import RWLock
 
 class CacheClass(BaseCache):
     
-    def __init__(self, params):
-        super(BaseCache,self).__init__(params)
+    def __init__(self, _, params):
+        super(CacheClass,self).__init__(params)
         self._cache = {}
         self._expire_info = {}
         max_entries = params.get('max_entries', 300)

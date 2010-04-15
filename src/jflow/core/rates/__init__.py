@@ -1,6 +1,6 @@
 
 from jflow.core import dates
-from handler import *
+from cache import get_cache
 from factory import *
 import objects
 
