@@ -12,16 +12,15 @@ class Factory(base.cacheObject):
     Its method select is called by the rate-cache when a new rate
     factory class is required.
     '''
-    def __init__(self, cache, codes, getid):
-        super(Factory,self).__init__(cache)
+    def __init__(self, codes, getid):
         self.codes       = codes
-        self.scalar      = base.scalarFactoryFactory(self.cache)
+        self.scalar      = base.scalarFactoryFactory()
         #self.fx          = fxfactory(self.cache,codes.fx_cross_code)
         #self.futurecurve = futurecurve(holder = self.cache,
         #                               code = codes.future_curve_code,
         #                               yccode = codes.yield_curve_code)
         self.get_id       = getid
-        self.get_currency = cache.get_currency
+        self.get_currency = self.cache.get_currency
         
     def __str__(self):
         return "Rate Factory"

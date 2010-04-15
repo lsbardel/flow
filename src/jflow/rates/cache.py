@@ -1,13 +1,11 @@
 '''
 Wrap jflow.core.rates to be used with django database modules
 '''
+from jflow.conf import settings
 from jflow.core import rates as RATES
-from jflow.db.settings import MAX_RATE_LOADING_THREADS, LIVE_CALCULATION
-from jflow.db.settings import LOGGING_VERBOSE, SERVER_LOGGER_MODULE
 from jflow.db.geo import currency
 from jflow.db.instdata.id import get_id, get_vendor, get_field
 from jflow.db.utils import function_module
-from jflow.utils.tx import ThreadPool
 
 from twisted.python import log as twisted_log
 import factory
@@ -21,7 +19,7 @@ __all__ = ['log',
            'get_value',
            'register_to_rates']
 
-log = function_module(SERVER_LOGGER_MODULE, twisted_log)
+log = function_module(settings.SERVER_LOGGER_MODULE, twisted_log)
 
 
 
@@ -36,16 +34,11 @@ def get_cache():
     if cache.factory == None:
         import codes
         cache.get_currency = currency
-        cache.factory      = factory.Factory(cache, codes, get_id)
+        cache.factory      = factory.Factory(codes, get_id)
         cache.get_field    = get_field
         cache.get_vendor   = get_vendor
         cache.loopingCall  = None
-        cache.log_verbose  = LOGGING_VERBOSE
         cache.logger       = log
-        cache.livecalc     = LIVE_CALCULATION
-        cache.loaderpool   = ThreadPool(name = "Rate loader pool",
-                                        minthreads = 1,
-                                        maxthreads = MAX_RATE_LOADING_THREADS)
     return cache
 
 def load_factory(f):

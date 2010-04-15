@@ -57,19 +57,18 @@ class rateFactory(cacheObject):
     Base class for rate factories.
     A rateFactory is an utility class for creating rates.
     '''
-    def __init__(self, cache):
-        '''
-            holder    the rateHistory object
-        '''
-        super(rateFactory,self).__init__(cache)
-        self.__history  = None
-        self.lock       = RLock()
+    def __init__(self):
+        self._history = None
+        
+    def __getstate__(self):
+        odict = super(rateFactory,self).__getstate__()
+        odict.pop('_history')
+        return odict
         
     def __set_holder(self,h):
-        self.__history = h
-        #self.populate()
+        self._history = h
     def __get_holder(self):
-        return self.__history
+        return self._history
     holder = property(fget = __get_holder, fset = __set_holder)
     
     def __get_loaderpool(self):
@@ -120,7 +119,7 @@ class rateFactory(cacheObject):
     def _loading_dates(self, start, end, vid):
         '''
         Select date range which needs to be fetch
-        from database cache or data Vendor
+        from cache or data provider
         '''
         if start > end:
             end = start
@@ -130,15 +129,9 @@ class rateFactory(cacheObject):
         
         if end.live:
             end = get_livedate(dates.prevbizday())
-        
-        try:
-            fts = self.holder.timeseries(vid)
-            _start = get_livedate(qdatetodate(fts.front()[0]))
-            _end   = get_livedate(qdatetodate(fts.back()[0]))
-        except:
-            _start    = None
-            _end      = None
-        
+            
+        _start = self.holder.start()
+        _end   = self.holder.end()
         load = True
         if _start:
             oned = timedelta(days = 1)
@@ -190,8 +183,8 @@ class idFactory(rateFactory):
         vendorid        (attribute) return an object which has
                                     the information about the data provider
     '''
-    def __init__(self, cache, id, ccy):
-        super(idFactory,self).__init__(cache)
+    def __init__(self, id, ccy):
+        super(idFactory,self).__init__()
         self.id     = id
         self.ccy    = ccy
         self.log("created", verbose = 4)
@@ -276,8 +269,8 @@ class compositeFactory(rateFactory):
     A composite rate factory.
     Implements the _performload method
     '''
-    def __init__(self, cache, numeric, *codes):
-        super(compositeFactory,self).__init__(cache)
+    def __init__(self, numeric, *codes):
+        super(compositeFactory,self).__init__()
         self.numeric     = numeric
         self.underlyings = list(codes)
         
@@ -320,8 +313,8 @@ class compositeObjectFactory(compositeFactory):
     '''
     A composite object rate factory.
     '''
-    def __init__(self, cache, numeric, *codes):
-        super(compositeObjectFactory,self).__init__(cache, numeric, *codes)
+    def __init__(self, numeric, *codes):
+        super(compositeObjectFactory,self).__init__(numeric, *codes)
     
     def _handleresult(self, loader, res):
         raise NotImplementedError
@@ -333,9 +326,9 @@ class compositeCodeFactory(compositeObjectFactory):
     A composite rate factory.
     Implements the _performload method
     '''
-    def __init__(self, cache, code, numeric, *codes):
+    def __init__(self, code, numeric, *codes):
         self._code = code
-        super(compositeCodeFactory,self).__init__(cache, numeric, *codes)
+        super(compositeCodeFactory,self).__init__(numeric, *codes)
         
     def code(self):
         return self._code

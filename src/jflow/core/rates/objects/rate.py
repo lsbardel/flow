@@ -1,4 +1,4 @@
-from jflow.core.settings import BADVALUE
+from jflow.conf import settings
 from jflow.core import dates
 
 from lazy import lazyrate
@@ -65,7 +65,7 @@ class Rate(object):
     live = property(fget = __get_live)
     
     def __get_badvalue(self):
-        return BADVALUE
+        return settings.BADVALUE
     badvalue = property(fget = __get_badvalue)
     
     def get(self, *args, **kwargs):
