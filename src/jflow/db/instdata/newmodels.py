@@ -10,9 +10,9 @@ from django.contrib.auth.models import User
 
 from tagging.fields import TagField
 
+from jflow.conf import settings
 from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
-from jflow.db.instdata import settings
 from jflow.db.instdata import managers
 from jflow.db.instdata.fields import SlugCode, LazyForeignKey, slugify
 from jflow.db.instdata.dynct import ExtraContentModel
