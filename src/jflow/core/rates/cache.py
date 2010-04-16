@@ -9,6 +9,7 @@ from jflow.log import LoggingClass
 
 __all__ = ['get_cache']
 
+
 def TrimCodeDefault(code):
     return str(code).upper().replace(' ','_')
     
@@ -59,6 +60,9 @@ class rateCache(LoggingClass):
         else:
             return rate
         #return self.__rates.get(ckey,None)
+        
+    def clearlive(self):
+        pass
     
     def get_livedate(self, dte):
         dte = dates.get_livedate(dte)
@@ -133,7 +137,10 @@ class cacheObject(LoggingClass):
         return obj
         
     def __repr__(self):
-        return self.__class__.__name__
+        return '%s | %s' % (self.__class__.__name__,self.description())
+    
+    def description(self):
+        return ''
     
     def __str__(self):
         return self.__repr__()
@@ -152,6 +159,10 @@ class cacheObject(LoggingClass):
     def __get_cache(self):
         return self._cache
     cache = property(fget = __get_cache)
+    
+    def __get_loaderpool(self):
+        return self._cache.loaderpool
+    loaderpool = property(fget = __get_loaderpool)
 
 
 class rateHistory(cacheObject):
@@ -167,15 +178,15 @@ class rateHistory(cacheObject):
         self._factory        = creator
         self._factory.holder = self
         self.live            = None
-        self.start           = None
-        self.end             = None
+        self.start           = {}
+        self.end             = {}
         self._timeseries     = {}
         
     def save(self):
         self.backend.set(self.cache.ratekey(self.code),self,settings.RATE_CACHE_SECONDS)
         
-    def __repr__(self):
-        return '%s: %s' % (self.__class__.__name__,self._factory)
+    def description(self):
+        return self._factory.code()
         
     def __getstate__(self):
         odict = super(rateHistory,self).__getstate__()
@@ -188,16 +199,17 @@ class rateHistory(cacheObject):
         self._factory.holder = self
         
     def empty(self):
-        return not (len(self.__vendors) or self.life) 
+        return not (len(self.__vendors) or self.life)
+    
+    def tsname(self, vfid):
+        return '%s:%s:%s' % (self.cache.ratekey(self.code),vfid.field,vfid.vendor)
         
     def timeseries(self, vfid):
-        '''
-        in-memory time-series for vendor field 'vfid'
-        
+        '''        
         @param vfid: vendor field id
         @see: jflow.core.rates.factory.factory.vendorfieldid 
         '''
-        key    = '%s:%s:%s' % (self.cache.ratekey(self.code),vfid.field,vfid.vendor)
+        key    = self.tsname(vfid)
         nts    = self._timeseries.get(key,None)
              
         if nts == None:
@@ -219,12 +231,14 @@ class rateHistory(cacheObject):
         Save timeserie into cacje and save itself
         '''
         if ts:
-            self.start = todate(ts.front()[0])
-            self.end   = todate(ts.back()[0])
-            tslist     = [(todate(d),v) for d,v in ts.items()]
+            st = todate(ts.front()[0])
+            ed = todate(ts.back()[0])
+            self.start[ts.name] = st
+            self.end[ts.name]   = ed
+            tslist              = [(todate(d),v) for d,v in ts.items()]
             self.backend.set(ts.name,tslist,settings.RATE_CACHE_SECONDS)
             self.save()
-            self.logger.debug('Cached %s from %s to %s' % (ts.name,self.start,self.end))
+            self.logger.debug('Cached %s from %s to %s' % (ts.name,st,ed))
         else:
             self.start = None
             self.end   = None
@@ -307,10 +321,6 @@ class rateHistory(cacheObject):
     def __get_factory(self):
         return self._factory
     factory = property(fget = __get_factory)
-    
-    def __get_loaderpool(self):
-        return self.cache.loaderpool
-    loaderpool = property(fget = __get_loaderpool)
     
     def getts(self, start, end, vfid):
         ts    = self.timeseries(vfid)

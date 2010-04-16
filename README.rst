@@ -2,7 +2,7 @@
 JFLOW
 ==========================
 
-Python package for quantitative finance.
+Python package for quantitative finance and econometric analysis
 
 
 ==================

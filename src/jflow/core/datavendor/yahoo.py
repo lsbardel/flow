@@ -8,7 +8,7 @@ class yahoo(InternetVendorCsv):
         super(yahoo,self).__init__('http://ichart.yahoo.com')
         
     def getdate(self, st, dte):
-        return '%s=%s&%s=%s&%s=%s' % (st[0],dte.month,st[1],dte.day,st[2],dte.year)
+        return '%s=%s&%s=%s&%s=%s' % (st[0],dte.month-1,st[1],dte.day,st[2],dte.year)
         
     def hystory_url(self, ticker, startdate, enddate):
         b = self.baseurl

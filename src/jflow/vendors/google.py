@@ -43,7 +43,7 @@ def csvToCache(vfid, data, std, hcache):
     @param vfid:
     @param data:
     @param CacheFactory:
-    @param std: function string to date converter    
+    @param std: function string to date converter
     '''  
     if not data:
         return

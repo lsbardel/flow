@@ -1,9 +1,10 @@
-
-from jflow.core.timeseries import parsets, tojson, unwind
 from twisted.internet import defer
 
-__all__ = ['TimeseriesAnalysis']
+from jflow.core.timeseries import parsets, tojson, unwind
+from jflow.core.rates import cacheObject
 
+
+__all__ = ['TimeseriesAnalysis']
 
 
 class jsonResult(object):
@@ -27,9 +28,7 @@ class jsonResult(object):
             return 'Processed %s successfully' % f
 
 
-
-
-class tsloader(defer.Deferred):
+class tsloader(defer.Deferred,cacheObject):
     
     def __init__(self, na, holder, start, end, period):
         defer.Deferred.__init__(self)
@@ -46,6 +45,7 @@ class tsloader(defer.Deferred):
                                              end    = end,
                                              period = period)
         except Exception, e:
+            self.logger.error(e)
             self.get_error('ID "%s" not available' % self.name)
          
     def __str__(self):

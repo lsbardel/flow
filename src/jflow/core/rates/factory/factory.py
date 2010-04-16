@@ -1,10 +1,6 @@
-from threading import RLock
-
 from jflow.core import dates
 from jflow.core.dates import timedelta, qdatetodate, get_livedate
-from jflow.core.rates import objects
-from jflow.core.rates import cacheObject
-from jflow.utils.decorators import threadSafe
+from jflow.core.rates import cacheObject, objects
 
 from loader import histloader, shistloader
 from period import periodParser
@@ -14,7 +10,6 @@ __all__ = ['vendorfieldid',
            'idFactory',
            'compositeFactory',
            'compositeCodeFactory']
-
 
 
 class vendorfieldid(object):
@@ -71,21 +66,11 @@ class rateFactory(cacheObject):
         return self._history
     holder = property(fget = __get_holder, fset = __set_holder)
     
-    def __get_loaderpool(self):
-        try:
-            return self.cache.loaderpool
-        except Exception, e:
-            self.err('No loader pool')
-    loaderpool = property(fget = __get_loaderpool)
+    def description(self):
+        return self.code()
     
     def populate(self):
         pass
-    
-    def __repr__(self):
-        return self.code()
-    
-    def __str__(self):
-        return self.code()
     
     def isproxy(self):
         return False
@@ -109,18 +94,19 @@ class rateFactory(cacheObject):
         to which the user can attach callbacks and errbacks
         '''
         el = periodParser.get(period or 'd',None)
-        vid   = self.get_fvid(field,vendor)
-        if vid:
-            self.logger.debug("history request: %s to %s, %s" % (start,end,el.name))
+        vfid   = self.get_fvid(field,vendor)
+        if vfid:
+            self.logger.debug("history request:(%s:%s) %s to %s, %s" % (vfid.field,vfid.vendor,start,end,el.name))
         else:
             self.logger.critical("No data provider for field %s and vendor %s" % (field,vendor))
-        return histloader(self, start, end, el, vid, parent = parent).load()
+        return histloader(self, start, end, el, vfid, parent = parent).load()
     
-    def _loading_dates(self, start, end, vid):
+    def _loading_dates(self, start, end, vfid):
         '''
         Select date range which needs to be fetch
         from cache or data provider
         '''
+        key = self.holder.tsname(vfid)
         if start > end:
             end = start
         
@@ -133,8 +119,8 @@ class rateFactory(cacheObject):
             end = end.date
         start = start.date
             
-        _start = self.holder.start
-        _end   = self.holder.end
+        _start = self.holder.start.get(key,None)
+        _end   = self.holder.end.get(key,None)
         load   = True
         if _start:
             oned = timedelta(days = 1)
@@ -190,14 +176,8 @@ class idFactory(rateFactory):
         super(idFactory,self).__init__()
         self.id     = id
         self.ccy    = ccy
-        self.log("created", verbose = 4)
+        self.logger.debug("created")
         self.hrates = None
-        
-    def __repr__(self):
-        return self.code()
-    
-    def __str__(self):
-        return '%s data id factory' % self.code()
     
     def code(self):
         return self.id.code
@@ -241,7 +221,7 @@ class idFactory(rateFactory):
         if vid:
             ci = vid.vendor.interface()
             if ci:
-                self.logger.debug('request vendor data for "%s"' % vid)
+                self.logger.debug('get vendor data for "%s"' % vid)
                 return ci.history(vid,
                                   loader.start,
                                   loader.end,
@@ -300,9 +280,6 @@ class compositeFactory(rateFactory):
         raise NotImplementedError
                 
         
-
-
-
 class compositeObjectFactory(compositeFactory):
     '''
     A composite object rate factory.

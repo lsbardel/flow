@@ -36,10 +36,10 @@ def get_vendor(code = None):
         code = settings.DEFAULT_VENDOR_FOR_SITE
     return get_code_cache(code,Vendor)
         
-def get_id(code, vendor = None):
+def get_id(code):
     id = get_code_cache(code,DataId)
     if id:
-        return dbid(id,vendor)
+        return dbid(id)
     else:
         return None
     
@@ -75,36 +75,45 @@ class dbid(object):
     '''
     Wrapper for for DataId objects
     '''    
-    def __init__(self, id, vendor = None):
+    def __init__(self, id):
         '''
         id        DataId object
         vendor    a Vendor object, a vendor string code or None
         '''
         self.__id = id
-        if vendor:
-            vendor = get_vendor(vendor)
-        if not vendor:
-            vendor = id.default_vendor
+        self.setup()
+    
+    def setup(self):
+        vendor = self.__id.default_vendor
         if not vendor:
             vendor = get_vendor()
-        self.__def_vendor   = vendor
-        self.vendorids      = id.vendors.all()
-        self.__def_vendorid = self.vendorids.get(vendor = vendor)
-        self.vendorList     = Vendor.objects.all()
-        self.__vendor       = self.__def_vendor
+        self.def_vendor   = vendor
+        self.vendorids    = self.__id.vendors.all()
+        try:
+            self.def_vendorid = self.vendorids.get(vendor = vendor)
+        except:
+            self.def_vendorid = None
+        self.vendorList   = Vendor.objects.all()
+    
+    def __getstate__(self):
+        return {'id':self.__id}
+    
+    def __setstate__(self,dict):
+        self.__id = dict['id']
+        self.setup()
     
     def __str__(self):
-        return str(self.__id)
+        return self.__repr__()
     
     def __repr__(self):
         return str(self.__id)
     
     def __unicode__(self):
-        return self.__id.__unicode__()
+        return unicode(self.__id)
     
     def __get_code(self):
         return self.__id.code
-    code = property(fget = __get_code)
+    code = property(__get_code)
         
     def vendorLoop(self, startvendor, field):
         flist = VendorDataField.objects.filter(field = field)
@@ -124,12 +133,7 @@ class dbid(object):
         return None            
     
     def vendorid(self, field = None, vendor = None):
-        return self.__avaiable_vendorid(field,vendor)
-        #if not vid:
-        #    return None
-        #    return buildVendor(self.__id, field)
-        #else:
-        #    return vid
+        return self.avaiable_vendorid(field,vendor)
     
     def history(self, startdate = None, enddate = None, field = None):
         vid = self.vendorid
@@ -141,17 +145,6 @@ class dbid(object):
             startdate = date(enddate.year-1,enddate.month,enddate.day)
         handler = vid.vendor.interface()
         return handler.history(vid,startdate,enddate,field)
-    
-    def instrument(self):
-        '''
-        Return a financial Instrument associated with this ID.
-        None if not available.
-        '''
-        ic = self.__id.ic
-        if ic:
-            return ic.instrument()
-        else:
-            return None
         
     def vendors(self):
         return self.__id.vendorid_set.all()
@@ -160,14 +153,12 @@ class dbid(object):
         '''
         Get the appropriate vendor ID 
         '''
-        if self.__def_vendor:
-            v = self.__def_vendor
+        if self.def_vendor:
+            v = self.def_vendor
             c = v.interface()
             if c == None or not c.isconnected() or not c.hasfeed(live = live):
-                # No interface for the vendor.
-                # Pick another one
-                vids = self.__id.vendorid_set.all()
-                for vid in vids:
+                # No interface for the vendor. Pick another one
+                for vid in self.vendorids:
                     vv = vid.vendor
                     if vv == v:
                         continue
@@ -178,11 +169,10 @@ class dbid(object):
             else:
                 return self.__def_vendorid
         
-    def __avaiable_vendorid(self, field, vendor = None):
+    def avaiable_vendorid(self, field, vendor = None):
         '''
         Return the best possible vendor id and field
         '''
-        field = get_field(field)
         if not field:
             return None
         flist = get_vendorfields_for_field(field)
@@ -191,8 +181,8 @@ class dbid(object):
         vorder = []
         if isinstance(vendor,Vendor):
             vorder.append(vendor)
-        if self.__def_vendor:
-            vorder.append(self.__def_vendor)
+        if self.def_vendor:
+            vorder.append(self.def_vendor)
             
         for v in vorder:
             vid    = self.testvendor(v)

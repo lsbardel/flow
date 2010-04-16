@@ -26,7 +26,7 @@ class Factory(base.cacheObject):
         return "Rate Factory"
     
     def select(self, code):
-        self.log('selecting constructor for %s rate' % code, verbose = 3)
+        self.logger.debug('selecting constructor for %s rate' % code)
         N = len(code)
         
         # Check the easy rates first

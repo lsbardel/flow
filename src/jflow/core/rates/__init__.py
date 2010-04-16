@@ -13,6 +13,9 @@ def splitcode(code):
     ticker:field
     ticker:vendor
     ticker:field:vendor
+    
+    return
+    ticker,field,vendor
     '''
     cache = get_cache()
     cd = code.split(':')
@@ -23,7 +26,19 @@ def splitcode(code):
         else:
             return cd[0],cd[1],None
     if len(cd) == 3:
-        return cd[0],cd[1],cd[2]
+        f = cache.get_field(cd[1])
+        if f:
+            return cd[0],f,cd[2]
+        else:
+            f = cache.get_field(cd[2])
+            if f:
+                return cd[0],f,cd[1]
+            else:
+                v = cache.get_vendor(cd[1])
+                if v:
+                    return cd[0],None,v
+                else:
+                    return cd[0],None,cd[2]
     else:
         return code, None, None
 

@@ -3,9 +3,9 @@ from jflow.conf import settings
 from jflow.utils.decorators import lazyattr
 
 if logging.thread:
-    default_format = "%(asctime)s - (p=%(process)s,t=%(thread)s) - %(levelname)s - %(name)s - %(message)s"
+    default_format = "%(asctime)s | (p=%(process)s,t=%(thread)s) | %(levelname)s | %(name)s | %(message)s"
 else:
-    default_format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+    default_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 
 def get_logger(name = None):
     prefix = settings.LOGGING_PREFIX

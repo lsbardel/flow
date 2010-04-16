@@ -23,7 +23,9 @@ FIELDS_SHORTCUTS = {'ASK' :'ASK_PRICE',
                     'BID' :'BID_PRICE',
                     'LOW' :'LOW_PRICE',
                     'HIGH':'HIGH_PRICE',
-                    'OPEN':'OPEN_PRICE'}
+                    'OPEN':'OPEN_PRICE',
+                    'CLOSE':'LAST_PRICE',
+                    'LAST':'LAST_PRICE'}
 
 DEFAULT_VENDOR_FOR_SITE = 'GOOGLE'
 DEFAULT_DATA_FIELD = 'LAST_PRICE'
