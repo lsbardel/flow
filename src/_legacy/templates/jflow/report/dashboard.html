@@ -1,0 +1,7 @@
+{% for r in html %}<div class="grid-element-holder smallspacing">
+<div style="float:left; width:auto;">
+<a href="{{ r.viewurl }}" style="clear:right;">{{ r.report }}</a>
+<p>{{ r.extra }}</p>
+</div>
+<a class="editbox" href="{{ r.editurl }}"></a>
+</div>{% endfor %}

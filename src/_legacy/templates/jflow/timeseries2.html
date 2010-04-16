@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% load mastertags %}
+{% block content-main-post-title %}
+<div id="ts-container"></div>{% endblock %}
+
+{% block body-scripts %}$.prospero.ready(function() {
+var options = {
+				'colors': ["#205497","#2D8633","#B84000","#d18b2c"],
+				'grid': { 'hoverable': true,
+                          'clickable': true,
+                          'color': '#00264D',
+        				  'tickColor': '#A3A3A3' },
+				'selection': {'mode': 'xy',
+							  'color': '#3399FF'},
+				'lines': {'show': true},
+				'xaxis': {'mode': 'time'},
+			  };
+$("#ts-container").tsPlot({media_url: "{% media_url %}js/tsplot/",
+						   load_url:  "{{ cl.loadurl }}",
+						   stylefun: ts_sleekmain,
+						   height:	 '{% block graph-height %}600px{% endblock %}',
+						   caneditchart: {% block graph-canedit %}true{% endblock %},
+						   flot_options: options,
+						   commandline: {% block graph-commandline %}null{% endblock %},});
+}){% endblock %}

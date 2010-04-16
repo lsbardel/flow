@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content-main-post-title %}
+<ul>
+<li><a class = "flush-server">Flush server</a></li>
+</ul>
+{% endblock %}
+
+{% block body-extra-scripts %}{{ block.super }}
+$("a.flush-server").click(function() {
+	$.ajax({type: "POST",
+    		url:  "{{ cl.url }}",
+    		data: $.param({"post-view-key": "flush-server"}),
+    		});
+});
+{% endblock %}
