@@ -3,3 +3,7 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 include requirements.txt
+recursive-include src/jflow/db/instdata/media *
+recursive-include src/jflow/db/instdata/templates *
+recursive-include src/jflow/db/trade/media *
+recursive-include src/jflow/db/trade/templates *

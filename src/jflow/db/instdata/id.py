@@ -15,10 +15,12 @@ from jflow.core.rates import vendorfieldid
 def TrimCode(code):
     return str(code).upper().replace(' ','')
 
-def get_code_cache(code,model):
+def get_code_cache(code, model, shortcuts = None):
     if isinstance(code,model):
         return code
-    code = TrimCode(code) 
+    code = TrimCode(code)
+    if shortcuts:
+        code = shortcuts.get(code,code)
     key  = '%s:%s' % (model._meta,code)
     fdb  = cache.get(key,None)
     if not fdb:
@@ -47,7 +49,7 @@ def get_field(field = None):
     '''
     if field == None:
         field = settings.DEFAULT_DATA_FIELD
-    return get_code_cache(field,DataField)
+    return get_code_cache(field,DataField,settings.FIELDS_SHORTCUTS)
 
 def get_vendorfields_for_field(field):
     model = VendorDataField
@@ -72,13 +74,7 @@ class vfid(vendorfieldid):
 class dbid(object):
     '''
     Wrapper for for DataId objects
-    '''
-    fields_shortcuts = {'ASK' :'ASK_PRICE',
-                        'BID' :'BID_PRICE',
-                        'LOW' :'LOW_PRICE',
-                        'HIGH':'HIGH_PRICE',
-                        'OPEN':'OPEN_PRICE'}
-    
+    '''    
     def __init__(self, id, vendor = None):
         '''
         id        DataId object
@@ -162,7 +158,7 @@ class dbid(object):
             
     
     def vendorid(self, field = None, vendor = None):
-        vid = self.avaiable_vendorid(field,vendor)
+        vid = self._avaiable_vendorid(field,vendor)
         if not vid:
             return None
             return buildVendor(self.__id, field)

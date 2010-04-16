@@ -105,7 +105,7 @@ class rateFactory(cacheObject):
     def loadhistory(self, start, end, field, vendor = None, period = None, parent = None):
         '''
         load historical data into cache.
-        This function returns a twisted Deferred derived object
+        This function returns an instance of rateloader
         to which the user can attach callbacks and errbacks
         '''
         el = periodParser.get(period or 'd',None)
@@ -200,7 +200,15 @@ class idFactory(rateFactory):
         return self.id.code
     
     def get_fvid(self, field = None, vendor = None):
+        '''
+        Get the field and vendor
+        '''
+        vd    = field
         field = self.id.get_field(field)
+        if not field and vendor:
+            field = self.id.get_field(vendor)
+            if field:
+                vendor = vd
         return self.id.vendorid(field, vendor)
     
     def make(self, dte):

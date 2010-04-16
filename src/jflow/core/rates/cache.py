@@ -238,6 +238,9 @@ class rateHistory(cacheObject):
         return nts
     
     def memorise(self, ts):
+        '''
+        Save timeserie into cacje and save itself
+        '''
         if ts:
             self.start = todate(ts.front()[0])
             self.end   = todate(ts.back()[0])
