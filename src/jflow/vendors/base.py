@@ -89,39 +89,18 @@ class DataVendor(object):
     def cache_factory(self):
         return self.cache_table().objects
     
-    def get_cache(self, vfid):
-        return self.cache_factory().filter(field = vfid.field, vendor_id = vfid.vid)
-        
     def history(self, vfid, start, end, hcache):
         '''
         Fetch historical data from data provider
         hcache is an istance to the caching class
         '''
-        cache = self.get_cache(vfid)
         st = start
         ed = end
-        result = None
-        
-        if cache:
-            p0 = cache.filter(dt__lte = st)
-            
-            if p0:
-                lt  = cache.latest()
-                ldt = lt.dt
-                if ldt >= ed:
-                    result = cache.filter(dt__gte = start).filter(dt__lte = end)
-                else:
-                    st = ldt + timedelta(1)
-                    
-        if result is None:
-            result = self._history(vfid, st, ed)
-            
-            if isinstance(result,defer.Deferred):
-                return deferredLoader(self, vfid, start, end, result)
-            else:
-                return self.get_result(vfid, start, end, result, hcache)
+        result = self._history(vfid, st, ed)
+        if isinstance(result,defer.Deferred):
+            return deferredLoader(self, vfid, start, end, result)
         else:
-            return result
+            return self.get_result(vfid, start, end, result, hcache)
     
     def get_result(self, vfid, start, end, result, hcache):
         result = self.updatehandler(vfid, start, end, result, hcache)

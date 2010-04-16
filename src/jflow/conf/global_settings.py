@@ -1,6 +1,10 @@
+import logging
+
 LIVE_CALCULATION = False
 
 LOGGING_VERBOSE = 2
+LOGGING_LEVEL   = logging.INFO
+LOGGING_PREFIX  = '' 
 
 DAYS_BACK = 60
 
@@ -10,9 +14,6 @@ CACHE_BACKEND = 'dummy://'
 
 RATE_CACHE_SECONDS      = 10*24*60*60   # 10 days
 PORTFOLIO_CACHE_SECONDS = 10*60*60      # 10 hours
-
-
-SERVER_LOGGER_MODULE = None
 
 DATE_FORMAT = 'D d M y'
 

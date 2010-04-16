@@ -8,7 +8,7 @@ from jflow.db.trade.models import Position, FundHolder
 from jflow.db.instdata.models import Future, FutureContract, InstDecomp
 from jflow.utils.tx import runInThread, runInMainThread
 
-from jflow.rates import get_cache, get_analysis, log
+from jflow.rates import get_cache, get_analysis
 
 from unuk.core.jsonrpc.txweb import JSONRPC
 

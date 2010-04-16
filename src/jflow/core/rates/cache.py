@@ -5,6 +5,7 @@ from jflow.core import dates
 from jflow.core.cache import cache as jflow_cache
 from jflow.core.timeseries import dateseries, numericts, toflot
 from jflow.core.dates import todate
+from jflow.log import LoggingClass
 
 __all__ = ['get_cache']
 
@@ -12,7 +13,7 @@ def TrimCodeDefault(code):
     return str(code).upper().replace(' ','_')
     
 
-class rateCache(object):
+class rateCache(LoggingClass):
     '''
     Rate Cache wrapper.
     This object should be used as a singleton.
@@ -32,15 +33,14 @@ class rateCache(object):
         self.gey_currency  = None
         self.get_field     = None
         self.get_vendor    = None
-        self.log_verbose   = settings.LOGGING_VERBOSE
-        self.logger        = None
         self.livecalc      = settings.LIVE_CALCULATION
         self.trimCode      = trimcode or TrimCodeDefault
         if settings.MAX_RATE_LOADING_THREADS > 0:
             from jflow.utils.tx import ThreadPool
             self.loaderpool = ThreadPool(name = "Rate loader pool",
                                          minthreads = 1,
-                                         maxthreads = settings.MAX_RATE_LOADING_THREADS)            
+                                         maxthreads = settings.MAX_RATE_LOADING_THREADS)
+        LoggingClass.__init__(self)           
         
     def ratekey(self, key):
         return 'jflow-rate-cache:%s' % key
@@ -100,21 +100,6 @@ class rateCache(object):
             if creator:
                 rates = self.__set(code, creator)
         return rates
-    
-    def log(self, msg, obj = None, verbose = 3):
-        if self.logger and verbose <= self.log_verbose:
-            obj = obj or self
-            msg = '%s - %s' % (obj,msg)
-            self.logger.msg(msg)
-    
-    def err(self, msg, obj = None):
-        obj  = obj or self
-        msgt = '%s - %s' % (obj,msg)
-        if isinstance(msg,Exception):
-            msg = msg.__class__(msgt)
-        else:
-            msg = msgt
-        self.logger.err(msg)
             
     def __get_timestart(self):
         return self.__timestart
@@ -137,7 +122,7 @@ _rateCache = None
 
 
 
-class cacheObject(object):
+class cacheObject(LoggingClass):
     '''
     Base class for all cache objects
     '''
@@ -167,14 +152,6 @@ class cacheObject(object):
     def __get_cache(self):
         return self._cache
     cache = property(fget = __get_cache)
-    
-    def log(self, msg, obj = None, verbose = 0):
-        obj = obj or self
-        self.cache.log(msg, obj, verbose = verbose)
-        
-    def err(self, msg, obj = None):
-        obj = obj or self
-        self.cache.err(msg, obj)
 
 
 class rateHistory(cacheObject):
@@ -247,6 +224,7 @@ class rateHistory(cacheObject):
             tslist     = [(todate(d),v) for d,v in ts.items()]
             self.backend.set(ts.name,tslist,settings.RATE_CACHE_SECONDS)
             self.save()
+            self.logger.debug('Cached %s from %s to %s' % (ts.name,self.start,self.end))
         else:
             self.start = None
             self.end   = None

@@ -121,49 +121,15 @@ class dbid(object):
             vid = self.vendorids.filter(vendor = v)
             if vid:
                 return vid[0]
-        return None
-    
-    def avaiable_vendorid(self, field, vendor = None):
-        '''
-        Return the best possible vendor id and field
-        '''
-        field = get_field(field)
-        if not field:
-            return None
-        flist = get_vendorfields_for_field(field)
-
-        # If default vendor is available, start with it first
-        vorder = []
-        if isinstance(vendor,Vendor):
-            vorder.append(vendor)
-        if self.__def_vendor:
-            vorder.append(self.__def_vendor)
-            
-        for v in vorder:
-            vid    = self.testvendor(v)
-            if vid:
-                f = flist.filter(vendor = vid.vendor)
-                if f:
-                    return vfid(vid, f[0])
-        
-        # No luck with default vendor, try all others
-        for f in flist:
-            if f.vendor in vorder:
-                continue
-            vid = self.testvendor(f.vendor)
-            if vid:
-                return vfid(vid, f)
-        
-        return None
-            
+        return None            
     
     def vendorid(self, field = None, vendor = None):
-        vid = self._avaiable_vendorid(field,vendor)
-        if not vid:
-            return None
-            return buildVendor(self.__id, field)
-        else:
-            return vid
+        return self.__avaiable_vendorid(field,vendor)
+        #if not vid:
+        #    return None
+        #    return buildVendor(self.__id, field)
+        #else:
+        #    return vid
     
     def history(self, startdate = None, enddate = None, field = None):
         vid = self.vendorid
@@ -211,10 +177,39 @@ class dbid(object):
                 return None
             else:
                 return self.__def_vendorid
-            
-    def get_field(self, field = None):
-        return get_field(field)
         
+    def __avaiable_vendorid(self, field, vendor = None):
+        '''
+        Return the best possible vendor id and field
+        '''
+        field = get_field(field)
+        if not field:
+            return None
+        flist = get_vendorfields_for_field(field)
+
+        # If default vendor is available, start with it first
+        vorder = []
+        if isinstance(vendor,Vendor):
+            vorder.append(vendor)
+        if self.__def_vendor:
+            vorder.append(self.__def_vendor)
+            
+        for v in vorder:
+            vid    = self.testvendor(v)
+            if vid:
+                f = flist.filter(vendor = vid.vendor)
+                if f:
+                    return vfid(vid, f[0])
+        
+        # No luck with default vendor, try all others
+        for f in flist:
+            if f.vendor in vorder:
+                continue
+            vid = self.testvendor(f.vendor)
+            if vid:
+                return vfid(vid, f)
+        
+        return None
     
 def parsets(cts, start, end, period = None):
     from jflow.core.timeseries.tscript import parse, createts

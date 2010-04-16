@@ -111,9 +111,9 @@ class rateFactory(cacheObject):
         el = periodParser.get(period or 'd',None)
         vid   = self.get_fvid(field,vendor)
         if vid:
-            self.log("history request: %s to %s, %s" % (start,end,el.name), verbose = 3)
+            self.logger.debug("history request: %s to %s, %s" % (start,end,el.name))
         else:
-            self.err("no vendor field")
+            self.logger.critical("No data provider for field %s and vendor %s" % (field,vendor))
         return histloader(self, start, end, el, vid, parent = parent).load()
     
     def _loading_dates(self, start, end, vid):
@@ -128,11 +128,14 @@ class rateFactory(cacheObject):
         realend   = end
         
         if end.live:
-            end = get_livedate(dates.prevbizday())
+            end = dates.prevbizday()
+        else:
+            end = end.date
+        start = start.date
             
         _start = self.holder.start
         _end   = self.holder.end
-        load = True
+        load   = True
         if _start:
             oned = timedelta(days = 1)
             load = False
@@ -141,9 +144,9 @@ class rateFactory(cacheObject):
             
             if load:
                 if end <= _end:
-                    end = get_livedate(_start.date - oned)
+                    end = _start - oned
                 elif start >= _start:
-                    start =  get_livedate(_end.date + oned)
+                    start =  _end + oned
                 if start > end:
                     start = end
         
@@ -204,11 +207,13 @@ class idFactory(rateFactory):
         Get the field and vendor
         '''
         vd    = field
-        field = self.id.get_field(field)
+        field = self.cache.get_field(field)
         if not field and vendor:
-            field = self.id.get_field(vendor)
+            field = self.cache.get_field(vendor)
             if field:
                 vendor = vd
+        if vendor:
+            vendor = self.cache.get_vendor(vendor)
         return self.id.vendorid(field, vendor)
     
     def make(self, dte):
@@ -236,15 +241,15 @@ class idFactory(rateFactory):
         if vid:
             ci = vid.vendor.interface()
             if ci:
-                self.log('loading "%s"' % vid, verbose = 3)
+                self.logger.debug('request vendor data for "%s"' % vid)
                 return ci.history(vid,
-                                  loader.start.date,
-                                  loader.end.date,
+                                  loader.start,
+                                  loader.end,
                                   self.holder)
             else:
-                self.err('Cannot load rate. Vendor "%s" has no interface available' % vid.vendor)
+                self.logger.error('Cannot load rate. Vendor "%s" has no interface available' % vid.vendor)
         else:
-            self.err('Cannot load rate. No data vendor available')
+            self.logger.error('Cannot load rate. No data vendor available')
     
     def populate(self):
         '''
