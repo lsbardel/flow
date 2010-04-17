@@ -12,3 +12,6 @@
 
 {% block extra-scripts %}
 <script type="text/javascript" src="{{ MEDIA_URL }}djpcms/colorpicker/js/colorpicker.js"></script>{% endblock %}
+
+{% block decorator-scripts %}{{ block.super }}
+<script type="text/javascript" src="{{ MEDIA_URL }}site/djpcms.js"></script>{% endblock %}

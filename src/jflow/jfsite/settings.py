@@ -1,5 +1,4 @@
 
-import logging
 import os
 import packages
 PSETTINGS = packages.install()
@@ -9,10 +8,6 @@ if not PSETTINGS.dev:
 
 DEBUG = PSETTINGS.debug
 TEMPLATE_DEBUG = DEBUG
-
-if DEBUG:
-    logging.basicConfig(level =logging.DEBUG,
-                        format="%(name)s: %(levelname)s: %(message)s")
     
 
 ADMINS = (
@@ -114,7 +109,8 @@ INSTALLED_APPS = (
 COMPRESS = True
 # DJPCMS SETTINGS
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
-                   'djpcms.views.apps.tagging.plugins']
+                   'djpcms.views.apps.tagging.plugins',
+                   'jfsite.plugins']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
 APPLICATION_URL_MODULE  = 'jfsite.appurls'
 GRID960_DEFAULT_FIXED   = False

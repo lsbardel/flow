@@ -5,6 +5,13 @@ JFLOW
 Python package for quantitative finance and econometric analysis
 
 
+======================
+Requirements
+======================
+
+ * python-dateutil
+ * ply
+
 ==================
 Running Tests
 ==================
