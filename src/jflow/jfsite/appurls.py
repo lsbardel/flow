@@ -3,8 +3,8 @@ from django import http
 from django.forms.models import modelform_factory
 
 from tagging.models import Tag
-from jflow.db.instdata.models import DataId
-from jflow.db.instdata.forms import DataIdForm
+from jflow.db.instdata.models import DataId, EconometricAnalysis
+from jflow.db.instdata.forms import DataIdForm, EconometricForm
 
 from djpcms.conf import settings
 from djpcms.utils import form_kwargs
@@ -73,8 +73,21 @@ class DataApplication(tagurl.TagApplication):
         fhtml['instdata']       = formlet(form = f4, layout = layout)
         return fhtml
     
+
+class EconometricApplication(tagurl.TagApplication):
+    inherit = True
+    form = EconometricForm
+    form_withrequest = True
     
+    add     = appview.AddView(regex = 'add')
+    #edit    = appview.EditView(regex = 'edit/(?P<id>\d+)', parent = None)
+    view      = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
+
+
+
     
 #___________________________________ REGISTERING DYNAMIC APPLICATIONS
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)
 appsite.site.register('/data/', DataApplication, model = DataId)
+appsite.site.register('/econometric/', EconometricApplication, model = EconometricAnalysis)
+

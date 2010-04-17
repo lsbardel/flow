@@ -14,11 +14,10 @@ class SiteMachine(machine):
                                          **kwargs)
 
 SiteMachine(debug = False)
-SiteMachine(name       = 'vespa',
-            dev   =   True,
+SiteMachine(name  = 'flow',
+            dev   = True,
             debug = True,
-            servs = True,
-            cache = 'dummy://',)
+            servs = True)
 
 
 class Identity(object):

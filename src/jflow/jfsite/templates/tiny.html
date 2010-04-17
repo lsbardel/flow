@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body-extra-style %}
+#body-container {background: transparent;}
+#inner-body {
+	margin-top: 100px;
+	background: #FFFFFF;
+}
+{% endblock %}
+
+{% block body-container-bits %}class="{{ grid.container_class }}"{% endblock %}
+{% block html-container %}
+<div class="{{ grid.column_1_4 }}">
+{{ grid.empty }}
+</div>
+<div id="inner-body" class="{{ grid.column_1_2 }}">
+<div id="branding-banner">
+{% include "logo.html" %}
+</div>
+{% block page-body %}{% endblock %}
+</div>
+<div class="{{ grid.column_1_4 }}">
+{{ grid.empty }}
+</div>
+{{ grid.clear }}
+{% endblock %}

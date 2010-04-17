@@ -2,16 +2,16 @@
 JFLOW SITE
 ==========================
 
-Django site for jflow
+A battery included django site for jflow
 
 
 Requirements
 =======================
  On top of jflow you need
  
+ * djpcms
  * django-piston
  * docutils
- * djpcms
 
 
 ==================
