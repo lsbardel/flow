@@ -1,13 +1,14 @@
 .. _contents:
 
 =============================
-Djpcms documentation contents
+jFlow documentation contents
 =============================
 
 .. toctree::
    :maxdepth: 2
    
    intro/index
+   database/index
    misc/index
 
 Indices, glossary and tables
