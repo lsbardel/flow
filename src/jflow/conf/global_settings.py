@@ -3,7 +3,7 @@ import logging
 LIVE_CALCULATION = False
 
 LOGGING_VERBOSE = 2
-LOGGING_LEVEL   = logging.INFO
+LOGGING_LEVEL   = logging.DEBUG
 LOGGING_PREFIX  = '' 
 
 DAYS_BACK = 60

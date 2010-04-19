@@ -29,8 +29,8 @@ class EcoPlot(DJPplugin):
             'all': ('instdata/ecoplot/ecoplot.css',
                     'instdata/ecoplot/skins/smooth.css')
         }
-        js = ['site/flot/excanvas.min.js',
-              'site/flot/jquery.flot.js',
+        js = ['instdata/flot/excanvas.min.js',
+              'instdata/flot/jquery.flot.js',
               'instdata/ecoplot/ecoplot.js']
     
     def render(self, djp, wrapper, prefix, height = 400, **kwargs):

@@ -1,0 +1,12 @@
+<table class="plain">
+<tbody>{% for item in items %}
+<tr>
+<td>
+{{ item.vendor }}
+</td>
+<td>{% if item.url %}
+<a href="{{ item.url }}" target="_blank">{{ item.ticker}}</a>{% else %}{{ item.ticker}}{% endif %}
+</td>
+</tr>{% endfor %}
+</tbody>
+</table>

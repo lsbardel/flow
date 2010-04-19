@@ -69,6 +69,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -105,6 +106,8 @@ INSTALLED_APPS = (
     'jflow.db.instdata',
     'jflow.db.trade',
 )
+
+LEAH_SERVER_URL = PSETTINGS.leahurl
 
 COMPRESS = True
 # DJPCMS SETTINGS

@@ -16,3 +16,35 @@
     text-align:center;
     padding: 10px 0;
 }
+
+/* boxes
+----------------------------------------------- */
+.djpcms-html-box {
+    padding: 2px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.djpcms-html-box .bd {
+	-moz-border-radius-bottomleft: 2px;
+    -moz-border-radius-bottomright: 2px;
+    -webkit-border-bottom-left-radius: 2px;
+    -webkit-border-bottom-right-radius: 2px;
+}
+
+
+.djpcms-html-box h2 {
+	font-size:1em;
+	font-weight:normal;
+	text-transform:uppercase;
+	padding:6px 12px;
+}
+.djpcms-html-box h2 a,
+.djpcms-html-box h2 a.visible {
+	color:#fff;
+	background:#333 url("../img/switch_minus.gif") 97% 50% no-repeat;
+	display:block;
+	padding:6px 12px;
+	margin:-6px -12px;
+	border:none;
+}
+  

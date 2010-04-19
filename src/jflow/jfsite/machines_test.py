@@ -7,11 +7,14 @@ class SiteMachine(machine):
                  dbengine   = 'sqlite3',
                  dbname     = 'jflowdb',
                  cache      = 'memcached://127.0.0.1:11211/',
+                 leahurl    = 'http://localhost:8010',
                   **kwargs):
         super(SiteMachine,self).__init__(dbengine = dbengine,
                                          dbname = dbname,
                                          cache = cache,
                                          **kwargs)
+        self.leahurl = leahurl
+
 
 SiteMachine(debug = False)
 SiteMachine(name  = 'flow',

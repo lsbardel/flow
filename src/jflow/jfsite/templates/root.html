@@ -3,12 +3,13 @@
 {% block site-keywords %}quantitative, finance, economics, trading, data, database, statistics, python, django{% endblock %}
 {% block site-description %}Quantitative finance using opensource technologies{% endblock %}
 {% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}djpcms/djpcms.css"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}djpcms/nav.css"/>
 <link rel="stylesheet" type="text/css" media = "screen" href="{{ MEDIA_URL }}djpcms/colorpicker/css/colorpicker.css"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}site/layout.css"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}site/text.css"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}site/color.css"/>
-{% endblock %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}djpcms/jquery-ui-css/smoothness/jquery-ui-1.7.2.custom.css"/>{% endblock %}
 
 {% block extra-scripts %}
 <script type="text/javascript" src="{{ MEDIA_URL }}djpcms/colorpicker/js/colorpicker.js"></script>{% endblock %}
