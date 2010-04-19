@@ -17,8 +17,10 @@ class tsimple(tsoperator):
 
 class cctr(tsimple):
     '''
-    Continuously Compounded Total return
-    '''    
+    Continuously compounded total return calculated as 100*log(v)
+    '''
+    fullname = 'Continuously Compounded Total Return'
+    
     def calculate(self,ts):
         ns = self.newts()
         v0 = 0

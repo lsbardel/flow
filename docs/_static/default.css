@@ -1,3 +1,5 @@
-@import url(reset-fonts-grids.css);
-@import url(djangodocs.css);
-@import url(homepage.css);
+@import url(reset-min.css);
+@import url(960.css);
+@import url(layout.css);
+@import url(text.css);
+@import url(color.css);

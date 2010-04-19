@@ -1,8 +1,8 @@
 .. _misc-committers:
 
-=================
-Djpcms committers
-=================
+====================
+Team of committers
+====================
 
 `Luca Sbardella`_
     Luca has a background in applied mathematics. He has worked as research assistant at

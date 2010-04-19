@@ -1,0 +1,43 @@
+body {
+	-x-system-font:none;
+	/*font-family:Helvetica,Arial,'Liberation Sans',FreeSans,sans-serif;*/
+	font-family:'Lucida Grande',Arial,sans-serif;
+	font-size:14px;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:1.4;
+}
+
+h1 {
+	font-size: 230%;
+	font-weight: bold;
+}
+h2 {
+	font-size: 180%;
+	margin-bottom: 10px;
+}
+h3 {
+    font-size: 120%;
+    margin-bottom: 7px;
+}
+strong {
+    font-weight: bold;
+}
+p.rubric {
+	font-size: 130%;
+	font-weight: normal;
+}
+.section table td {
+	font-style: italic;
+}
+.section table th {
+    font-weight: bold;
+}
+.admonition-title {
+    font-weight:bold;
+    margin-bottom:0 !important;
+    margin-top:0 !important;
+}

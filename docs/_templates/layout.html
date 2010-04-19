@@ -17,37 +17,41 @@
 {%- endmacro %}
 
 {% block document %}
-  <div id="custom-doc" class="{% block bodyclass %}{{ 'yui-t6' if pagename != 'index' else '' }}{% endblock %}">
+  <div id="body-container">
     <div id="hd">
-      <h1><a href="{{ pathto('index') }}">{{ docstitle }}</a></h1>
-      <div id="global-nav">
-        <a title="Home page" href="{{ pathto('index') }}">Home</a> {{ reldelim2 }}
-        <a title="Table of contents" href="{{ pathto('contents') }}">Table of contents</a> {{ reldelim2 }}
-        <a title="Global index" href="{{ pathto('genindex') }}">Index</a> {{ reldelim2 }}
-        <a title="Search" href="{{ pathto('modindex') }}">Modules</a>
+     <div class="container_12">
+      <div class="grid_12">
+        <h1><a href="{{ pathto('index') }}">{{ docstitle }}</a></h1>
+        <div id="global-nav">
+          <a title="Home page" href="{{ pathto('index') }}">Home</a> {{ reldelim2 }}
+          <a title="Table of contents" href="{{ pathto('contents') }}">Table of contents</a> {{ reldelim2 }}
+          <a title="Global index" href="{{ pathto('genindex') }}">Index</a> {{ reldelim2 }}
+          <a title="Search" href="{{ pathto('modindex') }}">Modules</a>
+        </div>
+        <div class="nav">{{ secondnav() }}</div>
       </div>
-      <div class="nav">{{ secondnav() }}</div>
+      <div class="clear"></div>
+     </div>
     </div>
     
     <div id="bd">
-      <div id="yui-main">
-        <div class="yui-b">
-          <div class="yui-g" id="{{ pagename|replace('/', '-') }}">
-            {% block body %}{% endblock %}
-          </div>         
+      <div class="container_12">
+        <div class="grid_8">
+         <div id="{{ pagename|replace('/', '-') }}">
+          {% block body %}{% endblock %}
+         </div>         
         </div>
-      </div>
-      {% block sidebarwrapper %}
-        {% if pagename != 'index' %}
-          <div class="yui-b" id="sidebar">
-            {{ sidebar() }}
-            {%- if last_updated %}
-              <h3>Last update:</h3>
-              <p class="topless">{{ last_updated }}</p>
-            {%- endif %}
-          </div> 
-        {% endif %}
-      {% endblock %}
+       {% block sidebarwrapper %}
+       <div class="grid_4" id="sidebar">
+          {{ sidebar() }}
+          {%- if last_updated %}
+            <h3>Last update:</h3>
+            <p class="topless">{{ last_updated }}</p>
+          {%- endif %}
+       </div>
+       {% endblock %}
+       <div class="clear"></div>
+     </div>
     </div>
     
     <div id="ft">

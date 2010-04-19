@@ -87,7 +87,7 @@ class rcorr(RollingStatisticsN):
     '''
     Calculate the rolling percentage correlation of two timeseries.
     '''
-    name = 'Rolling Correlation'
+    fullname = 'rolling correlation'
     
     def __init__(self):
         super(rcorr,self).__init__()
