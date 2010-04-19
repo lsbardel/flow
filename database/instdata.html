@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Instrument data &mdash; jFlow v0.4 alpha documentation</title>
+    <link rel="stylesheet" href="../static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4 alpha',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <link rel="top" title="jFlow v0.4 alpha documentation" href="../index.html" />
+    <link rel="up" title="Database Information" href="index.html" />
+    <link rel="next" title="Trade data" href="trade.html" />
+    <link rel="prev" title="Database Information" href="index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="body-container">
+    <div id="hd">
+     <div class="container_12">
+      <div class="grid_12">
+        <h1><a href="../index.html">jFlow v0.4 alpha documentation</a></h1>
+        <div id="global-nav">
+          <a title="Home page" href="../index.html">Home</a>  |
+          <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+          <a title="Global index" href="../genindex.html">Index</a>  |
+          <a title="Search" href="../modindex.html">Modules</a>
+        </div>
+        <div class="nav">
+    &laquo; <a href="index.html" title="Database Information">previous</a> 
+     |
+    <a href="index.html" title="Database Information" accesskey="U">up</a>
+   |
+    <a href="trade.html" title="Trade data">next</a> &raquo;</div>
+      </div>
+      <div class="clear"></div>
+     </div>
+    </div>
+    
+    <div id="bd">
+      <div class="container_12">
+        <div class="grid_8">
+         <div id="database-instdata">
+          
+  <div class="section" id="instrument-data">
+<span id="id1"></span><h1>Instrument data<a class="headerlink" href="#instrument-data" title="Permalink to this headline">¶</a></h1>
+<p>The instdata module provides various models for storing instruments and their associated data within the database.
+This data is specific to the type of instrument as well as market data.</p>
+<div class="section" id="dataid">
+<span id="id2"></span><h2>DataId:<a class="headerlink" href="#dataid" title="Permalink to this headline">¶</a></h2>
+<p>This the root identifier for all other models within this package.
+It is the recommended means of accessing related models within the package.
+For example to get a handle on a particular instrument you would call the <tt class="docutils literal"><span class="pre">instrument()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;us_future_id = DataId.objects.get(code = &#39;TUM0&#39;)</span>
+<span class="go">&gt;&gt;&gt;us_future = us_future_id.instrument()</span>
+</pre></div>
+</div>
+<p>It is used in most queries. As a result it includes a number of denormalised datafields to assist performance.
+Care should be taken when updating underlying models that the data stays consistent.</p>
+</div>
+<div class="section" id="vendor">
+<span id="id3"></span><h2>Vendor:<a class="headerlink" href="#vendor" title="Permalink to this headline">¶</a></h2>
+<p>This model provides a means of differentiating different data providers.
+To get access to the actual implementation of a vendor use the method <tt class="xref docutils literal"><span class="pre">interface()</span></tt>.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;yahoo_vendor = Vendor.objects.get(code=&#39;YAHOO&#39;)</span>
+<span class="go">&gt;&gt;&gt;yahoo_impl   = yahoo_vendor.interface()</span>
+<span class="go">&gt;&gt;&gt;yahoo_impl.get_history(...) #This method may be specific to that vendor</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="vendorid">
+<span id="id4"></span><h2>VendorId:<a class="headerlink" href="#vendorid" title="Permalink to this headline">¶</a></h2>
+<p>This is the identifier for a specific identifier for a particular <a class="reference internal" href="#dataid"><em>DataId:</em></a> and <a class="reference internal" href="#vendor"><em>Vendor:</em></a></p>
+</div>
+<div class="section" id="data-field">
+<span id="datafield"></span><h2>Data Field:<a class="headerlink" href="#data-field" title="Permalink to this headline">¶</a></h2>
+<p>This is provides the field identifier for storing market data related to a particular <a class="reference internal" href="#dataid"><em>DataId:</em></a>
+The attribute <tt class="xref docutils literal"><span class="pre">format</span></tt> defines the type of data that the field represents and consequently the table where the data will be stored.
+You can access the relevant Market data class by using the method <tt class="xref docutils literal"><span class="pre">get_mkt_data_cls()</span></tt>.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;rating_field = DataField.objects.get(code=&#39;RATING&#39;)</span>
+<span class="go">&gt;&gt;&gt;rating_field.format</span>
+<span class="go">&gt;&gt;&gt;&#39;string&#39;</span>
+<span class="go">&gt;&gt;&gt;mkt_data_tbl = rating_field.get_mkt_data_cls()</span>
+<span class="go">&gt;&gt;&gt;mkt_data_tbl</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">XXXX</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="vendor-data-field">
+<span id="vendordatafield"></span><h2>Vendor Data Field:<a class="headerlink" href="#vendor-data-field" title="Permalink to this headline">¶</a></h2>
+<p>This model allows one to specify the name of a given <a class="reference internal" href="#datafield"><em>Data Field:</em></a> for a specific <a class="reference internal" href="#vendor"><em>Vendor:</em></a>.
+This is particularly useful for situations where different vendors have different names for a particular field.</p>
+</div>
+</div>
+
+
+         </div>         
+        </div>
+       
+       <div class="grid_4" id="sidebar">
+          
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../contents.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Instrument data</a><ul>
+<li><a class="reference external" href="#dataid">DataId:</a></li>
+<li><a class="reference external" href="#vendor">Vendor:</a></li>
+<li><a class="reference external" href="#vendorid">VendorId:</a></li>
+<li><a class="reference external" href="#data-field">Data Field:</a></li>
+<li><a class="reference external" href="#vendor-data-field">Vendor Data Field:</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="index.html">Database Information</a></li>
+    
+    
+      <li>Next: <a href="trade.html">Trade data</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">jFlow v0.4 alpha documentation</a>
+        
+          <ul><li><a href="index.html">Database Information</a>
+        
+        <ul><li>Instrument data</li></ul>
+        </li></ul>
+      </li>
+  </ul>  
+
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../sources/database/instdata.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+       </div>
+       
+       <div class="clear"></div>
+     </div>
+    </div>
+    
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="index.html" title="Database Information">previous</a> 
+     |
+    <a href="index.html" title="Database Information" accesskey="U">up</a>
+   |
+    <a href="trade.html" title="Trade data">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

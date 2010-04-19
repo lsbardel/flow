@@ -1,0 +1,52 @@
+div#bd {
+	padding-top: 20px;
+}
+.section {
+	margin-bottom: 20px;
+}
+p {
+	line-height: 1.4em;
+	margin-bottom: 0.7em;
+}
+pre {
+	line-height: 1.2em;
+}
+a {
+	text-decoration: none;
+}
+/*
+.toctree-l2 {
+	margin-left: 20px;
+}*/
+
+pre {
+    margin:1em 0;
+    overflow:auto;
+    padding:0.5em;
+}
+
+.sphinxsidebarwrapper h3 {
+	margin-top: 10px;
+}
+.sphinxsidebarwrapper li ul {
+    margin-left: 10px;
+}
+
+.section ul { padding-left:30px; }
+.section ol { padding-left:30px; }
+.section ul li {
+	list-style-type:disc;
+	margin-bottom:.4em;
+}
+.section table {
+	margin: 10px 0 20px 30px;
+}
+.section table td,
+.section table th {
+	padding: 1px 4px;
+}
+
+.note, .admonition, .caution {
+    margin:1em 0;
+    padding:0.8em 1em;
+}
