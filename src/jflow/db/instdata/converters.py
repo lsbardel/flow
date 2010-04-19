@@ -1,6 +1,9 @@
 import datetime
 from dateutil.parser import parse as dataparse
 
+from jflow.core.finins import future_month_list, future_month_dict
+
+
 class Converter(object):
     cdict = {}
     def get_or_create(self, val, **kwargs):
@@ -171,7 +174,6 @@ class FutureContractConverter(Converter):
     
         
     def _get_future_code(self , code):
-        from jflow.core.finins import future_month_list, future_month_dict
         blbs = code.split(' ')
         if len(blbs) == 1:
             raise ValueError("blb code %s is not recognised" %blbs)

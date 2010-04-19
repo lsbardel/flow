@@ -1,3 +1,17 @@
-<div class="econometric-plot">
-<span class="dataid-code">{{ item.code }}</span>
+<div class="dataid-description">{% if item.description %}
+<p>{{ item.description }}</p>{% endif %}
+<table class="plain">
+<tbody>
+<tr><td>Code</td><td>{{ item.code }}</td></tr>{% if item.name %}
+<tr><td>Name</td><td>{{ item.name }}</td></tr>{% endif %}
+<tr><td>Country</td><td>{{ item.country }}</td></tr>{% if item.curncy %}
+<tr><td>Currency</td><td>{{ item.curncy }}</td></tr>{% endif %}{% if self.isin %}
+<tr><td>ISIN</td><td>{{ item.isin }}</td></tr>{% endif %}{% if tagurls %}
+<tr><td>Labels</td><td>{% for tag in tagurls %}<a{% if tag.url %} href="{{ tag.url }}"{% endif %} title="{{ tag.name }}">{{ tag.name }}</a> {% endfor %}</td></tr>{% endif %}
+<tr><td>Default Provider</td><td>{{ item.get_default_vendor }}</td></tr>{% if item.content_type %}
+<tr><td>Type</td><td>{{ item.content_type }}</td></tr>{% for data in item.instrument.metadata %}
+<tr><td>{{ data.name|capfirst }}</td><td>{{ data.value }}</td></tr>{% endfor %}
+{% endif %}
+</tbody>
+</table>
 </div>

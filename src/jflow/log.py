@@ -40,6 +40,15 @@ class LoggingClass(object):
         return get_logger(self)
     logger = property(__get_logger)
     
+    def __repr__(self):
+        return '%s | %s' % (self.__class__.__name__,self.description())
+    
+    def description(self):
+        return ''
+    
+    def __str__(self):
+        return self.__repr__()
+    
     def err(self, msg, obj = None):
         obj  = obj or self
         msgt = '%s - %s' % (obj,msg)

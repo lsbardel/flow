@@ -47,4 +47,10 @@
 	margin:-6px -12px;
 	border:none;
 }
-  
+ 
+.timserie-operator {
+	margin-bottom: 10px;
+}
+.timserie-operator h3 {
+	font-size: 120%;
+} 

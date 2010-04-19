@@ -1,9 +1,9 @@
 
-__all__ = ['get','tsoperator']
+__all__ = ['get','tsoperator','_operators']
 
 
 def get(oper, retval = None):
-    global _operations
+    global _operators
     oper = str(oper).lower()
     op   = _operators.get(oper,retval)
     if op != retval:
@@ -43,6 +43,7 @@ class tsoperator(object):
     Base class for time-series operators
     '''
     __metaclass__ = TSoperatorMeta
+    fullname = ''
     
     def __str__(self):
         return self.__class__.__name__
@@ -52,9 +53,6 @@ class tsoperator(object):
     
     def __unicode__(self):
         return u'%s' % self
-    
-    def description(self):
-        return ''
     
     def unwind(self, *args, **kwargs):
         self.unwind = kwargs.pop('unwind_objects',None)

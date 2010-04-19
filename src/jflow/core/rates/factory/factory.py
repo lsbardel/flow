@@ -96,7 +96,7 @@ class rateFactory(cacheObject):
         el = periodParser.get(period or 'd',None)
         vfid   = self.get_fvid(field,vendor)
         if vfid:
-            self.logger.debug("history request:(%s:%s) %s to %s, %s" % (vfid.field,vfid.vendor,start,end,el.name))
+            self.logger.debug("%s:%s %s to %s, %s" % (vfid.field,vfid.vendor,start,end,el.name))
         else:
             self.logger.critical("No data provider for field %s and vendor %s" % (field,vendor))
         return histloader(self, start, end, el, vfid, parent = parent).load()
@@ -217,12 +217,12 @@ class idFactory(rateFactory):
         '''
         Call the vendor interface to load time-series data
         '''
-        vid = loader.vfid
-        if vid:
-            ci = vid.vendor.interface()
+        vfid = loader.vfid
+        if vfid:
+            ci = vfid.vendor.interface()
             if ci:
-                self.logger.debug('get vendor data for "%s"' % vid)
-                return ci.history(vid,
+                self.logger.debug("%s:%s %s to %s" % (vfid.field,vfid.vendor,loader.start,loader.end))
+                return ci.history(vfid,
                                   loader.start,
                                   loader.end,
                                   self.holder)

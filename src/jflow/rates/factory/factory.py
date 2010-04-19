@@ -21,9 +21,6 @@ class Factory(base.cacheObject):
         #                               yccode = codes.yield_curve_code)
         self.get_id       = getid
         self.get_currency = self.cache.get_currency
-        
-    def __str__(self):
-        return "Rate Factory"
     
     def select(self, code):
         self.logger.debug('selecting constructor for %s rate' % code)

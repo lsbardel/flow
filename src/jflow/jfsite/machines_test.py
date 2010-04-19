@@ -38,3 +38,4 @@ class Identity(object):
         self.EMAIL_HOST_PASSWORD   = None
         self.EMAIL_HOST_USER       = None
         self.DEFAULT_FROM_EMAIL    = None
+

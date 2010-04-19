@@ -20,5 +20,5 @@ from jflow.jfsite import applications
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)
 appsite.site.register('/data/', applications.DataApplication, model = applications.DataId)
 appsite.site.register('/econometric/', applications.EconometricApplication, model = applications.EconometricAnalysis)
-appsite.site.register('/memcache/', MemcacheApplication)
+appsite.site.register('/memcached/', MemcacheApplication)
 

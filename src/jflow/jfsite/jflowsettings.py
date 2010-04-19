@@ -1,0 +1,1 @@
+CACHE_BACKEND           = 'memcached://localhost:11211/'

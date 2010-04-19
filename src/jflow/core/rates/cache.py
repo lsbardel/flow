@@ -135,15 +135,6 @@ class cacheObject(LoggingClass):
         obj._cache = get_cache()
         obj.backend = jflow_cache
         return obj
-        
-    def __repr__(self):
-        return '%s | %s' % (self.__class__.__name__,self.description())
-    
-    def description(self):
-        return ''
-    
-    def __str__(self):
-        return self.__repr__()
     
     def __getstate__(self):
         odict = self.__dict__.copy()

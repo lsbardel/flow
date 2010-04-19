@@ -1,5 +1,13 @@
 from datetime import date
+
+from ccy.tradingcentres import centres
+
+from jflow.conf import settings
+
 from converter import get_date
+
+tcs = centres(settings.DEFAULT_TRADING_CENTRES)
+
 
 def get_livedate(dte):
     if isinstance(dte,livedate):
@@ -7,26 +15,18 @@ def get_livedate(dte):
     else:
         return livedate(get_date(dte))
 
+
 class livedate(object):
-    
+    '''
+    Utility class for financial dates
+    '''
     def __init__(self, dte = None):
         self.live   = True
         self.__date = None
         if isinstance(dte,date):
-            try:
-                if dte >= date.today():
-                    self.live = True
-                else:
-                    self.live   = False
-                    self.__date = dte
-            except:
-                dte = dte.date()
-                if dte >= date.today():
-                    self.live = True
-                else:
-                    self.live   = False
-                    self.__date = dte
-                
+            if dte < date.today():
+                self.live   = False
+                self.__date = tcs.prevbizday(dte,0)
     
     def __repr__(self):
         if self.live:

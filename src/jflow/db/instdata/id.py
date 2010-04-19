@@ -52,6 +52,7 @@ def get_field(field = None):
     return get_code_cache(field,DataField,settings.FIELDS_SHORTCUTS)
 
 def get_vendorfields_for_field(field):
+    return VendorDataField.objects.filter(field = field)
     model = VendorDataField
     key  = '%s:forfield:%s' % (model._meta,field)
     fdb  = cache.get(key,None)

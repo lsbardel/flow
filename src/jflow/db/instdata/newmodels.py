@@ -184,6 +184,9 @@ class DataId(ExtraContentModel):
             return inst.keywords()
         else:
             return None
+        
+    def get_default_vendor(self):
+        return self.default_vendor or settings.DEFAULT_VENDOR_FOR_SITE
 
 
 class VendorId(models.Model):
@@ -251,7 +254,13 @@ class Exchange(models.Model):
     name = models.CharField(max_length=50, blank=True)
         
     def __unicode__(self):
-        return u'%s - %s' % (self.code,self.name)
+        if self.name:
+            if self.name == self.code:
+                return self.code
+            else:
+                return u'%s - %s' % (self.code,self.name)
+        else:
+            return self.code
 
 
 class FutureContract(models.Model):
@@ -437,6 +446,10 @@ class InstrumentInterface(models.Model):
     def add_issuer(self, issuer):
         pass
     
+    def metadata(self):
+        return []
+                 
+    
 
 class Security(InstrumentInterface):
     CUSIP            = models.CharField(max_length=30,blank=True)
@@ -445,6 +458,13 @@ class Security(InstrumentInterface):
     
     class Meta:
         abstract = True
+        
+    
+    def metadata(self):
+        data = []
+        if self.exchange:
+            data.append({'name':'exchange','value':self.exchange})
+        return data
     
 
 class EquityBase(Security):

@@ -18,7 +18,7 @@ class tsimple(tsoperator):
 class cctr(tsimple):
     '''
     Continuously Compounded Total return
-    '''
+    '''    
     def calculate(self,ts):
         ns = self.newts()
         v0 = 0
