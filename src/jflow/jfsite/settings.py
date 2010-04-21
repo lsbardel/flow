@@ -73,7 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -102,6 +102,7 @@ INSTALLED_APPS = (
     'djpcms.contrib.admin',
     #'djpcms.contrib.compressor',
     'tagging',
+    'flowrepo',
     #
     'ccy.basket',
     'jflow.db.instdata',
@@ -114,7 +115,8 @@ COMPRESS = True
 # DJPCMS SETTINGS
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
+                   'flowrepo.cms',
                    'jfsite.plugins']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
 APPLICATION_URL_MODULE  = 'jfsite.appurls'
-GRID960_DEFAULT_FIXED   = False
+GRID960_DEFAULT_FIXED   = True

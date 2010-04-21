@@ -2,6 +2,9 @@
 body {
     background:#D3DBDE;
 }
+#site-content {
+	background: #fff;
+}
 #branding-banner,
 #page-footer {
     background: #111111;
@@ -17,6 +20,9 @@ a:link, a:visited {
 }
 a:hover {
     color:#003366;
+}
+.writing #site-content {
+	background: rgb(245,245,245);
 }
 
 

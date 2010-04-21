@@ -1,0 +1,22 @@
+{% load djpwrapper %}
+<div class="report-form"> 
+ <div class="grid_3">
+  <div class="report-dashboard">
+  {{ html }}
+  {{ inputs }}
+  </div>
+ </div>
+ <div class="grid_9">
+  <div class="report-edit">
+  {{ body }}
+  </div>
+ </div>
+ <div class="grid_4">
+    {{ help }}
+  <div class="separator"></div>
+  {{ current_attachments }}
+  <div class="separator"></div>
+  {{ attachments }}
+ </div>
+ <div class="clear"></div>
+</div>
