@@ -10,6 +10,7 @@ Requirements
  On top of jflow you need
  
  * djpcms
+ * django-flowrepo
  * django-piston
  * docutils
 

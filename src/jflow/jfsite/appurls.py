@@ -1,31 +1,36 @@
 from django.contrib.auth.models import User
-from django import http
-from django.forms.models import modelform_factory
 
-from djpcms.conf import settings
 from djpcms.utils.html import autocomplete
+from djpcms.conf import settings
 from djpcms.views import appsite
 from djpcms.views.user import UserApplication
 from djpcms.views.apps.memcache import MemcacheApplication
 
 from jflow.db.instdata.models import DataId
+from flowrepo.models import Report
 
 autocomplete.register(DataId,['code','name'])
+autocomplete.register(Report,['slug','name'])
 autocomplete.register(User,['username','username'])
 
 
-from jflow.jfsite import applications
+from jflow.jfsite.applications import data
     
 #___________________________________ REGISTERING DYNAMIC APPLICATIONS
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)
-appsite.site.register('/data/',
-                      applications.DataApplication,
-                      model = applications.DataId)
-appsite.site.register('/econometric/',
-                      applications.EconometricApplication,
-                      model = applications.EconometricAnalysis)
+appsite.site.register('/data/', data.DataApplication, model = DataId)
+appsite.site.register('/econometric/', data.EconometricApplication,  model = data.EconometricAnalysis)
+appsite.site.register('/report/', data.BlogApplication, model = Report)
 appsite.site.register('/memcached/', MemcacheApplication)
 
-if 'flowrepo' in settings.INSTALLED_APPS:
-    appsite.site.register('/report/', applications.BlogApplication, model = applications.Report)
+
+if 'jflow.db.trade' in settings.INSTALLED_APPS:
+    from jflow.jfsite.applications import trade
+    appsite.site.register('/team/', trade.FundHolderApplication, model = trade.FundHolder)
+    appsite.site.register('/portfolioview/', trade.PortfolioViewApplication, model = trade.PortfolioView)
+    appsite.site.register('/portfolio/', trade.FundApplication, model = trade.Fund)
+    appsite.site.register('/manual-trade/', trade.ManualTradeApplication, model = trade.ManualTrade)
+
+
+    
 

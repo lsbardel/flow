@@ -24,19 +24,3 @@ a:hover {
 .writing #site-content {
 	background: rgb(245,245,245);
 }
-
-
-/* boxes
------------------------------------------------ */
-.djpcms-html-box {
-    background:#148EA4;
-}
-.djpcms-html-box .hd {
-    background: transparent;
-}
-.djpcms-html-box .hd h2 {
-    color: #fff;
-}
-.djpcms-html-box .bd {
-	background: #fff;
-}

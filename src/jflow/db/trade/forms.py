@@ -11,6 +11,7 @@ class AddTradeBase(forms.Form):
     Base Form to add a new trade
     '''
     portfolio = forms.ModelChoiceField(queryset = None)
+    date      = forms.DateField(initial = datetime.date.today())
     
     def __init__(self, request = None, *args, **kwargs):
         if request is None:
@@ -48,4 +49,4 @@ class PortfolioViewForm(forms.ModelForm):
         if self.user:
             self.instance.user = self.user
         return super(PortfolioViewForm,self).save(commit = commit)
-            
+    

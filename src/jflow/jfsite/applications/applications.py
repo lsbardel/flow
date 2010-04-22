@@ -135,6 +135,18 @@ CRL_HELP = htmlwrap('div',
 collapse = lambda title, html, c, cl: box(hd = title, bd = html, collapsable = c, collapsed = cl)
 
 
+
+#_______________________________________________________________________ MANUAL TRADE
+class ManualTradeApplication(appsite.ModelApplication):
+    search = appview.SearchView()
+    add = appview.AddView()
+
+
+
+
+
+#_______________________________________________________________________ REPORT
+
 class ReportForm(FlowItemForm):
     authors  = ModelMultipleChoiceField(User.objects, required = False)
     data_ids = ModelMultipleChoiceField(DataId.objects, required = False, label = 'Related securities')
