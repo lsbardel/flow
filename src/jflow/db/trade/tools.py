@@ -4,7 +4,7 @@ from models import Trader, FundHolder
 
 def get_trader(user):
     if user.is_authenticated() and user.is_active:
-        trader = user.trader_set.all()
+        trader = user.traders.all()
         if trader:
             trader = trader[0]
         else:

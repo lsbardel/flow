@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from models import *
+from jflow.db.trade.forms import TraderForm
 
 #_______________________________________________________________ INLINES
 #class PortfolioDisplayComponentInline(admin.TabularInline):
@@ -16,6 +17,7 @@ class FundHolderAdmin(admin.ModelAdmin):
 class TraderAdmin(admin.ModelAdmin):
     list_display = ('user','fullname','is_active','is_staff','is_superuser','fund_holder','default_fund','default_history','machine','port','server_active')
     list_filter  = ('fund_holder',)
+    #form = TraderForm
 
 class FundAdmin(admin.ModelAdmin):
     list_display = ('code','firm_code', 'description','curncy','fund_holder','parent','dataid')

@@ -98,7 +98,7 @@ class Fund(models.Model):
 
 
 class Trader(models.Model):
-    user            = models.OneToOneField(User, verbose_name = 'username')
+    user            = models.OneToOneField(User, related_name = 'trader')
     fund_holder     = models.ForeignKey(FundHolder, verbose_name = 'team')
     machine         = models.CharField(max_length = 50, blank = True)
     port            = models.IntegerField(default = 9080)
@@ -394,19 +394,15 @@ class Position(TimeStamp):
 
 class ManualTrade(TimeStamp):
     user            = models.ForeignKey(User)
+    dataid          = models.ForeignKey('instdata.DataId')
+    fund            = models.ForeignKey(Fund)
     quantity        = models.DecimalField(default = 0,
                                           max_digits = managers.MAX_DIGITS,
                                           decimal_places = managers.ROUNDING)
-    portfolio       = models.ForeignKey(Fund)
-    open_date       = models.DateField()
+    open_date       = models.DateField(default = datetime.date.today)
     close_date      = models.DateField(null = True, blank = True)
     price           = models.FloatField(default = 0)
-    position        = models.ForeignKey(Position, blank = True)
     comment         = models.TextField()
     
-    def __get_instrumentCode(self):
-        return self.position.instrumentCode
-    instrumentCode = property(fget = __get_instrumentCode)
-    
     def __unicode__(self):
-        return u'%s (%s)' % (self.instrumentCode,self.open_date)
+        return u'%s (%s)' % (self.dataid,self.open_date)

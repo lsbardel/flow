@@ -116,7 +116,8 @@ COMPRESS = True
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
                    'flowrepo.cms',
-                   'jfsite.plugins']
+                   'jfsite.plugins',
+                   'jfsite.applications.trade']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
 APPLICATION_URL_MODULE  = 'jfsite.appurls'
 GRID960_DEFAULT_FIXED   = True
