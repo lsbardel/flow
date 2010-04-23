@@ -8,9 +8,11 @@ from djpcms.views.apps.memcache import MemcacheApplication
 
 from jflow.db.instdata.models import DataId
 from flowrepo.models import Report
+from tagging.models import Tag
 
 autocomplete.register(DataId,['code','name'])
 autocomplete.register(Report,['slug','name'])
+autocomplete.register(Tag,['name'])
 autocomplete.register(User,['username','username'])
 
 

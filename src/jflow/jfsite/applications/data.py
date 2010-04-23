@@ -3,19 +3,24 @@ from django.contrib.auth.models import User
 from django.forms.models import modelform_factory
 
 from tagging.models import Tag
+from tagging.forms import TagField
 from jflow.db.instdata.models import DataId, EconometricAnalysis
 from jflow.db.instdata.forms import DataIdForm, EconometricForm
 
 from djpcms.conf import settings
 from djpcms.utils import form_kwargs
 from djpcms.utils.html import htmlwrap, form, formlet, box, FormHelper, FormLayout
-from djpcms.utils.html import HtmlForm, Fieldset, ModelMultipleChoiceField
+from djpcms.utils.html import HtmlForm, Fieldset, ModelMultipleChoiceField, AutocompleteManyToManyInput
 from djpcms.views import appsite, appview
 from djpcms.views.apps.tagging import tagurl
 
 from dateutil.parser import parse as DateFromString
 from unuk.core.jsonrpc import Proxy
 
+
+def AutocompleteTagField(required = False):
+    wg = AutocompleteManyToManyInput(Tag, ['name'], separator = ' ', inline = True)
+    return TagField(required = required, widget = wg)
 
 def date2yyyymmdd(dte):
     return dte.day + 100*(dte.month + 100*dte.year)
@@ -154,6 +159,7 @@ class ReportForm(FlowItemForm):
                                             help_text = 'To select/deselect multiple files to attach press ctrl')
     images       = ModelMultipleChoiceField(Image.objects, required = False, label = 'Available images',
                                             help_text = 'To select/deselect multiple files to attach press ctrl')
+    tags         = AutocompleteTagField()
     attachment_1 = forms.FileField(required = False)
     attachment_2 = forms.FileField(required = False)
     attachment_3 = forms.FileField(required = False)
@@ -165,8 +171,8 @@ class ReportForm(FlowItemForm):
     helper.layout = FormLayout(
                              Fieldset('name', 'description', 'body', key = 'body'),
                     
-                             Fieldset('visibility',
-                                      'markup', 'allow_comments', css_class = Fieldset.inlineLabels),
+                             Fieldset('visibility', 'allow_comments',
+                                      css_class = Fieldset.inlineLabels),
                             
                              Fieldset('tags', 'data_ids'),
                              
@@ -180,6 +186,10 @@ class ReportForm(FlowItemForm):
                              Fieldset('attachment_1', 'attachment_2', 'attachment_3',
                                       key = 'attachments',
                                       renderer = lambda html : collapse('New attachments',html,True,False)),
+                                      
+                             Fieldset('slug', 'timestamp', 'markup', 'parent',
+                                      key = 'metadata',
+                                      renderer = lambda html : collapse('Metadata',html,True,True)),
                     
                              template = 'flowrepo/report_form.html')
     
