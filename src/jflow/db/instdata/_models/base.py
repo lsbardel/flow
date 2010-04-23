@@ -6,7 +6,7 @@ from jflow.db import geo
 from jflow.db.utils import django_choices, dict_from_choices
 from jflow.utils.decorators import lazyattr
 
-from jflow.db.instdata import settings
+from jflow.conf import settings
 
 #from jflow.core.dates import DateFromString
 

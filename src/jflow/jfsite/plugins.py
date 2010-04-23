@@ -80,3 +80,55 @@ class EconometricFunctions(DJPplugin):
                          'description': op.__doc__})
         return loader.render_to_string('instdata/operators.html', {'items': rops})
 
+
+
+#
+#__________________________________________________ PLUGINS
+class PortfolioForm(forms.Form):
+    for_user = forms.BooleanField(initial = False, required = False)
+
+def item_description(item):
+    if isinstance(item, PortfolioView):
+        d = u'%s <i>by %s</i>' % (item.name,item.user)
+    else:
+        d = item.description or item.code
+    return mark_safe(d)
+
+class PortfolioList(DJPplugin):
+    name = "porfolio-list"
+    description = "Team and portfolio list"
+    form        = PortfolioForm
+    
+    def render(self, djp, wrapper, prefix, for_user = False, **kwargs):
+        instance = djp.instance
+        request  = djp.request
+        appmodel = None
+        items    = None
+        if for_user:
+            user = request.user
+            try:
+                trader = user.trader
+                appmodel = appsite.site.for_model(Fund)
+                items  = trader.fund_holder.funds.filter(parent = None)
+            except:
+                pass
+        else:
+            if not instance:
+                appmodel = appsite.site.for_model(FundHolder)
+                items = FundHolder.objects.filter(fund_manager = True)
+            elif isinstance(instance,FundHolder):
+                appmodel = appsite.site.for_model(Fund)
+                items = instance.funds.filter(parent = None)
+            elif isinstance(instance,Fund):
+                appmodel = appsite.site.for_model(Fund)
+                items = instance.views.all()
+                    
+        if items and appmodel:
+            cts = []
+            for item in items:
+                url = appmodel.viewurl(request,item)
+                cts.append({'url':url,
+                            'name':item_description(item)})
+            return loader.render_to_string('trade/team_list.html', {'items': cts})        
+        
+        return u''

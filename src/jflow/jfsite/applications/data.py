@@ -4,6 +4,9 @@ from django.forms.models import modelform_factory
 
 from tagging.models import Tag
 from tagging.forms import TagField
+
+from flowrepo.models import Report
+
 from jflow.db.instdata.models import DataId, EconometricAnalysis
 from jflow.db.instdata.forms import DataIdForm, EconometricForm
 
@@ -174,7 +177,7 @@ class ReportForm(FlowItemForm):
                              Fieldset('visibility', 'allow_comments',
                                       css_class = Fieldset.inlineLabels),
                             
-                             Fieldset('tags', 'data_ids'),
+                             Fieldset('authors', 'tags', 'data_ids'),
                              
                              HtmlForm(CRL_HELP, key = 'help',
                                       renderer = lambda html : collapse('Writing Tips',html,True,True)),
@@ -199,6 +202,9 @@ class ReportForm(FlowItemForm):
         add_related_upload(self.cleaned_data['attachment_2'],instance)
         add_related_upload(self.cleaned_data['attachment_3'],instance)
         return instance
+    
+    class Meta:
+        model = Report
     
     
 class BlogApplication(ReportApplication):

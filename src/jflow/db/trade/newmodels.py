@@ -13,7 +13,13 @@ from django.utils.text import capfirst
 
 from jflow.db.trade import managers
 from jflow.db import geo
-from jflow.db.instdata.fields import slugify, SlugCode 
+from jflow.db.instdata.fields import slugify, SlugCode
+
+
+fund_choices = (('fund','fund'),
+                ('benchmark','benchmark'),
+                ('custom','custom'))
+
 
 class TimeStamp(models.Model):
     last_modified     = models.DateTimeField(auto_now = True)
@@ -47,7 +53,11 @@ class Fund(models.Model):
                                         blank = True,
                                         null = True,
                                         related_name = 'dataid')
-    #type            = models.CharField(choices = ...)
+    # New stuff
+    type            = models.CharField(choices = fund_choices,
+                                       max_length = 32,
+                                       blank = True,
+                                       default = 'fund')
     
     objects = managers.FundManager()
     

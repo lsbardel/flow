@@ -20,8 +20,9 @@ class TraderAdmin(admin.ModelAdmin):
     #form = TraderForm
 
 class FundAdmin(admin.ModelAdmin):
-    list_display = ('code','firm_code', 'description','curncy','fund_holder','parent','dataid')
-    list_filter  = ('fund_holder',)
+    list_display = ('code','firm_code', 'description','curncy','fund_holder','parent','dataid','type')
+    list_filter  = ('fund_holder','type')
+    
 
 class CustodyAccountAdmin(admin.ModelAdmin):
     list_display = ('code','name','fund','dummy')
@@ -50,7 +51,8 @@ class PortfolioDisplayElementAdmin(admin.ModelAdmin):
     list_display = ('code','name','description','formatter','sortable','dynamic','order')
 
 class ManualTradeAdmin(admin.ModelAdmin):
-    list_display = ('user','open_date','close_date','portfolio','quantity','price','position')
+    list_display = ('dataid','user','open_date','close_date',
+                    'fund','quantity','price')
 
 
 admin.site.register(FundHolder,FundHolderAdmin)
@@ -61,6 +63,7 @@ admin.site.register(Position,PositionAdmin)
 admin.site.register(PortfolioView,PortfolioViewAdmin)
 admin.site.register(UserViewDefault,UserViewDefaultAdmin)
 admin.site.register(Portfolio,PortfolioAdmin)
+admin.site.register(ManualTrade,ManualTradeAdmin)
 #admin.site.register(PortfolioDisplay,PortfolioDisplayAdmin)
 #admin.site.register(PortfolioDisplayElement,PortfolioDisplayElementAdmin)
 

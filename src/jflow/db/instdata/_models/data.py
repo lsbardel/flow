@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 from tagging.managers import ModelTaggedItemManager
 
-from jflow.djutils.fields import SlugCode
+#from jflow.djutils.fields import SlugCode
 
 from base import *
 
@@ -76,7 +76,8 @@ class DataId(models.Model):
     '''
     Database ID
     '''
-    code           = SlugCode(max_length = 32, unique = True, upper = True, rtxchar = '_')
+    #code           = SlugCode(max_length = 32, unique = True, upper = True, rtxchar = '_')
+    code           = models.CharField(max_length = 32, unique = True)
     name           = models.CharField(max_length = 64, blank  = True)
     description    = models.TextField(blank=True)
     country        = models.CharField(max_length = 2, choices = geo.country_tuples())
