@@ -1,10 +1,9 @@
 
-jflow 0.4-pre-alpha
+jflow 0.4 alpha
 ======================
- * Added `instdata` form models
- * Refactoring `instdata` and `trade` models. Not backward compatible
+ * Refactored `instdata` and `trade` models. Not backward compatible
  * Created django-piston API
- * Added `jfsite` application site
+ * Added `jfsite` application site with several `djpcms` plugins
 
 
 jflow 0.3   2010-03-15
