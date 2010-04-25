@@ -107,6 +107,8 @@ INSTALLED_APPS = (
     'ccy.basket',
     'jflow.db.instdata',
     'jflow.db.trade',
+    #
+    'south'
 )
 
 LEAH_SERVER_URL = PSETTINGS.leahurl

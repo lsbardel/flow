@@ -63,7 +63,7 @@ class TimeserieView(appview.AppView):
 class DataApplication(tagurl.TagApplication):
     inherit   = True
     form      = DataIdForm
-    add       = appview.AddView(regex = 'add')
+    add       = appview.AddView(regex = 'add', isplugin = False)
     timeserie = TimeserieView(regex = 'timeserie')
     edit      = appview.EditView(regex = 'edit/(?P<id>\d+)', parent = None)
     view      = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
