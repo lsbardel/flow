@@ -379,8 +379,9 @@ class BondClass(models.Model):
         old_issuer = self.issuer(dt)
         if old_issuer == issuer:
             return
-        bi = BondIssuer(dt = dt, issuer = issuer, bond_class = self)
+        bi , created = BondIssuer.objects.get_or_create(dt = dt, issuer = issuer, bond_class = self)
         bi.save()
+        
         return bi
 
 class FundType(BaseModel):
