@@ -110,6 +110,21 @@ class SecurityType(Converter):
         else:
             return 3
 
+#### Added different date convert method as dataparse assumes that the date is in US Format
+#rather than checking Locale
+######
+
+def fromUKdt(strdt):
+    d , mo , yr = strdt.split(' ')[0].split('/')
+    d = int(d)
+    mo = int(mo)
+    
+    if len(yr) <> 4:
+        raise TypeError,"A 4 digit year is required"
+    
+    yr = int(yr)
+    return datetime.datetime(yr,mo,d)
+
 class BondDate(Converter):                  
     
     def get_or_create(self, val, **kwargs):
@@ -117,12 +132,19 @@ class BondDate(Converter):
             return val
         if val:
             try:
+                return fromUKdt(val).date()
+            except Exception , e:
+                pass
+            
+            try:
                 return dataparse(val)
             except:
                 return None
         else:
             return None
         
+########################    
+    
 class CollateralCreator(Converter):                  
     
     def get_or_create(self, val, **kwargs):
