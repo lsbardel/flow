@@ -1,4 +1,5 @@
 from datetime import date
+from itertools import izip
 
 from base import *
 import bloomberg
@@ -43,26 +44,28 @@ class blb(DataVendor):
     def registerlive(self, rate):
         return self.server.registerlive(rate)
     
-    def historyarrived(self, fvid, res):
-        if res == None:
+    def updatehandler(self, vfid, start, end, result, hcache):
+        if not result:
             return
         
-        header = res.get('header')
-        body   = res.get('body')
+        header = result.get('header')
+        body   = result.get('body')
         ticker = header.get('ticker')
         field  = header.get('field')
-        ts     = body.get('timeseries')
-        dates  = ts.get('dates')
-        values = ts.get('values')
+        tsd    = body.get('timeseries')
+        dates  = tsd.get('dates')
+        values = tsd.get('values')
         if len(dates) != len(values):
             raise ValueError, "Dates and values of different length"
         
-        vid    = fvid.vid
-        field  = fvid.field
-        vi     = values.__iter__()
+        vid     = vfid.vid
+        field   = vfid.field
+        fcode   = vfid.vendor_field.code
+        datestr = None
+        ts      = hcache.timeseries(vfid)
+    
         mmo    = self.cache_factory()
-        for d in dates:
-            v = vi.next()
+        for d,v in izip(dates,values):
             try:
                 dt = yyyymmdd2date(d)
             except:

@@ -11,12 +11,13 @@ class deferredLoader(defer.Deferred):
     Utility class for handling vendors with asyncronous
     loading mechanism, such as bloomberg
     '''
-    def __init__(self, ci, vfid, start, end, d):
+    def __init__(self, ci, vfid, start, end, d, hcache):
         defer.Deferred.__init__(self)
-        self.ci    = ci
-        self.vfid  = vfid
-        self.start = start
-        self.end   = end
+        self.ci     = ci
+        self.vfid   = vfid
+        self.start  = start
+        self.end    = end
+        self.hcache = hcache
         d.addCallbacks(self.historyarrived,self.historyfailure)
 
     def historyarrived(self, res):
@@ -24,8 +25,8 @@ class deferredLoader(defer.Deferred):
         History has arrived from vendor
         '''
         try:
-            self.ci.historyarrived(self.vfid, res)
-            result = self.ci.get_result(self.vfid, self.start, self.end)
+            #self.ci.historyarrived(self.vfid, res)
+            result = self.ci.get_result(self.vfid, self.start, self.end, res, self.hcache)
             self.callback(result)
         except Exception, e:
             self.errback(e)
@@ -98,7 +99,7 @@ class DataVendor(object):
         ed = end
         result = self._history(vfid, st, ed)
         if isinstance(result,defer.Deferred):
-            return deferredLoader(self, vfid, start, end, result)
+            return deferredLoader(self, vfid, start, end, result, hcache)
         else:
             return self.get_result(vfid, start, end, result, hcache)
     
