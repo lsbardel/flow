@@ -133,7 +133,7 @@ class EconometricApplication(tagurl.TagApplication):
 
 from flowrepo.models import Report, Attachment, Image
 from flowrepo.forms import FlowItemForm, add_related_upload
-from flowrepo.cms import ReportApplication
+from flowrepo.cms import FlowItemApplication, ReportApplication
 from flowrepo import markups
 
 CRL_HELP = htmlwrap('div',
@@ -219,3 +219,6 @@ class BlogApplication(ReportApplication):
         css = {
             'all': ('flowrepo/flowrepo.css',)
         }
+
+class ItemApplication(FlowItemApplication):
+    name      = 'items'

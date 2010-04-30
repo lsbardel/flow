@@ -7,7 +7,7 @@ from djpcms.views.user import UserApplication
 from djpcms.views.apps.memcache import MemcacheApplication
 
 from jflow.db.instdata.models import DataId
-from flowrepo.models import Report
+from flowrepo.models import Report, FlowItem
 from tagging.models import Tag
 
 autocomplete.register(DataId,['code','name'])
@@ -23,6 +23,7 @@ appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = U
 appsite.site.register('/data/', data.DataApplication, model = DataId)
 appsite.site.register('/econometric/', data.EconometricApplication,  model = data.EconometricAnalysis)
 appsite.site.register('/report/', data.BlogApplication, model = Report)
+#appsite.site.register('/items/', data.FlowItemApplication, model = FlowItem)
 appsite.site.register('/memcached/', MemcacheApplication)
 
 
