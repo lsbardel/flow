@@ -7,12 +7,13 @@ from tagging.forms import TagField
 
 from flowrepo.models import Report
 
-from jflow.db.instdata.models import DataId, EconometricAnalysis
+from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
 from jflow.db.instdata.forms import DataIdForm, EconometricForm
 
 from djpcms.conf import settings
 from djpcms.utils import form_kwargs
-from djpcms.utils.html import htmlwrap, form, formlet, box, FormHelper, FormLayout
+from djpcms.utils.ajax import jhtmls
+from djpcms.utils.html import htmlwrap, form, formlet, box, FormHelper, FormLayout, FormInlineHelper
 from djpcms.utils.html import HtmlForm, Fieldset, ModelMultipleChoiceField, AutocompleteManyToManyInput
 from djpcms.views import appsite, appview
 from djpcms.views.apps.tagging import tagurl
@@ -60,13 +61,59 @@ class TimeserieView(appview.AppView):
         return http.HttpResponse(sdata, mimetype='application/javascript')
 
 
+
+class NiceDataIdForm(DataIdForm):
+    tags   = AutocompleteTagField()
+    
+    helper = FormHelper()
+    
+    helper.inlines.append(FormInlineHelper(DataId,VendorId))
+    
+    # add the layout object
+    helper.layout = FormLayout(
+                             Fieldset('code', 'name', 'isin', 'firm_code', 'content_type',
+                                      'tags', 'country',
+                                      css_class = Fieldset.inlineLabels, key = 'main'),
+                             Fieldset('description', key = 'descr'),
+                             Fieldset('live', 'default_vendor',
+                                      css_class = Fieldset.inlineLabels, key = 'second'),
+                             template = 'instdata/dataid_change_form.html')
+
+class InstrumentForm(forms.ModelForm):
+    helper = FormHelper()
+
+def change_type(djp):
+    '''Ajax view to change instrument form'''
+    view = djp.view
+    request = djp.request
+    obj  = djp.instance
+    data = request.POST or request.GET
+    initial = dict(data.items())
+    form = view.appmodel.form(initial = initial, instance = djp.instance)
+    iform = view.appmodel.instrument_form(request, form.content_form)
+    if iform:
+        iform = iform(initial = initial)
+        html = iform.helper.layout.render(iform)
+    else:
+        html = ''
+    data = jhtmls(html = html, identifier = '.data-id-instrument')
+    return http.HttpResponse(data.dumps(), mimetype='application/javascript')
+
+data_extra_views = {'content_type': change_type}
+slug_regex = '(?P<id>[-\.\w]+)'
+
 class DataApplication(tagurl.TagApplication):
     inherit   = True
-    form      = DataIdForm
-    add       = appview.AddView(regex = 'add', isplugin = False)
+    form      = NiceDataIdForm
+    
+    add       = appview.AddView(regex = 'add',
+                                isplugin = False,
+                                ajax_views = data_extra_views)
     timeserie = TimeserieView(regex = 'timeserie')
-    edit      = appview.EditView(regex = 'edit/(?P<id>\d+)', parent = None)
-    view      = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
+    edit      = appview.EditView(regex = 'edit/%s' % slug_regex,
+                                 parent = None,
+                                 ajax_views = data_extra_views)
+    view      = appview.ViewView(regex = slug_regex)
     
     class Media:
         css = {
@@ -94,8 +141,20 @@ class DataApplication(tagurl.TagApplication):
             return self.model.objects.get(code = id)
         except:
             return None
+    
+    def instrument_form(self, request, content_form):
+        if content_form:
+            model = content_form._meta.model
+            return modelform_factory(model, InstrumentForm)
+        else:
+            return None
         
-    def get_form(self, djp, initial = None, **kwargs):
+    def get_form(self, djp, **kwargs):
+        f = super(DataApplication,self).get_form(djp,**kwargs)
+        f.instrument_form = self.instrument_form(djp.request, f.form.content_form)
+        return f
+        
+    def get_form2(self, djp, initial = None, **kwargs):
         instance   = djp.instance
         request    = djp.request
         mform      = modelform_factory(self.model, self.form)

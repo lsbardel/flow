@@ -3,7 +3,8 @@
     <h3>{% if viewurl %}
       <a href="{{ viewurl }}">{{ item }}</a>{% else %}
       {{ item }}{% endif %}{% if item.content_type %}
-      &mdash; {{ item.content_type }}{% endif %}
+      &mdash; {{ item.content_type }}{% endif %}{% if editurl %}
+      &mdash; <a href="{{ editurl }}">edit</a>{% endif %}
     </h3>{% endblock %}
   </div>
   <div class="bd">
