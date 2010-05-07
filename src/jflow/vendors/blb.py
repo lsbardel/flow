@@ -58,21 +58,15 @@ class blb(DataVendor):
         if len(dates) != len(values):
             raise ValueError, "Dates and values of different length"
         
-        vid     = vfid.vid
-        field   = vfid.field
-        fcode   = vfid.vendor_field.code
-        datestr = None
         ts      = hcache.timeseries(vfid)
-    
-        mmo    = self.cache_factory()
         for d,v in izip(dates,values):
             try:
                 dt = yyyymmdd2date(d)
+                ts[dt] = v
             except:
                 continue
-            m = mmo.get_or_create(vendor_id = vid, field = field, dt = dt)[0]
-            m.mkt_value = v
-            m.save()
+        return ts
+        
             
     def weblink(self, ticker):
         '''
