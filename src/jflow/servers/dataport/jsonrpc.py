@@ -45,12 +45,6 @@ class jsonService(JSONRPC):
         setup_dataserver()
         super(jsonService,self).__init__(**kwargs)
         
-    def log(self, msg, obj = None, verbose = 0):
-        log.msg(msg, obj = obj or self, verbose = verbose)
-        
-    def err(self, msg, obj = None):
-        log.err(msg, obj = obj or self)
-        
     def jsonrpc_blbconnections(self):
         pass
     
@@ -72,7 +66,7 @@ class jsonService(JSONRPC):
                 return []
             return ts.deferred
         except Exception, e:
-            self.err(e.__class__("while calling history: %s" % e))
+            self.logger.error(e)
             return []
     
     def jsonrpc_numservers(self, request, code):
@@ -164,7 +158,7 @@ class jsonService(JSONRPC):
             return loader.result
         except Exception, e:
             err = e.__class__('Failed adding instrument %s with data %s. %s' % (model,data,e))
-            self.err(err)
+            self.logger.err(err)
             raise e
     
     def jsonrpc_instruments(self, request, model):

@@ -1,7 +1,5 @@
-'''
-Classes for asyncronous loading of rates
-
-This class derives from Twisted defer.Deferred
+'''Classes for asyncronous loading of rates form
+data vendors interfaces
 '''
 from jflow.utils.observer import mulobserver
 from jflow.utils.decorators import runInThread, threadSafe
@@ -130,9 +128,7 @@ class shistloader(bhistloader):
             self.finished()
         
     def _do_load(self):
-        '''
-        Send the request to the data loader Thread Pool
-        '''
+        '''Send the request to the data loader Thread Pool'''
         self.factory.loaderpool.deferToThread(self.__handleupdate,
                                               self.errback,
                                               self.factory._performload,
@@ -153,16 +149,18 @@ class mhistloader(bhistloader):
         '''
         hrates = self.factory.hrates
         for rf in hrates:
-            lf = rf.get_history(self.realstart, self.realend, self.vfid.field, self.vfid.vendor, parent = self)
+            lf = rf.get_history(self.realstart,
+                                self.realend,
+                                self.vfid.field,
+                                self.vfid.vendor,
+                                parent = self)
             self.addDeferred(lf)
         self.setcallbacks()
     
     def setresult(self, cl, res):
-        '''
-        override the setresult method
-        '''
+        '''override the setresult method'''
         rh = cl.holder
-        self.results[cl.code] = (rh,res)
+        self.results[cl.code()] = (rh,res)
     
     
         

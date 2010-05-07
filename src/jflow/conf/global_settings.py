@@ -2,8 +2,12 @@ import logging
 
 LIVE_CALCULATION = False
 
-LOGGING_VERBOSE = 2
-LOGGING_LEVEL   = logging.DEBUG
+LOGGING_LEVEL   = logging.INFO
+if logging.thread:
+    LOGGING_FORMAT = "%(asctime)s | (p=%(process)s,t=%(thread)s) | %(levelname)s | %(name)s | %(message)s"
+else:
+    LOGGING_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+LOGGING_HANDLERS = 'TimedRotatingFileHandler:midnight'
 LOGGING_PREFIX  = '' 
 
 DAYS_BACK = 60

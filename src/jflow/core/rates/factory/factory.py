@@ -266,7 +266,7 @@ class compositeFactory(rateFactory):
             return novendorfieldid(self.code(), vid.field, vid.vendor, self.numeric)
     
     def _handleresult(self, loader, res):
-        self.log("received result from %s" % loader, verbose = 3)
+        self.logger.debug("received result from %s" % loader)
         vfid = loader.vfid
         if res and vfid:
             nts    = self.holder.timeseries(vfid)

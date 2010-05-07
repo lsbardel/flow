@@ -4,14 +4,14 @@ from factory import compositeFactory
 
 class ccypairFactory(compositeFactory):
     
-    def __init__(self, cache, c1, c2):
+    def __init__(self, c1, c2):
         if str(c1) == 'USD':
             codes = (c2,)
         elif str(c2) == 'USD':
             codes = (c1,)
         else:
             codes = (c1,c2)
-        super(ccypairFactory,self).__init__(cache,True,*codes)
+        super(ccypairFactory,self).__init__(True,*codes)
         self.c1 = c1
         self.c2 = c2
         

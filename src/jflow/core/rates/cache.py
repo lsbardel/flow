@@ -61,7 +61,7 @@ class rateCache(LoggingClass):
             return rate
         #return self.__rates.get(ckey,None)
         
-    def clearlive(self):
+    def clearlive(self, live_key = None):
         pass
     
     def get_livedate(self, dte):
@@ -235,6 +235,7 @@ class rateHistory(cacheObject):
             self.end   = None
         
     def clearlive(self, live_key):
+        return
         if self.live:
             self.live.clearlive(live_key)
     

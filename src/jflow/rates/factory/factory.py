@@ -94,7 +94,7 @@ class Factory(base.cacheObject):
             c2  = self.get_currency(code[3:])
             if c1 and c2 and c1 != c2:
                 #fxhistory = self.cache.get_rate_holder(self.fx._code)
-                return base.ccypairFactory(self.cache, c1, c2)
+                return base.ccypairFactory(c1, c2)
         
         if id == None:
             return None
