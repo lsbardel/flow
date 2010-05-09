@@ -1,7 +1,7 @@
 from datetime import timedelta
 from ccy.tradingcentres import DateFromString
 
-from jflow.db.instdata.models import MktDataCache
+from jflow.db.instdata.models import MktData, MktDataCache
 from twisted.internet import defer
 
 
@@ -125,10 +125,29 @@ class DataVendor(object):
         return res
     
     def updatehandler(self, vfid, start, end, result, hcache):
-        
-        return self.get_cache(vfid).filter(dt__gte = start).filter(dt__lte = end)
+        raise NotImplementedError
         
     def historyfailure(self,failure):
         pass
+    
+
+class DatabaseVendor(DataVendor):
+    
+    def _history(self, vfid, startdate, enddate):
+        '''
+        This method should be implemented by derived classes.
+        By default do nothing
+        '''
+        return MktData.objects.filter(vendor_id = vfid.vid,
+                                      field = vfid.field,
+                                      dt__gte = startdate,
+                                      dt__lte = enddate)
+        
+    def updatehandler(self, vfid, start, end, result, hcache):
+        ts      = hcache.timeseries(vfid)
+        for obj in result:
+            ts[obj.dt] = obj.mkt_value
+        return ts
+    
 
 vendors = {}

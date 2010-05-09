@@ -68,6 +68,28 @@ Vendor Data Field:
 This model allows one to specify the name of a given :ref:`datafield` for a specific :ref:`vendor`.
 This is particularly useful for situations where different vendors have different names for a particular field.
 
+
+Management Tools
+========================
+
+There are several management tools for the instrument database.
+
+addccy
+-----------
+Add currencies objects to the DataId model::
+
+	python manage.py addccy -d blb
+	
+add all the currencies and set their default vendor to blb.
+
+loadecb
+-------------
+Another utility used for loading currency data into database. The data is extracted from the ECB web site::
+
+	python manage.py loadecb
+	
+Make sura you run the `addccy` command before loading data.
+
   
 	
 	

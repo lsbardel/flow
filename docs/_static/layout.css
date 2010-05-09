@@ -50,3 +50,7 @@ pre {
     margin:1em 0;
     padding:0.8em 1em;
 }
+
+.toctree-l1 ul {
+	margin-top: 5px;
+}

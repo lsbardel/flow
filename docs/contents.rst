@@ -8,6 +8,7 @@ jFlow documentation contents
    :maxdepth: 2
    
    intro/index
+   core/index
    database/index
    misc/index
 

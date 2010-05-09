@@ -11,16 +11,15 @@ def setup_logging(name):
     Setup logging for jflow
     name is the application name is using jflow
     '''
-    logger = get_logger(name)
+    logger = logging.getLogger()
     if logger.handlers:
-        return logger
+        return get_logger(name)
     ch     = logging.StreamHandler()
-    logger = logging.getLogger(name = name)
     format = getattr(settings,'LOGGING_FORMAT')
     ch.setFormatter(logging.Formatter(format))
     logger.setLevel(settings.LOGGING_LEVEL)
     logger.addHandler(ch)
-    return logger
+    return get_logger(name)
     
     
 class LoggingClass(object):

@@ -1,5 +1,5 @@
 from jflow.db.instdata.models import DataField, VendorId
-from base import DataVendor, DateFromString
+from base import DatabaseVendor
 from ccy.data.ecb import ecbzipccy
 
 
@@ -31,26 +31,14 @@ class ecbwriter(object):
     
 
 
-class ecb(DataVendor):
+class ecb(DatabaseVendor):
     '''
     European Central Bank market rates.
     The European central bank provides, free of charges, 
     market data and European area economic statistics. 
     '''
-    
-    def _history(self, ticker, startdate, enddate, field = None):
-        w = ecbwriter(self, startdate, enddate)
-        ecbzipccy(start = startdate, end = enddate, handler = w.newccydata)
-    
-    def historyarrived(self,res):
-        pass
-    
-    def newccydata(self, cur, dte, value):
-        pass
+    pass
     
     
-    
-    
-    
-    
+
 ecb()

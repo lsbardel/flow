@@ -15,8 +15,8 @@ def startserver(PORT):
     from twisted.internet import reactor
     from twisted.web import server
     from jflow.servers.dataport import jsonService
-    from jflow.log import get_logger
-    logger = get_logger()
+    from jflow.log import setup_logging
+    logger = setup_logging('jflow')
     reactor.listenTCP(PORT, server.Site(jsonService(logger = logger)))
     logger.info("Starting on port %s" % PORT)
     reactor.run()
@@ -28,5 +28,4 @@ if __name__ == '__main__':
         port = int(argv[1])
     else:
         port = 8010
-    setup_logging()
     startserver(port)

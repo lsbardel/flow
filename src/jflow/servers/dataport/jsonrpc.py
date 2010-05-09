@@ -56,9 +56,7 @@ class jsonService(JSONRPC):
         return False
     
     def jsonrpc_history(self, request, code, start, end, period = 'd'):
-        '''
-        Retrive historical dataseries
-        '''
+        '''Retrive historical dataseries'''
         try:
             ts = get_analysis(code, start, end, period, json = True)
             if ts == None:

@@ -2,25 +2,32 @@ import os
 from jflow.utils.importlib import import_module
 from jflow.conf import global_settings
 
+#If django is installed used the django setting object
+try:
+    from django.conf import settings as django_settings
+except:
+    django_settings = None 
+
 
 ENVIRONMENT_VARIABLE = "JFLOW_SETTINGS_MODULE"
 
 
 class Settings(object):
-    
-    def __init__(self, settings_module):
-        self.settings_module = settings_module
+    pass
+
+def fill(self, settings_module):
         
-        # update this dict from global settings (but only for ALL_CAPS settings)
-        for setting in dir(global_settings):
+    # update this dict from global settings (but only for ALL_CAPS settings)
+    for setting in dir(global_settings):
+        if setting == setting.upper():
+            setattr(self, setting, getattr(global_settings, setting))
+        
+    if settings_module:
+        for setting in dir(settings_module):
             if setting == setting.upper():
-                setattr(self, setting, getattr(global_settings, setting))
-        
-        if settings_module:
-            for setting in dir(settings_module):
-                if setting == setting.upper():
-                    setattr(self, setting, getattr(settings_module, setting))
-        
+                setattr(self, setting, getattr(settings_module, setting))
+    
+    return self    
 
 
 def get_settings():
@@ -34,7 +41,11 @@ def get_settings():
     else:
         mod = None
     
-    return Settings(mod)
+    sett = django_settings
+    if not sett:
+        sett = Settings()
+    
+    return fill(sett,mod)
 
 
 settings = get_settings()

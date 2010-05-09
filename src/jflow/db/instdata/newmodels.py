@@ -187,6 +187,19 @@ class DataId(ExtraContentModel):
         
     def get_default_vendor(self):
         return self.default_vendor or settings.DEFAULT_VENDOR_FOR_SITE
+    
+    def add_vendor(self, vc, ticker):
+        if not isinstance(vc,Vendor):
+            vc = Vendor.objects.get(code = str(vc).upper())
+        try:
+            vid = self.vendors.get(vendor = vc)
+            if vid.ticker != ticker:
+                vid.ticker = ticker
+                vid.save()
+        except:
+            vid = VendorId(ticker = ticker, vendor = vc, dataid = self)
+            vid.save()
+        return vid
 
 
 class VendorId(models.Model):

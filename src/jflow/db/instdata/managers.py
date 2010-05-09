@@ -118,6 +118,7 @@ class DataIdManager(ModelTaggedItemManager):
                  isin = '',
                  tags = '',
                  model = None,
+                 default_vendor = None,
                  **kwargs):
         live = True
         if id:
@@ -139,12 +140,19 @@ class DataIdManager(ModelTaggedItemManager):
             data['description'] = description
         if tags:
             data['tags'] = tags
+        if default_vendor:
+            data['default_vendor'] = default_vendor
         return data
         
     def create(self, id, **kwargs):
-        #from jflow.db.instdata.forms import DataIdForm
+        from jflow.db.instdata.forms import DataIdForm
         data = self.get_data(id, **kwargs)
-        return super(DataIdManager,self).create(**data)
+        f = DataIdForm(data,instance=id)
+        if f.is_valid():
+            return f.save()
+        else:
+            return None
+        #return super(DataIdManager,self).create(**data)
 #####################      
         
         
@@ -178,9 +186,7 @@ class InstrumentManager(models.Manager):
 ############## Added here #########
 class GenericOTCManager(models.Manager):
     
-    def get_data(self , id , default_vendor = NETIK_CODE,  **kwargs):
-        kwargs['default_vendor'] = default_vendor 
-        
+    def get_data(self , id , **kwargs):
         return super(GenericOTCManager ,self).get_data(id , **kwargs)  
         
 ##############
