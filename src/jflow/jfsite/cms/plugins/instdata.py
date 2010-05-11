@@ -1,6 +1,3 @@
-#
-#    djpcms plugins
-#
 from django.conf import settings
 from django import forms
 from django.template import loader
@@ -82,8 +79,6 @@ class EconometricFunctions(DJPplugin):
 
 
 
-#
-#__________________________________________________ PLUGINS
 class PortfolioForm(forms.Form):
     for_user = forms.BooleanField(initial = False, required = False)
 

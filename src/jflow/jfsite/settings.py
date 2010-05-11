@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'ccy.basket',
     'jflow.db.instdata',
     'jflow.db.trade',
+    'unuk.contrib.txdo',
     #
     'south'
 )
@@ -118,7 +119,7 @@ COMPRESS = True
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
                    'flowrepo.cms',
-                   'jfsite.plugins',
+                   'jfsite.cms.plugins.*',
                    'jfsite.applications.trade']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
 APPLICATION_URL_MODULE  = 'jfsite.appurls'

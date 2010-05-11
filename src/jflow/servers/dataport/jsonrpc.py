@@ -40,7 +40,7 @@ def setup_dataserver():
 
 
 class jsonService(JSONRPC):
-
+    '''JSONRPC server handler'''
     def __init__(self, **kwargs):
         setup_dataserver()
         super(jsonService,self).__init__(**kwargs)
@@ -68,9 +68,7 @@ class jsonService(JSONRPC):
             return []
     
     def jsonrpc_numservers(self, request, code):
-        '''
-        Return the number of connected bloomberg servers
-        '''
+        '''Return the number of connected bloomberg servers'''
         from jflow.db.instdata.models import Vendor
         try:
             v = Vendor.objects.get(code = str(code))
@@ -78,6 +76,10 @@ class jsonService(JSONRPC):
             return len(ci.connected())
         except:
             return 0
+        
+    def jsonrpc_team(self, request, team, valdate):
+        '''Team data'''
+        
         
     @runInMainThread
     def jsonrpc_portfolio(self, request, viewid, valdate):
