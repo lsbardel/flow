@@ -78,7 +78,9 @@ class jsonService(JSONRPC):
             return 0
         
     def jsonrpc_team(self, request, team, valdate):
-        '''Team data'''
+        '''Request team data consisting of a list of aggregate positions across
+        all funds.'''
+        
         
         
     @runInMainThread
