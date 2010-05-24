@@ -1,27 +1,56 @@
-from django.utils.datastructures import SortedDict
-from base import PositionBase
+import datetime
 
-__all__ = ['Portfolio']
+from jflow.core.dates import date2yyyymmdd
+
+__all__ = ['FinInsBase','Portfolio','FinIns']
 
 
-class Portfolio(PositionBase):
+class FinInsBase(object):
     
-    def __init__(self, *args, **kwargs):
-        super(Portfolio,self).__init__(*args, **kwargs)
-        self._positions = SortedDict()
+    def __init__(self, id = None, name = None, dt = None, root = None):
+        self.id = id
+        self.name = name
+        self.dt = dt or datetime.date.today()
+        self.root = root
         
-    def has_key(self, key):
-        return self._positions.has_key(str(key))
+    def __repr__(self):
+        return '%s:%s' % (self.name,self.dt)
     
-    def _trim(self,c):
-        return str(c).upper()
+    def __str__(self):
+        return self.__repr__()
     
-    def get(self, key, retdef = None):
-        return self._positions.get(self._trim(key), retdef)
+    def has_id(self, id):
+        return False
     
+    def prekey(self):
+        return '%s:%s' % (self.__class__.__name__.lower(),date2yyyymmdd(self.dt))
+        
+    def key(self):
+        return '%s:#%s' % (self.prekey(),self.id)
+    
+    def namekey(self):
+        return '%s:$%s' % (self.prekey(),self.name)
+    
+    def todict(self):
+        return {'id': self.id,
+                'name': self.name}
+    
+
+class Portfolio(FinInsBase):
+    '''A portfolio containing positions and portfolios'''
+    
+    def get(self, id, default = None):
+        code = '%s:position:$%s' % (self.key(),id)
+        return cache.get(code.lower(),default)
+    
+    def positions(self):
+        piter = cache.get_set('%s:ids' % self.key())
+        for pid in piter:
+            yield self.cache.get_position(pid)
+            
     def add(self, item):
         if isinstance(item,PositionBase):
-            c = self._trim(item.code)
+            cal
             if self.has_key(c):
                 raise KeyError, '%s already available in %s' % (c,self)
             else:
@@ -36,4 +65,7 @@ class Portfolio(PositionBase):
             pos.append(v.dict())
         return pos
     
+    
+class FinIns(FinInsBase):
+    pass
         

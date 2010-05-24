@@ -321,3 +321,19 @@ class PositionManager(models.Manager):
         qs.delete()
         return N
     
+
+class ManualTradeManager(models.Manager):
+    
+    def status_date_filter(self, dt = None, **kwargs):
+        '''
+        This query needs to be cached in an efficient manner
+        '''
+        dt = dt or datetime.date.today()
+        base = self.filter(open_date__lte = dt, **kwargs)
+        return base.filter(Q(close_date__gt = dt) | Q(close_date__isnull=True))
+        
+    def for_team(self, team, dt = None):
+        return self.status_date_filter(st = st, fund__fund_holder = team)
+    
+    def for_fund(self, fund, dt = None):
+        return self.status_date_filter(st = st, fund = fund)

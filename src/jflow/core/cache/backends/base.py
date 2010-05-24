@@ -22,6 +22,17 @@ class BaseCache(object):
         Returns True if the value was stored, False otherwise.
         """
         raise NotImplementedError
+    
+    def sadd(self, key, value, timeout=None):
+        """**Set operation**
+        
+        Add the specified *member* to the set value stored at *key*.
+        If member is already a member of the set no operation is performed.
+        If key does not exist a new set with the specified member as sole member is created.
+        If the key exists but does not hold a set value an error is returned.
+        """
+        raise NotImplementedError
+
 
     def get(self, key, default=None):
         """

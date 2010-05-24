@@ -109,7 +109,7 @@ INSTALLED_APPS = (
     'jflow.db.trade',
     'unuk.contrib.txdo',
     #
-    'south'
+    #'south'
 )
 
 LEAH_SERVER_URL = PSETTINGS.leahurl

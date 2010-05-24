@@ -44,6 +44,7 @@ class CacheClass(BaseCache):
             return False
         finally:
             self._lock.writer_leaves()
+            
 
     def get(self, key, default=None):
         self._lock.reader_enters()

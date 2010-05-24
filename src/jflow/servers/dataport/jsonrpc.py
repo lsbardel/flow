@@ -14,6 +14,7 @@ from unuk.core.jsonrpc.txweb import JSONRPC
 
 
 cache = get_cache()
+portfolio = FinRoot()
 
 
 
@@ -80,7 +81,7 @@ class jsonService(JSONRPC):
     def jsonrpc_team(self, request, team, valdate):
         '''Request team data consisting of a list of aggregate positions across
         all funds.'''
-        
+        return portfolio.get_team_aggregate(team,valdate)
         
         
     @runInMainThread

@@ -1,7 +1,7 @@
 '''
 Memcached cache backend
 '''
-
+from itertools import imap
 import time
 
 from jflow.core.cache.backends.base import BaseCache, ImproperlyConfigured
@@ -46,6 +46,17 @@ class CacheClass(BaseCache):
         if isinstance(value, unicode):
             value = value.encode('utf-8')
         return self._cache.add(smart_str(key), value, self._get_memcache_timeout(timeout))
+    
+    def sadd(self, key, member):
+        key = '%s' % smart_str(key)
+        memkey = lambda n: '%s:%s' % (key,n) 
+        el  = self.incr(key)
+        if el > 1:
+            elems = self._cache.get_multi(imap(memkey,range(1,el)))
+            if member in elems:
+                return el
+        self.set(memkey(el),member)
+        return el
 
     def get(self, key, default=None):
         val = self._cache.get(smart_str(key))
@@ -71,13 +82,16 @@ class CacheClass(BaseCache):
 
         # python-memcache responds to incr on non-existent keys by
         # raising a ValueError. Cmemcache returns None. In both
-        # cases, we should raise a ValueError though.
+        # cases, we set value to 0 and call again.
         except ValueError:
             val = None
+            
         if val is None:
-            raise ValueError("Key '%s' not found" % key)
+            self.set(key,0)
+            return self.incr(key, delta)
 
-        return val
+        else:
+            return val
 
     def decr(self, key, delta=1):
         try:

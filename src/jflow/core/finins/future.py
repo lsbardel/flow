@@ -1,7 +1,5 @@
 
-
-
-from base import finins, future_instrument
+from portfolio import FinIns
 
 future_month_list = ['F','G','H','J','K','M','N','Q','U','V','X','Z']
 short_month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -28,7 +26,8 @@ future_month_dict = monthDictionary()
 
 
 
-class future(finins, future_instrument):
+#class future(finins, future_instrument):
+class future(FinIns):
     
     def __init__(self, *args, **kwargs):
         finins.__init__(self, *args, **kwargs)
