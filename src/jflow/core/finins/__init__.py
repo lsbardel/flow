@@ -27,6 +27,9 @@ class Root(LoggingClass):
             * *dt* date of calculation
         '''
         return Portfolio(name = name , dt = dt, root = self)
+    
+    def positions(self, portfolio):
+        raise NotImplementedError
                 
     def get_team_data(self, team, date):
         raise NotImplementedError('This function needs to be implemented by derived class')

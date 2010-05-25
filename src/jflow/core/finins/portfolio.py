@@ -44,9 +44,7 @@ class Portfolio(FinInsBase):
         return cache.get(code.lower(),default)
     
     def positions(self):
-        piter = cache.get_set('%s:ids' % self.key())
-        for pid in piter:
-            yield self.cache.get_position(pid)
+        return self.root.positions(self)
             
     def add(self, item):
         if isinstance(item,PositionBase):

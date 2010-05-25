@@ -241,10 +241,10 @@ class PositionManager(models.Manager):
         else:
             return base
         
-    def positions_for_fund(self, fund, **kwargs):
+    def for_fund(self, fund, **kwargs):
         return self.status_date_filter(fund = fund, **kwargs)
     
-    def positions_for_team(self, team, **kwargs):
+    def for_team(self, team, **kwargs):
         return self.status_date_filter(fund__fund_holder = team, **kwargs)
     
     def predate(self, position, dt):
