@@ -1,3 +1,6 @@
+'''Implementation of jflow.core.finins.Root methods for fetching
+portfolio data.
+'''
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -6,7 +9,24 @@ from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 from jflow.db.trade.models import FundHolder, Fund, Position
 
-InstFactory = {}
+
+
+def make_equity(dataid, **kwargs):
+    return finins.equity(**kwargs)
+
+
+
+InstFactory = {'equity': make_equity,
+               'etf': make_equity}
+
+
+def get_object_id(obj):
+    '''
+    Given an object instance it return a unique id across all models
+    '''
+    opt = obj._meta
+    ct = ContentType.objects.get_for_model(obj)
+    return 'jflow-trade:%s:%s' % (ct.id,obj.id)
 
 
 def create(id, position):
@@ -18,19 +38,10 @@ def create(id, position):
     factory = InstFactory.get(inst._meta.module_name,None)
     if not factory:
         return None
-    return factory(id    = dataid,
-                   size  = position.size,
-                   value = position.value,
-                   dt    = position.dt) 
+    fi = factory(dataid, id = get_object_id(dataid), name = dataid.code)
+    if fi:
+        return finins.Position(fi, size  = position.size, value = position.value, dt = position.dt) 
     
-    
-def get_object_id(obj):
-    '''
-    Given an object instance it return a unique id across all models
-    '''
-    opt = obj._meta
-    ct = ContentType.objects.get_for_model(obj)
-    return 'jflow-trade:%s:%s' % (ct.id,obj.id)
 
 
 def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = None):
@@ -76,7 +87,7 @@ class FinRoot(finins.Root):
             id = get_object_id(position)
             p = cache.get(id)
             if not p:
-                p = create(id, position)
+                p = self.create_position(id, position)
                 if p:
                     cache.set(p.id,p)
             if p:
@@ -84,6 +95,25 @@ class FinRoot(finins.Root):
                 yield p
         if not yielded:
             raise StopIteration
+        
+    def create_position(self, id, position):
+        '''create a finins instance'''
+        dataid = position.dataid
+        inst   = dataid.instrument
+        if not inst:
+            return None
+        factory = InstFactory.get(inst._meta.module_name,None)
+        if not factory:
+            return None
+        fid = get_object_id(dataid)
+        fi = self.cache.get(fid)
+        if not fi:
+            fi = factory(dataid, id = get_object_id(dataid), name = dataid.code)
+            if fi:
+                self.cache.set(fid,fi)
+        if fi:
+            return finins.Position(fi, size  = position.size, value = position.value, dt = position.dt) 
+    
             
     
     def get_team(self, name, dt):

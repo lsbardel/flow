@@ -1,15 +1,8 @@
-
-
-from base import finins, value_date_plugin
+from portfolio import FinIns
 
 __all__ = ['equity']
 
-
-class equity(finins, value_date_plugin):
-    
-    def __init__(self, value_date = None, *args, **kwargs):
-        finins.__init__(self, *args, **kwargs)
-        value_date_plugin.__init__(self, value_date = value_date, required = False)
+class equity(FinIns):
     
     def pv01(self):
         m = self.multiplier()

@@ -15,4 +15,4 @@ class FinInsTest(TestCase):
         self.assertEqual(portfolio.name,name)
         pos = portfolio.positions()
         positions = [p for p in pos]
-        self.assertEqual(len(positions),2)
+        self.assertEqual(len(positions),3)

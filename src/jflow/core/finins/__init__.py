@@ -8,6 +8,7 @@ from future import *
 #from fi import *
 #from cash import *
 from portfolio import *
+from equity import *
 from formatter import *
 
 from jflow.log import LoggingClass

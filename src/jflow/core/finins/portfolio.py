@@ -2,10 +2,11 @@ import datetime
 
 from jflow.core.dates import date2yyyymmdd
 
-__all__ = ['FinInsBase','Portfolio','FinIns']
+__all__ = ['FinInsBase','Portfolio','FinIns','Position']
 
 
 class FinInsBase(object):
+    notavailable  = '#N/A'
     
     def __init__(self, id = None, name = None, dt = None, root = None):
         self.id = id
@@ -65,5 +66,23 @@ class Portfolio(FinInsBase):
     
     
 class FinIns(FinInsBase):
-    pass
+    '''Financial instrument base class                
+    '''    
+    def __init__(self, multiplier = 1.0, **kwargs):
+        self.multiplier    = multiplier
+        super(FinIns,self).__init__(**kwargs)
         
+    def pv01(self):
+        '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to
+        all financial instruments'''
+        return 0
+ 
+ 
+class Position(FinInsBase):
+    '''Class holding a reference to a finins instance and specifying size and price'''
+    def __init__(self, finins, size = 1, value = 0, dt = None, **kwargs):
+        self.finins = finins
+        self.size   = size
+        self.dt     = dt or datetime.date.today()
+        self.value  = value
+        super(Position,self).__init__(**kwargs)
