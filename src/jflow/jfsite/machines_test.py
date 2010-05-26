@@ -5,7 +5,7 @@ class SiteMachine(machine):
 
     def __init__(self,
                  dbengine   = 'sqlite3',
-                 dbname     = 'jflowdb',
+                 dbname     = 'jflowdb.sqlite',
                  cache      = 'memcached://127.0.0.1:11211/',
                  leahurl    = 'http://localhost:8010',
                   **kwargs):

@@ -9,7 +9,7 @@
         }
     }, 
     {
-        "pk": 6, 
+        "pk": 5, 
         "model": "instdata.vendor", 
         "fields": {
             "code": "ECB", 
@@ -45,7 +45,7 @@
         }
     }, 
     {
-        "pk": 5, 
+        "pk": 6, 
         "model": "instdata.vendor", 
         "fields": {
             "code": "REUTERS", 

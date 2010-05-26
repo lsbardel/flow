@@ -6,6 +6,8 @@ from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 from jflow.db.trade.models import FundHolder, Fund, Position
 
+InstFactory = {}
+
 
 def create(id, position):
     '''create a finins instance'''
@@ -13,6 +15,13 @@ def create(id, position):
     inst   = dataid.instrument
     if not inst:
         return None
+    factory = InstFactory.get(inst._meta.module_name,None)
+    if not factory:
+        return None
+    return factory(id    = dataid,
+                   size  = position.size,
+                   value = position.value,
+                   dt    = position.dt) 
     
     
 def get_object_id(obj):
@@ -21,7 +30,7 @@ def get_object_id(obj):
     '''
     opt = obj._meta
     ct = ContentType.objects.get_for_model(obj)
-    return '%s:%s' % (ct.id,obj.id)
+    return 'jflow-trade:%s:%s' % (ct.id,obj.id)
 
 
 def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = None):
@@ -45,15 +54,8 @@ def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = 
         positions = Position.objects.for_fund(dt = dt, fund = portfolio)
     else:
         positions = Position.objects.status_date_filter(dt = dt)
-            
-    for position in positions:
-        id = get_object_id(position)
-        p = self.get_position(id)
-        if not p:
-            p = create(id, position)
-            self.set_position(p.id,p)
-        if p:
-            yield p
+        
+    return positions
 
 
 class Team(finins.Portfolio):
@@ -67,15 +69,21 @@ class FinRoot(finins.Root):
         '''Generator of positions.
         Implements virtual method from parent class by obtaining
         data from the database.'''
+        cache = self.cache
         data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
+        yielded = False
         for position in data:
             id = get_object_id(position)
-            p = self.get_position(id)
+            p = cache.get(id)
             if not p:
                 p = create(id, position)
-                self.set_position(p.id,p)
+                if p:
+                    cache.set(p.id,p)
             if p:
+                yielded = True
                 yield p
+        if not yielded:
+            raise StopIteration
             
     
     def get_team(self, name, dt):

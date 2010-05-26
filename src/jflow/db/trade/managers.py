@@ -236,8 +236,9 @@ class PositionManager(models.Manager):
         dt = dt or datetime.date.today()
         base = self.filter(status = status, dt__lte = dt, **kwargs)
         if base:
-            dt = base.latest()
-            return base.filter(dt = dt)
+            # get the latest position data and filter
+            pos = base.latest()
+            return base.filter(dt = pos.dt)
         else:
             return base
         

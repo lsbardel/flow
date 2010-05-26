@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     #
     'djpcms',
     'djpcms.contrib.admin',
+    #'django.contrib.admin',
     #'djpcms.contrib.compressor',
     'tagging',
     'flowrepo',

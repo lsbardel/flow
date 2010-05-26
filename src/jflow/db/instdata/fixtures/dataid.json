@@ -1,0 +1,2036 @@
+[
+    {
+        "pk": 1, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "FTSE", 
+            "name": "FTSE 100 Index", 
+            "tags": "", 
+            "country": "UK", 
+            "firm_code": "", 
+            "default_vendor": 3, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": "The FTSE 100 Index is a capitalization-weighted index of the 100 most highly capitalized companies traded on the London Stock Exchange. The equities use an investibility weighting in the index calculation. The index was developed with a base level of 1000 as of January 3, 1984."
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "SPX", 
+            "name": "S&P 500 Index", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 3, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": "Standard and Poor's 500 Index is a capitalization-weighted index of 500 stocks. The index is designed to measure performance of the broad domestic economy through changes in the aggregate market value of 500 stocks representing all major industries. The index was developed with a base level of 10 for the 1941- 43 base period."
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "GOOG_US", 
+            "name": "Google Inc.", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": null, 
+            "object_id": 1, 
+            "live": true, 
+            "content_type": 38, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "USD", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "LOIL_LN", 
+            "name": "Leveraged Crude Oil ETF", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 2, 
+            "object_id": 1, 
+            "live": true, 
+            "content_type": 39, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "USD", 
+            "description": "ETFS Leveraged Crude Oil is an Exchange Traded Commodity (ETC) which is UCITS eligible. It will provide a total return equal to two times (2x) the daily change in the Dow Jones-UBS Crude Oil Excess Return Index plus a collateral yield. Investors can gain twice as much from a rise in the underlying index."
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "ILF_US", 
+            "name": "iShares S&P Latin America 40 Index", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 2, 
+            "object_id": 2, 
+            "live": true, 
+            "content_type": 39, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "USD", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "GML_US", 
+            "name": "SPDR S&P Emerging Latin America", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 2, 
+            "object_id": 3, 
+            "live": true, 
+            "content_type": 39, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "USD", 
+            "description": "SPDR S&P Emerging Latin America ETF (the Fund) seeks to replicate as closely as possible the total return performance of the S&P/Citigroup BMI Latin America Index (the Index). The Index is a market capitalization weighted-index that defines and measures the investable universe of publicly traded companies domiciled in Latin American markets. The Index is float adjusted, meaning that only those shares publicly available to investors are included in the Index calculation. The Fund uses a passive management strategy designed to track the price and yield performance of the Index. The Fund\u2019s investment manager is SSgA Funds Management, Inc. "
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "LATM_US", 
+            "name": "Market Vectors Latin America Small-Cap Index", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 2, 
+            "object_id": 4, 
+            "live": true, 
+            "content_type": 39, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "USD", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "EUR", 
+            "name": "EUR/USD Spot Rate", 
+            "tags": "", 
+            "country": "EU", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "COP", 
+            "name": "USD/COP Spot Rate", 
+            "tags": "", 
+            "country": "CO", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "USD", 
+            "name": "USD/USD Spot Rate", 
+            "tags": "", 
+            "country": "US", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "EEK", 
+            "name": "USD/EEK Spot Rate", 
+            "tags": "", 
+            "country": "EE", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "TWD", 
+            "name": "USD/TWD Spot Rate", 
+            "tags": "", 
+            "country": "TW", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "QAR", 
+            "name": "USD/QAR Spot Rate", 
+            "tags": "", 
+            "country": "QA", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "EGP", 
+            "name": "USD/EGP Spot Rate", 
+            "tags": "", 
+            "country": "EG", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "IDR", 
+            "name": "USD/IDR Spot Rate", 
+            "tags": "", 
+            "country": "ID", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "PEN", 
+            "name": "USD/PEN Spot Rate", 
+            "tags": "", 
+            "country": "PE", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "ILS", 
+            "name": "USD/ILS Spot Rate", 
+            "tags": "", 
+            "country": "IL", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "GBP", 
+            "name": "GBP/USD Spot Rate", 
+            "tags": "", 
+            "country": "UK", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "DKK", 
+            "name": "USD/DKK Spot Rate", 
+            "tags": "", 
+            "country": "DK", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "CAD", 
+            "name": "USD/CAD Spot Rate", 
+            "tags": "", 
+            "country": "CA", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "MXN", 
+            "name": "USD/MXN Spot Rate", 
+            "tags": "", 
+            "country": "MX", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "HUF", 
+            "name": "USD/HUF Spot Rate", 
+            "tags": "", 
+            "country": "HU", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "VND", 
+            "name": "USD/VND Spot Rate", 
+            "tags": "", 
+            "country": "VN", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "BMD", 
+            "name": "USD/BMD Spot Rate", 
+            "tags": "", 
+            "country": "BM", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "MYR", 
+            "name": "USD/MYR Spot Rate", 
+            "tags": "", 
+            "country": "MY", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "SAR", 
+            "name": "USD/SAR Spot Rate", 
+            "tags": "", 
+            "country": "SA", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "SEK", 
+            "name": "USD/SEK Spot Rate", 
+            "tags": "", 
+            "country": "SE", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "SGD", 
+            "name": "USD/SGD Spot Rate", 
+            "tags": "", 
+            "country": "SG", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "HKD", 
+            "name": "USD/HKD Spot Rate", 
+            "tags": "", 
+            "country": "HK", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "TTD", 
+            "name": "USD/TTD Spot Rate", 
+            "tags": "", 
+            "country": "TT", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "AUD", 
+            "name": "AUD/USD Spot Rate", 
+            "tags": "", 
+            "country": "AU", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "CHF", 
+            "name": "USD/CHF Spot Rate", 
+            "tags": "", 
+            "country": "CH", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "KRW", 
+            "name": "USD/KRW Spot Rate", 
+            "tags": "", 
+            "country": "KR", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "CNY", 
+            "name": "USD/CNY Spot Rate", 
+            "tags": "", 
+            "country": "CN", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "TRY", 
+            "name": "USD/TRY Spot Rate", 
+            "tags": "", 
+            "country": "TR", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "HRK", 
+            "name": "USD/HRK Spot Rate", 
+            "tags": "", 
+            "country": "HR", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "NZD", 
+            "name": "NZD/USD Spot Rate", 
+            "tags": "", 
+            "country": "NZ", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "CLP", 
+            "name": "USD/CLP Spot Rate", 
+            "tags": "", 
+            "country": "CL", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "THB", 
+            "name": "USD/THB Spot Rate", 
+            "tags": "", 
+            "country": "TH", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "ARS", 
+            "name": "USD/ARS Spot Rate", 
+            "tags": "", 
+            "country": "AR", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "RON", 
+            "name": "USD/RON Spot Rate", 
+            "tags": "", 
+            "country": "RO", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "KZT", 
+            "name": "USD/KZT Spot Rate", 
+            "tags": "", 
+            "country": "KZ", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "NOK", 
+            "name": "USD/NOK Spot Rate", 
+            "tags": "", 
+            "country": "NO", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "RUB", 
+            "name": "USD/RUB Spot Rate", 
+            "tags": "", 
+            "country": "RU", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "INR", 
+            "name": "USD/INR Spot Rate", 
+            "tags": "", 
+            "country": "IN", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "JPY", 
+            "name": "USD/JPY Spot Rate", 
+            "tags": "", 
+            "country": "JP", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "CZK", 
+            "name": "USD/CZK Spot Rate", 
+            "tags": "", 
+            "country": "CZ", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "BRL", 
+            "name": "USD/BRL Spot Rate", 
+            "tags": "", 
+            "country": "BR", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "JMD", 
+            "name": "USD/JMD Spot Rate", 
+            "tags": "", 
+            "country": "JM", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "PLN", 
+            "name": "USD/PLN Spot Rate", 
+            "tags": "", 
+            "country": "PL", 
+            "firm_code": "", 
+            "default_vendor": null, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "PHP", 
+            "name": "USD/PHP Spot Rate", 
+            "tags": "", 
+            "country": "PH", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "ZAR", 
+            "name": "USD/ZAR Spot Rate", 
+            "tags": "", 
+            "country": "ZA", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "instdata.dataid", 
+        "fields": {
+            "code": "AED", 
+            "name": "USD/AED Spot Rate", 
+            "tags": "", 
+            "country": "AE", 
+            "firm_code": "", 
+            "default_vendor": 5, 
+            "object_id": 0, 
+            "live": true, 
+            "content_type": null, 
+            "hasdata": true, 
+            "isin": "", 
+            "curncy": "", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 3, 
+            "ticker": "^FTSE", 
+            "dataid": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "UKX Index", 
+            "dataid": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "INDEXSP:.INX", 
+            "dataid": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 3, 
+            "ticker": "^GSPC", 
+            "dataid": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "SPX Index", 
+            "dataid": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "NASDAQ:GOOG", 
+            "dataid": 3
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "GOOG US Equity", 
+            "dataid": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "LON:LOIL", 
+            "dataid": 4
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "LOIL LN Equity", 
+            "dataid": 4
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "ILF US Equity", 
+            "dataid": 5
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "NYSE:ILF", 
+            "dataid": 5
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "GML US Equity", 
+            "dataid": 6
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "NYSE:GML", 
+            "dataid": 6
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 2, 
+            "ticker": "NYSE:LATM", 
+            "dataid": 7
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "LATM US Equity", 
+            "dataid": 7
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "EUR", 
+            "dataid": 8
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "COP Curncy", 
+            "dataid": 9
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "COP", 
+            "dataid": 9
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "USD Curncy", 
+            "dataid": 10
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "USD", 
+            "dataid": 10
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "EEK Curncy", 
+            "dataid": 11
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "EEK", 
+            "dataid": 11
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "TWD Curncy", 
+            "dataid": 12
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "TWD", 
+            "dataid": 12
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "QAR Curncy", 
+            "dataid": 13
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "QAR", 
+            "dataid": 13
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "EGP Curncy", 
+            "dataid": 14
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "EGP", 
+            "dataid": 14
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "IDR Curncy", 
+            "dataid": 15
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "IDR", 
+            "dataid": 15
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "PEN Curncy", 
+            "dataid": 16
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "PEN", 
+            "dataid": 16
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "ILS Curncy", 
+            "dataid": 17
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "ILS", 
+            "dataid": 17
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "GBP Curncy", 
+            "dataid": 18
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "GBP", 
+            "dataid": 18
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "DKK Curncy", 
+            "dataid": 19
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "DKK", 
+            "dataid": 19
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "CAD Curncy", 
+            "dataid": 20
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "CAD", 
+            "dataid": 20
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "MXN Curncy", 
+            "dataid": 21
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "MXN", 
+            "dataid": 21
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "HUF Curncy", 
+            "dataid": 22
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "HUF", 
+            "dataid": 22
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "VND Curncy", 
+            "dataid": 23
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "VND", 
+            "dataid": 23
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "BMD Curncy", 
+            "dataid": 24
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "BMD", 
+            "dataid": 24
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "MYR Curncy", 
+            "dataid": 25
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "MYR", 
+            "dataid": 25
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "SAR Curncy", 
+            "dataid": 26
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "SAR", 
+            "dataid": 26
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "SEK Curncy", 
+            "dataid": 27
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "SEK", 
+            "dataid": 27
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "SGD Curncy", 
+            "dataid": 28
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "SGD", 
+            "dataid": 28
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "HKD Curncy", 
+            "dataid": 29
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "HKD", 
+            "dataid": 29
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "TTD Curncy", 
+            "dataid": 30
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "TTD", 
+            "dataid": 30
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "AUD Curncy", 
+            "dataid": 31
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "AUD", 
+            "dataid": 31
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "CHF Curncy", 
+            "dataid": 32
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "CHF", 
+            "dataid": 32
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "KRW Curncy", 
+            "dataid": 33
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "KRW", 
+            "dataid": 33
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "CNY Curncy", 
+            "dataid": 34
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "CNY", 
+            "dataid": 34
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "TRY Curncy", 
+            "dataid": 35
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "TRY", 
+            "dataid": 35
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "HRK Curncy", 
+            "dataid": 36
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "HRK", 
+            "dataid": 36
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "NZD Curncy", 
+            "dataid": 37
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "NZD", 
+            "dataid": 37
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "CLP Curncy", 
+            "dataid": 38
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "CLP", 
+            "dataid": 38
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "THB Curncy", 
+            "dataid": 39
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "THB", 
+            "dataid": 39
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "EUR Curncy", 
+            "dataid": 8
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "ARS Curncy", 
+            "dataid": 40
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "ARS", 
+            "dataid": 40
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "RON Curncy", 
+            "dataid": 41
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "RON", 
+            "dataid": 41
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "KZT Curncy", 
+            "dataid": 42
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "KZT", 
+            "dataid": 42
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "NOK Curncy", 
+            "dataid": 43
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "NOK", 
+            "dataid": 43
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "RUB Curncy", 
+            "dataid": 44
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "RUB", 
+            "dataid": 44
+        }
+    }, 
+    {
+        "pk": 90, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "INR Curncy", 
+            "dataid": 45
+        }
+    }, 
+    {
+        "pk": 91, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "INR", 
+            "dataid": 45
+        }
+    }, 
+    {
+        "pk": 92, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "JPY Curncy", 
+            "dataid": 46
+        }
+    }, 
+    {
+        "pk": 93, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "JPY", 
+            "dataid": 46
+        }
+    }, 
+    {
+        "pk": 94, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "CZK Curncy", 
+            "dataid": 47
+        }
+    }, 
+    {
+        "pk": 95, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "CZK", 
+            "dataid": 47
+        }
+    }, 
+    {
+        "pk": 96, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "BRL Curncy", 
+            "dataid": 48
+        }
+    }, 
+    {
+        "pk": 97, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "BRL", 
+            "dataid": 48
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "JMD Curncy", 
+            "dataid": 49
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "JMD", 
+            "dataid": 49
+        }
+    }, 
+    {
+        "pk": 100, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "PLN Curncy", 
+            "dataid": 50
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "PHP Curncy", 
+            "dataid": 51
+        }
+    }, 
+    {
+        "pk": 103, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "PHP", 
+            "dataid": 51
+        }
+    }, 
+    {
+        "pk": 104, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "ZAR Curncy", 
+            "dataid": 52
+        }
+    }, 
+    {
+        "pk": 105, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "ZAR", 
+            "dataid": 52
+        }
+    }, 
+    {
+        "pk": 106, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 1, 
+            "ticker": "AED Curncy", 
+            "dataid": 53
+        }
+    }, 
+    {
+        "pk": 107, 
+        "model": "instdata.vendorid", 
+        "fields": {
+            "vendor": 5, 
+            "ticker": "AED", 
+            "dataid": 53
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "instdata.equity", 
+        "fields": {
+            "dataid": 3, 
+            "code": "GOOG_US", 
+            "exchange": null, 
+            "CUSIP": "", 
+            "industry_code": null, 
+            "security_type": 1, 
+            "related": null, 
+            "settlement_delay": 2, 
+            "SEDOL": "", 
+            "multiplier": 1.0, 
+            "curncy": "USD"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "instdata.etf", 
+        "fields": {
+            "dataid": 4, 
+            "code": "LOIL_LN", 
+            "exchange": 1, 
+            "CUSIP": "", 
+            "settlement_delay": 2, 
+            "SEDOL": "", 
+            "multiplier": 1.0, 
+            "curncy": "USD"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "instdata.etf", 
+        "fields": {
+            "dataid": 5, 
+            "code": "ILF_US", 
+            "exchange": 3, 
+            "CUSIP": "", 
+            "settlement_delay": 2, 
+            "SEDOL": "", 
+            "multiplier": 1.0, 
+            "curncy": "USD"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "instdata.etf", 
+        "fields": {
+            "dataid": 6, 
+            "code": "GML_US", 
+            "exchange": 3, 
+            "CUSIP": "", 
+            "settlement_delay": 2, 
+            "SEDOL": "", 
+            "multiplier": 1.0, 
+            "curncy": "USD"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "instdata.etf", 
+        "fields": {
+            "dataid": 7, 
+            "code": "LATM_US", 
+            "exchange": 3, 
+            "CUSIP": "", 
+            "settlement_delay": 2, 
+            "SEDOL": "", 
+            "multiplier": 1.0, 
+            "curncy": "USD"
+        }
+    }
+]
