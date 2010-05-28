@@ -10,6 +10,8 @@ from jflow.utils.encoding import smart_str
 from jflow.db.trade.models import FundHolder, Fund, Position
 
 
+cache = finins.cache
+
 
 def make_equity(dataid, **kwargs):
     return finins.equity(**kwargs)
@@ -18,29 +20,6 @@ def make_equity(dataid, **kwargs):
 
 InstFactory = {'equity': make_equity,
                'etf': make_equity}
-
-
-def get_object_id(obj):
-    '''
-    Given an object instance it return a unique id across all models
-    '''
-    opt = obj._meta
-    ct = ContentType.objects.get_for_model(obj)
-    return 'jflow-trade:%s:%s' % (ct.id,obj.id)
-
-
-def create(id, position):
-    '''create a finins instance'''
-    dataid = position.dataid
-    inst   = dataid.instrument
-    if not inst:
-        return None
-    factory = InstFactory.get(inst._meta.module_name,None)
-    if not factory:
-        return None
-    fi = factory(dataid, id = get_object_id(dataid), name = dataid.code)
-    if fi:
-        return finins.Position(fi, size  = position.size, value = position.value, dt = position.dt) 
     
 
 
@@ -80,24 +59,22 @@ class FinRoot(finins.Root):
         '''Generator of positions.
         Implements virtual method from parent class by obtaining
         data from the database.'''
-        cache = self.cache
         data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
-        yielded = False
-        for position in data:
-            id = get_object_id(position)
-            p = cache.get(id)
-            if not p:
-                p = self.create_position(id, position)
-                if p:
-                    cache.set(p.id,p)
-            if p:
-                yielded = True
-                yield p
-        if not yielded:
-            raise StopIteration
+        return self._positions(portfolio,data)
+    
+    def funds(self, team):
+        '''Aggregate fund for a given team'''
+        data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
+        
+    def get_object_id(self, obj):
+        '''Given an object instance it return a unique id across all models
+        '''
+        opt = obj._meta
+        ct = ContentType.objects.get_for_model(obj)
+        return 'jflow-trade:%s:%s' % (ct.id,obj.id)
         
     def create_position(self, id, position):
-        '''create a finins instance'''
+        '''create a finins position'''
         dataid = position.dataid
         inst   = dataid.instrument
         if not inst:
@@ -105,16 +82,15 @@ class FinRoot(finins.Root):
         factory = InstFactory.get(inst._meta.module_name,None)
         if not factory:
             return None
-        fid = get_object_id(dataid)
-        fi = self.cache.get(fid)
+        fid = self.get_object_id(dataid)
+        fi  = cache.get(fid)
         if not fi:
-            fi = factory(dataid, id = get_object_id(dataid), name = dataid.code)
+            fi = factory(dataid, id = fid, name = dataid.code)
             if fi:
-                self.cache.set(fid,fi)
+                cache.set(fid,fi)
         if fi:
-            return finins.Position(fi, size  = position.size, value = position.value, dt = position.dt) 
+            return finins.Position(fi, id = id, size  = position.size, value = position.value, dt = position.dt) 
     
-            
     
     def get_team(self, name, dt):
         '''For a given team and date aggregate all portfolios
