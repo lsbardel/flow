@@ -1,0 +1,220 @@
+
+.portfolio-panel-out {
+	display: block;
+	float: none;
+	width: auto;
+	margin-right: 300px;
+}
+.portfolio-panel-break {
+	margin-right: 5px;
+}
+.portfolio-panel {
+	overflow: hidden;
+	width: 100%;
+}
+.portfolio-tools {
+	clear: right; float: right; display: inline;
+	width: 300px;
+	min-height: 500px;
+	height: 100%;
+}
+.tools-holder {
+	overflow: hidden;
+	min-height: 200px;
+}
+div.portfolio-menubar {
+	width: 100%;
+	overflow: hidden;
+	padding: 5px 0;
+}
+div.portfolio-menubar p {
+	line-height: 25px;
+}
+
+table.portfoliotable {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+
+table.portfoliotable thead tr th, table.portfoliotable tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 8pt;
+	padding: 4px;
+}
+
+table.portfoliotable tbody td {
+	padding: 4px;
+	vertical-align: top;
+}
+
+.loading {
+	background-position: 50% 50%; 
+	background-image:  url(ajax-loader.gif);
+	background-repeat: no-repeat;
+}
+.portfolio-holder.loading {
+	min-height: 300px;
+	background-color:  rgb(240,240,240);
+}
+
+div.portfolio-menubar {
+	width: 100%;
+	overflow: hidden;
+}
+
+.portfolio-menubar ul {
+	list-style-type: none;
+	display:inline;
+	width: 100%;
+	float: left;
+}
+div.portfolio-panel .portfolio-menubar ul {
+	float: right;
+}	
+.portfolio-menubar ul li {
+	list-style-type: none;
+	display: inline;
+	padding: 0 5px;
+	float: left;
+}
+div.portfolio-panel .portfolio-menubar ul li {
+	float: right;
+}
+.portfolio-menubar label {
+	margin-right: 10px;
+	line-height: 25px;
+}
+.portfolio-menubar a {
+	display:block;
+	height:25px; width:25px;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	}
+.portfolio-menubar .portfolio-reload {
+	background-image:  url(arrow_rotate_clockwise.png);
+}
+div.portfolio-table-container {
+	width: 100%;
+	overflow: hidden;
+}
+
+/* Tools containers */
+div.tools-holder {
+	padding: 10px;
+}
+
+/* Styling */
+table.portfoliotable tbody tr {
+	color: #3D3D3D;
+	background-color: #FFF;
+}
+div.portfolio-tools {
+	border-right: 1px solid rgb(60,60,60);
+	border-left: 1px solid rgb(60,60,60);
+	border-bottom: 1px solid rgb(60,60,60);
+}
+div.portfolio-menubar {
+	background-color: rgb(60,60,60);
+	color: rgb(240,240,240);
+}
+.portfolio-menubar a {
+	border: 1px solid rgb(60,60,60);
+}
+div.portfolio-panel .portfolio-menubar a {
+	border: 1px outset rgb(214,214,214);
+}
+
+.portfolio-menubar .tools-resizer.expand {
+	background-image:  url(control_rewind.png);
+}
+.portfolio-menubar .tools-resizer.reduce {
+	background-image:  url(control_fastforward.png);
+}
+
+/* Right Click Menu 
+ * -------------------------------------------------------------------------- */
+.rclk {
+	background: rgb(220,220,220);
+}
+.portfolio-rightClickMenu {
+	position: absolute;
+	overflow: hidden;
+	background-color: rgb(204,217,255);
+	padding: 3px 0;
+	border: 1px solid rgb(51,102,255);
+}
+.portfolio-rightClickMenu ul {
+	float: left;
+	width: 100%;
+}
+.portfolio-rightClickMenu li {
+	float: left;
+	width: 100%;
+	clear: right;
+}
+.portfolio-rightClickMenu li a,
+.portfolio-rightClickMenu li a:visited,
+.portfolio-rightClickMenu li a:hover {
+	display: block;
+	background-color: rgb(204,217,255);
+	cursor: pointer;
+	width: 100%;
+	padding: 2px 20px 2px 10px;
+}
+.portfolio-rightClickMenu li a:hover {
+	background-color: rgb(143,171,255);
+}
+
+/* Hover */
+.portfolio-table-container tr.hover {
+	background-color: rgb(255,212,128);
+}
+
+/* Expander
+ * ------------------------------------------------------------------------- */
+.portfolio-table-container td span.label {
+	background-position:left center;
+	background-repeat:no-repeat;
+	padding:0.2em 0 0.2em 1.5em;
+	cursor: pointer;
+	color: rgb(0,51,102);
+}
+.portfolio-table-container td span.position {
+	background-image:url(shape_align_bottom.png);
+}
+.portfolio-table-container tr td .expander {
+	background-image: url(bullet_toggle_plus.png);
+}
+.portfolio-table-container tr.expanded td .expander {
+	background-image: url(bullet_toggle_minus.png);
+}
+.portfolio-table-container tr td span.folder {
+	background-image:url(book.png);
+}
+.portfolio-table-container tr.expanded td span.folder {
+	background-image:url(book_open.png);
+}
+.portfolio-table-container tr td span.folder.movable {
+	background-image:url(door.png);
+}
+.portfolio-table-container tr.expanded td span.folder.movable {
+	background-image:url(door_open.png);
+}
+
+
+/* Drag-Drop */
+table.portfoliotable tr.drag-drop-over {
+	background-color: rgb(143,171,255);
+	}
+	
+/* Portfolio Risk Plot */
+div.portfolio-risk-plot {
+	width: 100%;
+	margin-top:10px;
+	}

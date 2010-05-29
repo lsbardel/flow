@@ -9,6 +9,7 @@ if not PSETTINGS.dev:
 
 DEBUG = PSETTINGS.debug
 TEMPLATE_DEBUG = DEBUG
+TEST_RUNNER = 'jflow.db.testrunner.JflowTestSuiteRunner'
     
 
 ADMINS = (
@@ -70,7 +71,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.gzip.GZipMiddleware',
+    #'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',

@@ -1,0 +1,641 @@
+[
+    {
+        "pk": 39, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "etf", 
+            "name": "ETF", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "instdecomp", 
+            "name": "Instrument Decomposition", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "additionalpagedata", 
+            "name": "additional page data", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "application", 
+            "name": "application", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "attachment", 
+            "name": "attachment", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "basket", 
+            "name": "basket", 
+            "app_label": "basket"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "basketgroup", 
+            "name": "basket group", 
+            "app_label": "basket"
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "blockcontent", 
+            "name": "block content", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bond", 
+            "name": "bond", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bondclass", 
+            "name": "bond class", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bondissuer", 
+            "name": "bond issuer", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bondmaturitytype", 
+            "name": "bond maturity type", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "bookmark", 
+            "name": "bookmark", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "cash", 
+            "name": "cash", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "category", 
+            "name": "category", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "categorytype", 
+            "name": "category type", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "collateraltype", 
+            "name": "collateral type", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contentlink", 
+            "name": "content link", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "contenttype", 
+            "name": "content type", 
+            "app_label": "contenttypes"
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "csspageinfo", 
+            "name": "css page info", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "custodyaccount", 
+            "name": "custody account", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "datafield", 
+            "name": "data field", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "dataid", 
+            "name": "data id", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "depo", 
+            "name": "depo", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "econometricanalysis", 
+            "name": "econometric analysis", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "equity", 
+            "name": "equity", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "exchange", 
+            "name": "exchange", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "flowitem", 
+            "name": "flow item", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "flowrelated", 
+            "name": "flow related", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fwdcash", 
+            "name": "forward cash", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fund", 
+            "name": "fund", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fund", 
+            "name": "fund", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundliquidity", 
+            "name": "fund liquidity", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundmanager", 
+            "name": "fund manager", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundstrategy", 
+            "name": "fund strategy", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundtype", 
+            "name": "fund type", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "future", 
+            "name": "future", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "futurecontract", 
+            "name": "future contract", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "gallery", 
+            "name": "gallery", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "galleryimage", 
+            "name": "gallery image", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "genericotc", 
+            "name": "generic otc", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "group", 
+            "name": "group", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "image", 
+            "name": "image", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "industrycode", 
+            "name": "industry code", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "innertemplate", 
+            "name": "inner template", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "logentry", 
+            "name": "log entry", 
+            "app_label": "admin"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "manualtrade", 
+            "name": "manual trade", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "message", 
+            "name": "message", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "message", 
+            "name": "message", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "mktdata", 
+            "name": "mkt data", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "mktdatacache", 
+            "name": "mkt data cache", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "page", 
+            "name": "page", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "trader", 
+            "name": "people", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "permission", 
+            "name": "permission", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "portfolioview", 
+            "name": "portfolio view", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "position", 
+            "name": "position", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "report", 
+            "name": "report", 
+            "app_label": "flowrepo"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "session", 
+            "name": "session", 
+            "app_label": "sessions"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "site", 
+            "name": "site", 
+            "app_label": "sites"
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "sitecontent", 
+            "name": "site content", 
+            "app_label": "djpcms"
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "stringmktdata", 
+            "name": "string mkt data", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "portfolio", 
+            "name": "sub portfolio", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "tag", 
+            "name": "tag", 
+            "app_label": "tagging"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "taggeditem", 
+            "name": "tagged item", 
+            "app_label": "tagging"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "fundholder", 
+            "name": "team", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "user", 
+            "name": "user", 
+            "app_label": "auth"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "userviewdefault", 
+            "name": "user view default", 
+            "app_label": "trade"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "vendor", 
+            "name": "vendor", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "vendordatafield", 
+            "name": "vendor data field", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "vendorid", 
+            "name": "vendor id", 
+            "app_label": "instdata"
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "contenttypes.contenttype", 
+        "fields": {
+            "model": "webaccount", 
+            "name": "web account", 
+            "app_label": "flowrepo"
+        }
+    }
+]

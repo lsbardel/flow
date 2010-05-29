@@ -1,21 +1,40 @@
 import datetime
 
-from django import forms
+from django import forms, http
 from django.template import loader
 
 from djpcms.views import appsite, appview
 from djpcms.utils import mark_safe
 from djpcms.utils.html import FormHelper, Fieldset, ModelChoiceField
 
-from jflow.db import geo
+from jflow.db import geo, finins
 from jflow.db.instdata.models import DataId, Cash
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade
 from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
 
 
+class PortfolioData(appview.AppView):
+    '''
+    view used to obtain timeseries.
+    The only view available is an Ajax Get view
+    '''
+    _methods      = ('get',)
+    
+    def get_response(self, djp):
+        request = djp.request
+        if not request.is_ajax():
+            raise http.Http404
+        data = dict(request.GET.items())
+        instance = djp.instance
+        data = dict(request.GET.items())
+        sdata = finins.portfolio_data(instance,data)
+        return http.HttpResponse(sdata, mimetype='application/javascript')
+
+
 class FundHolderApplication(appsite.ModelApplication):
     search = appview.SearchView(in_navigation = False)
-    view = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
+    data   = PortfolioData(regex = 'data')
+    view   = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
     
     def objectbits(self, obj):
         return {'id': obj.code}
@@ -91,6 +110,8 @@ class FundApplication(appsite.ModelApplication):
 
     
 class PortfolioViewApplication(appsite.ModelApplication):
+    '''Main Application for portfolios
+    '''
     form = PortfolioViewForm
     form_withrequest = True
     _form_add        = 'add'

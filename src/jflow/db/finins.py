@@ -10,17 +10,13 @@ from jflow.utils.encoding import smart_str
 from jflow.db.trade.models import FundHolder, Fund, Position
 
 
-cache = finins.cache
+
+def portfolio_data(options):
+    '''Get portfolio data'''
+    pass
 
 
-def make_equity(dataid, **kwargs):
-    return finins.equity(**kwargs)
 
-
-
-InstFactory = {'equity': make_equity,
-               'etf': make_equity}
-    
 
 
 def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = None):
@@ -60,7 +56,7 @@ class FinRoot(finins.Root):
         Implements virtual method from parent class by obtaining
         data from the database.'''
         data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
-        return self._positions(portfolio,data)
+        return self._load_positions(portfolio,data)
     
     def funds(self, team):
         '''Aggregate fund for a given team'''
@@ -73,23 +69,17 @@ class FinRoot(finins.Root):
         ct = ContentType.objects.get_for_model(obj)
         return 'jflow-trade:%s:%s' % (ct.id,obj.id)
         
-    def create_position(self, id, position):
-        '''create a finins position'''
+    def get_instrument_id_from_position(self, position):
         dataid = position.dataid
         inst   = dataid.instrument
         if not inst:
-            return None
-        factory = InstFactory.get(inst._meta.module_name,None)
-        if not factory:
-            return None
-        fid = self.get_object_id(dataid)
-        fi  = cache.get(fid)
-        if not fi:
-            fi = factory(dataid, id = fid, name = dataid.code)
-            if fi:
-                cache.set(fid,fi)
-        if fi:
-            return finins.Position(fi, id = id, size  = position.size, value = position.value, dt = position.dt) 
+            return None,None,None
+        return self.get_object_id(dataid),inst._meta.module_name,dataid
+    
+    def instobjmapper(self, obj):
+        return {'name': obj.code,
+                'description': obj.name,
+                'ccy': obj.curncy}
     
     
     def get_team(self, name, dt):
