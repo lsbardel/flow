@@ -1,4 +1,5 @@
-import datetime
+import time
+from datetime import date, datetime
 
 from stdnet.main import get_cache
 from stdnet.utils import json
@@ -8,7 +9,20 @@ from jflow.core.dates import date2yyyymmdd
 
 __all__ = ['cache','FinInsBase','Portfolio','FinIns','Position']
 
+
 cache = get_cache(settings.PORTFOLIO_CACHE_BACKEND or settings.CACHE_BACKEND)
+
+rdate = lambda d: time.mktime(d.timetuple())
+
+class JSONRPCEncoder(json.JSONEncoder):
+    """
+    Provide custom serializers for JSON-RPC.
+    """
+    def default(self, obj):
+        if isinstance(obj, date) or isinstance(obj, datetime):
+            return rdate(obj)
+        else:
+            raise exceptions.JSONEncodeException("%r is not JSON serializable" % (obj,))
 
 
 class FinInsBase(object):
@@ -38,14 +52,18 @@ class FinInsBase(object):
     def namekey(self):
         return '%s:$%s' % (self.prekey(),self.name)
     
+    def todict(self):
+        d = self.__dict__.copy()
+        return d
+    
     def tojson(self):
-        return json.dumps(self.__dict__)
+        return json.dumps(self.todict(), cls = JSONRPCEncoder)
     
 
 class FinDated(FinInsBase):
     
     def __init__(self, dt = None, **kwargs):
-        self.dt = dt or datetime.date.today()
+        self.dt = dt or date.today()
         super(FinDated,self).__init__(**kwargs)
         
     def __repr__(self):
@@ -86,6 +104,14 @@ class Portfolio(FinDated):
             pos.append(v.dict())
         return pos
     
+    def todict(self):
+        d = super(Portfolio,self).todict()
+        ps = []
+        d['positions'] = ps
+        for position in self.positions():
+            ps.append(position.todict())
+        return d
+    
     
 class FinIns(FinInsBase):
     '''Financial instrument base class                
@@ -120,3 +146,5 @@ class Position(FinDated):
     def security(self):
         if self.sid:
             return cache.get(self.sid)
+    
+    

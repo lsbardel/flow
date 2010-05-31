@@ -337,3 +337,29 @@ class ManualTradeManager(models.Manager):
     
     def for_fund(self, fund, dt = None):
         return self.status_date_filter(dt = dt, fund = fund)
+    
+    
+
+class PortfolioDisplayManager(models.Manager):
+    
+    def create_default(self, user = None):
+        m = self.model(name = 'default',
+                       fields = 'code,name,ccy',
+                       user = user)
+        m.save()
+        
+    def for_user(self, user = None):
+        if isinstance(user,User):
+            ps = self.filter(user = user)
+            if not ps:
+                self.create_default(user)
+                return self.filter(user = user)
+            else:
+                return ps
+        else:
+            ps = self.filter(user = None)
+            if not ps:
+                self.create_default()
+                return self.filter(user = None)
+            else:
+                return ps

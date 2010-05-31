@@ -36,7 +36,7 @@ class Root(LoggingClass):
     def get_portfolio(self, name, dt = None):
         '''For a given portfolio name returns a portfolio instance
         
-            * **name** string code defining the team
+            * **name** string code defining the portfolio
             * *dt* date of calculation
         '''
         p = Portfolio(name = name , dt = dt)
@@ -45,7 +45,8 @@ class Root(LoggingClass):
         if po:
             return po
         else:
-            self.positions(p)
+            data = self._positions(p)
+            self._load_positions(p, data)
             cache.set(namekey,p)
         return p
     
@@ -80,8 +81,9 @@ class Root(LoggingClass):
     def instobjmapper(self, obj):
         raise NotImplementedError('Cannot obtain instrument information form %s' % obj)
     
-    def positions(self, portfolio):
-        raise NotImplementedError('cannot obtain positions for portfolio %s' % portfolio)
+    def _positions(self, portfolio):
+        '''Given an instance *portfolio* of Portfolio obtain information about subportfolios and positions'''
+        raise NotImplementedError('Cannot obtain positions for portfolio %s' % portfolio)
     
     def get_instrument_id_from_position(self, position):
         raise NotImplementedError('Cannot obtain instrument id and name from position.')
@@ -104,7 +106,7 @@ class Root(LoggingClass):
             pid = self.get_object_id(position,dt)
             p   = cache.get(pid)
             if not p:
-                p = self.create_position(portfolio, pid, position)
+                p = self._create_position(portfolio, pid, position)
                 if p:
                     cache.set(p.id,p)
             if p:
@@ -113,7 +115,7 @@ class Root(LoggingClass):
         self.logger.debug("added %s positions to portfolio %s" % (N,portfolio))
         return N
     
-    def create_position(self, portfolio, pid, position):
+    def _create_position(self, portfolio, pid, position):
         '''create a finins position for *portfolio*'''
         sid,name,obj = self.get_instrument_id_from_position(position)
         if not sid:

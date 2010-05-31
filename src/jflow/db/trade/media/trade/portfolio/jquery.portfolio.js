@@ -43,39 +43,6 @@
 
 (function($) {
 	
-	
-	if($.djpcms) {
-		/**
-		 * Decorator for Portfolio Application in Djpcms.
-		 */
-		$.djpcms.addDecorator({
-			id:"portfolio-application",
-			decorate: function(elem,config) {
-            	$(".portfolio-application",elem).each(function() {
-					var el   = $(this);
-					var url  = $('a',el).attr('href');
-					var code = $('.code',el);
-					var cmline;
-					if(code.length) {
-						cmline = {symbol: code.html()};
-					}
-					else {
-						cmline = null;
-					}
-					el.html('');
-					var info = $(".server-logger");
-					var elems_ = null;
-					if(info) {
-						elems_ = {'info': info};
-					}
-		
-					el.portfolio(url);
-            	});
-			}
-		});
-		
-	}
-	
 	/**
 	 * Utility function to display an inline row for editing a subportfolio
 	 * 
@@ -346,6 +313,41 @@
 				$this.options.frozen = false;
 			}
 			
+         	/**
+         	 * Write row data into the html table
+         	 * 
+         	 * @param row, portfolioNode
+         	 * @param data, JSON Object
+         	 * @param $this	portfolio object
+         	 * @param ctag, String column tag (td or th)
+         	 */
+         	function _writeData(row, data, $this, ct) {
+         		var ctag = ct ? ct : 'td';
+        		var headers = $this[0].options.header_columns;
+        		var rowdata = data ? data.row : null;
+        		var val;
+        		if(rowdata) {
+        			$(ctag,row).each(function(i,v) {
+        				var h  = headers[i];
+        				var pa = h.parser;
+        				var ht = row.label ? row.label : $(this);
+        				//var ht = i ? $(this) : row.label;
+        				if(rowdata.length > i) {
+        					val = rowdata[i];
+        					if(pa.is(val)) {
+        						ht.html(pa.format(val));
+        					}
+        					else {
+        						ht.html(val+'');
+        					}
+        				}
+        				else {
+        					ht.html('');
+        				}
+        			});
+        		}
+        	}
+			
 			/**
 			 * Create a new HTML row with data
 			 * @param rowdata, Object, data to put into the new row
@@ -355,10 +357,7 @@
 			function _createNewRow(rowdata, $this, ct) {
 				var options = $this.options;
 				var ctag    = ct ? ct : 'td';
-				var row     = $(document.createElement("tr"));
-				//if(ctag == 'td') {
-				//	row.hide();
-				//}
+				var row     = $("<tr></tr>");
 				
 				// Create the columns
 				$.each(options.header_columns, function(i,val) {
@@ -384,7 +383,7 @@
 			function _createNode(parent, data, $this, hiding) {
 				var row = _createNewRow(data, $this);
 				
-				var options = $this.options;
+				var options = $this[0].options;
 				
 				//if(hiding) {
 				//$this.showColumns($this.currentView(), row);
@@ -557,41 +556,6 @@
         		_UnFreeze($this);
         		return node;
          	}
-         
-         	/**
-         	 * Write row data into the html table
-         	 * 
-         	 * @param row, portfolioNode
-         	 * @param data, JSON Object
-         	 * @param $this	portfolio object
-         	 * @param ctag, String column tag (td or th)
-         	 */
-         	function _writeData(row, data, $this, ct) {
-         		var ctag = ct ? ct : 'td';
-        		var headers = $this.options.header_columns;
-        		var rowdata = data ? data.row : null;
-        		var val;
-        		if(rowdata) {
-        			$(ctag,row).each(function(i,v) {
-        				var h  = headers[i];
-        				var pa = h.parser;
-        				var ht = row.label ? row.label : $(this);
-        				//var ht = i ? $(this) : row.label;
-        				if(rowdata.length > i) {
-        					val = rowdata[i];
-        					if(pa.is(val)) {
-        						ht.html(pa.format(val));
-        					}
-        					else {
-        						ht.html(val+'');
-        					}
-        				}
-        				else {
-        					ht.html('');
-        				}
-        			});
-        		}
-        	}
          	
          	function _clearEditRow($this) {
          		var er = $this.options.editRow;
@@ -768,7 +732,7 @@
 	 	 * @param $this, portfolio object
 	 	 */
 	 	function _finaliseLoad($this)  {
-	 		 var options = $this.options;
+	 		 var options = $this[0].options;
 	 		
 	 		 if(options.tablesorter) {
 	 			var tblopts   = {};
@@ -798,10 +762,10 @@
 	 		if(!url)  {return;}
 	 		log("Preparing to send ajax request to " + url);
 	 		var params   = {
-	 				timestamp: +new Date()
+	 			timestamp: +new Date()
 	 		};
 	 		$.each(options.requestParams, function(key, param) {
-	 				params[key] = typeof param == "function" ? param() : param;
+	 			params[key] = typeof param == "function" ? param() : param;
 	 		}); 
 	 		options.startLoading($this);
 	 		$.ajax({url: url,
@@ -1652,5 +1616,75 @@
 		options.htmls.headrow 	 = headrow;
 		options.htmls.menubar    = menulist;
 	};
+	
+	
+	
+	if($.djpcms) {		
+		/**
+		 * Parse data arriving from server and build a new portfolio.
+		 * 
+		 * @param data, object, data from server
+		 * @param $this, portfolio jquery object
+		 */
+		$.parseFinInsPortfolio = function(data, port)  {
+			obj = port[0];
+			var root = data;
+			var options  = obj.options;
+			var table    = $('table.'+options.tableClass,port);
+			var thead    = $('thead',table);
+			var make     = $.portfolio.createNode;
+			$('tbody',table).remove();
+			var bdy  	 = $('<tbody></tbody>').insertAfter(thead).hide();
+			
+			function parsePortfolioData(el, parent)  {
+				var child;
+				//var el  = elements[id];
+				var row = make(parent, el, port).hide();
+				row.appendTo(bdy);
+				if(el.positions) {
+					$.each(el.positions, function(i,cid) {
+						parsePortfolioData(cid,row);
+					});
+				}
+				return row;
+			}
+			
+			port.ptree   = parsePortfolioData(root).expand();
+		};
+		
+		/**
+		 * Decorator for Portfolio Application in Djpcms.
+		 */
+		$.djpcms.addDecorator({
+			id:"portfolio-application",
+			decorate: function(elem,config) {
+            	$(".portfolio-application",elem).each(function() {
+					var el   = $(this);
+					var url  = $('a',el).attr('href');
+					var code = $('.code',el);
+					var cmline;
+					if(code.length) {
+						cmline = {symbol: code.html()};
+					}
+					else {
+						cmline = null;
+					}
+					el.html('');
+					var info = $(".server-logger");
+					var elems_ = null;
+					if(info) {
+						elems_ = {'info': info};
+					}
+					var options = {
+						parse: $.parseFinInsPortfolio
+					};
+					
+					$.portfolio.setdebug($.djpcms.options.debug);
+					el.portfolio(url,options);
+            	});
+			}
+		});
+		
+	}
 	
 })(jQuery);

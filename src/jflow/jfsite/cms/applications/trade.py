@@ -28,7 +28,7 @@ class PortfolioData(appview.AppView):
         data = dict(request.GET.items())
         id = data.pop('id',None)
         fi = finins.get(id)
-        return http.HttpResponse(sdata, mimetype='application/javascript')
+        return http.HttpResponse(fi.tojson(), mimetype='application/javascript')
 
 
 class FundHolderApplication(appsite.ModelApplication):

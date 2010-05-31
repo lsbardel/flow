@@ -422,4 +422,24 @@ class ManualTrade(TimeStamp):
     @property
     def size(self):
         return self.quantity
+            
     
+class PortfolioDisplay(models.Model):
+    '''
+    Model for a portfolio display configuration
+    '''
+    name = models.CharField(max_length=200)
+    user = models.ForeignKey(User, null = True)
+    fields = models.TextField(blank=True)
+    
+    objects = managers.PortfolioDisplayManager()
+    
+    #class Meta:
+    #    order = ('name',)
+        
+    def fieldlist(self):
+        return self.fields.replace(' ','').split(',')
+        
+    def todict(self):
+        return {'name': self.name,
+                'fields': self.fieldlist()}

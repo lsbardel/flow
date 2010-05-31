@@ -85,12 +85,11 @@ class FinRoot(finins.Root):
         else:
             return fi.price_to_value(position.price,size,dt), size
     
-    def positions(self, portfolio):
+    def _positions(self, portfolio):
         '''Generator of positions.
         Implements virtual method from parent class by obtaining
         data from the database.'''
-        data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
-        return self._load_positions(portfolio,data)
+        return team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
     
     def funds(self, team):
         '''Aggregate fund for a given team'''
