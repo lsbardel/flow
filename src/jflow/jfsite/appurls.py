@@ -16,7 +16,7 @@ autocomplete.register(Tag,['name'])
 autocomplete.register(User,['username','username'])
 
 
-from jflow.jfsite.applications import data
+from jflow.jfsite.cms.applications import data
     
 #___________________________________ REGISTERING DYNAMIC APPLICATIONS
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)
@@ -28,7 +28,7 @@ appsite.site.register('/memcached/', MemcacheApplication)
 
 
 if 'jflow.db.trade' in settings.INSTALLED_APPS:
-    from jflow.jfsite.applications import trade
+    from jflow.jfsite.cms.applications import trade
     appsite.site.register('/team/', trade.FundHolderApplication, model = trade.FundHolder)
     appsite.site.register('/portfolioview/', trade.PortfolioViewApplication, model = trade.PortfolioView)
     appsite.site.register('/portfolio/', trade.FundApplication, model = trade.Fund)

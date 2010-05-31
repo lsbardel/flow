@@ -326,15 +326,14 @@ class PositionManager(models.Manager):
 class ManualTradeManager(models.Manager):
     
     def status_date_filter(self, dt = None, **kwargs):
-        '''
-        This query needs to be cached in an efficient manner
+        '''This query needs to be cached in an efficient manner
         '''
         dt = dt or datetime.date.today()
         base = self.filter(open_date__lte = dt, **kwargs)
         return base.filter(Q(close_date__gt = dt) | Q(close_date__isnull=True))
         
     def for_team(self, team, dt = None):
-        return self.status_date_filter(st = st, fund__fund_holder = team)
+        return self.status_date_filter(dt = dt, fund__fund_holder = team)
     
     def for_fund(self, fund, dt = None):
-        return self.status_date_filter(st = st, fund = fund)
+        return self.status_date_filter(dt = dt, fund = fund)

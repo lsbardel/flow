@@ -14,14 +14,14 @@ cache = get_cache(settings.PORTFOLIO_CACHE_BACKEND or settings.CACHE_BACKEND)
 class FinInsBase(object):
     notavailable  = '#N/A'
     
-    def __init__(self, id = None, name = None, description = None, dt = None, ccy = None):
-        self.id = id
-        self.name = name or ''
-        self.description = description or ''
-        self.ccy = ccy
+    def __init__(self, id = None, name = '', description = '', ccy = None):
+        self.id = str(id)
+        self.name = str(name)
+        self.description = str(description)
+        self.ccy = str(ccy).upper()
         
     def __repr__(self):
-        return '%s:%s' % (self.name,self.dt)
+        return self.name
     
     def __str__(self):
         return self.__repr__()
@@ -47,6 +47,9 @@ class FinDated(FinInsBase):
     def __init__(self, dt = None, **kwargs):
         self.dt = dt or datetime.date.today()
         super(FinDated,self).__init__(**kwargs)
+        
+    def __repr__(self):
+        return '%s:%s' % (self.name,self.dt)
 
 
 class Portfolio(FinDated):
@@ -61,9 +64,10 @@ class Portfolio(FinDated):
     
     def positions(self):
         '''Portfolio positions'''
-        positions = cache.sinter(self.setkey())
-        for position in positions:
-            yield cache.get(position)
+        pids = cache.sinter(self.setkey())
+        for pid in pids:
+            p = cache.get(pid)
+            yield p
             
     def add(self, item):
         if isinstance(item,PositionBase):
@@ -94,6 +98,9 @@ class FinIns(FinInsBase):
         '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to
         all financial instruments'''
         return 0
+    
+    def price_to_value(self, price, size, dt):
+        raise NotImplementedError("Cannot convert price and size to value")
  
  
 class Position(FinDated):

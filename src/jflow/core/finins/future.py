@@ -13,16 +13,7 @@ for i in short_month:
 def date_to_code(dte):
     return '%s%s' % (future_month_list[dte.month-1],str(dte.year)[2:])
 
-def monthDictionary():
-    global future_month_list, short_month
-    di = {}
-    for i in range(0,12):
-        c = future_month_list[i]
-        s = short_month[i]
-        di[c] = (i+1,s)
-    return di
-
-future_month_dict = monthDictionary()
+future_month_dict = dict((future_month_list[i], (i+1,short_month[i])) for i in range(0,12))
 
 
 

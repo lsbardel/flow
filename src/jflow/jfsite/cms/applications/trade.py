@@ -7,7 +7,8 @@ from djpcms.views import appsite, appview
 from djpcms.utils import mark_safe
 from djpcms.utils.html import FormHelper, Fieldset, ModelChoiceField
 
-from jflow.db import geo, finins
+from jflow.db import geo
+from jflow.db.finins import finins
 from jflow.db.instdata.models import DataId, Cash
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade
 from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
@@ -25,9 +26,8 @@ class PortfolioData(appview.AppView):
         if not request.is_ajax():
             raise http.Http404
         data = dict(request.GET.items())
-        instance = djp.instance
-        data = dict(request.GET.items())
-        sdata = finins.portfolio_data(instance,data)
+        id = data.pop('id',None)
+        fi = finins.get(id)
         return http.HttpResponse(sdata, mimetype='application/javascript')
 
 

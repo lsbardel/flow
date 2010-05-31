@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.template import loader
 
@@ -7,6 +9,7 @@ from djpcms.views import appsite
 
 from jflow.conf import settings 
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView
+from jflow.db.finins import finins
 
 
 class PortfolioForm(forms.Form):
@@ -80,6 +83,9 @@ class PortfolioApplication(DJPplugin):
     def render(self, djp, wrapper, prefix, api_url = '.', height = 0, **kwargs):
         height = abs(int(height))
         instance = djp.instance
+        id = finins.get_object_id(instance,datetime.date.today())
+        if id:
+            api_url = '%s?id=%s' % (api_url,id)
         options = {}
         ctx = {'url':api_url,
                'options': options}

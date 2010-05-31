@@ -5,17 +5,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 
 from jflow.core import finins
+from jflow.core.dates import yyyymmdd2date
 from jflow.conf import settings
 from jflow.utils.encoding import smart_str
-from jflow.db.trade.models import FundHolder, Fund, Position
-
-
-
-def portfolio_data(options):
-    '''Get portfolio data'''
-    pass
-
-
+from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
 
 
 
@@ -29,7 +22,7 @@ def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = 
                 self.logger.warning("team %s not available" % team)
                 raise StopIteration
         positions = Position.objects.for_team(dt = dt, team = team)
-        trades = Position.objects.for_team(dt = dt, team = team)
+        trades = ManualTrade.objects.for_team(team, dt = dt)
     elif portfolio:
         if not isinstance(portfolio,Fund):
             try:
@@ -38,10 +31,15 @@ def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = 
                 logger.warning("portfolio %s not available" % portfolio)
                 raise StopIteration
         positions = Position.objects.for_fund(dt = dt, fund = portfolio)
+        trades = ManualTrade.objects.for_fund(team, dt = dt)
     else:
         positions = Position.objects.status_date_filter(dt = dt)
+        trades = ManualTrade.objects.status_date_filter(dt = dt)
         
-    return positions
+    for position in positions:
+        yield position
+    for trade in trades:
+        yield trade
 
 
 class Team(finins.Portfolio):
@@ -50,6 +48,42 @@ class Team(finins.Portfolio):
 
 class FinRoot(finins.Root):
     '''Root class for financial instruments'''
+    
+    def _get(self, id):
+        '''Get portfolio data from id'''
+        ids = id.split(':')
+        obj = None
+        dt  = None
+        N   = len(ids)
+        if N == 4:
+            dt = yyyymmdd2date(int(ids[-1]))
+
+        if N >= 3:
+            try:
+                ct = ContentType.objects.get_for_id(int(ids[1]))
+                obj = ct.get_object_for_this_type(id = int(ids[2]))
+            except:
+                pass
+        if isinstance(obj,FundHolder):
+            p = self.make_portfolio(obj.code, id, dt = dt, description = obj.description)
+            data = team_portfolio_positions(logger = self.logger, team = obj, dt = dt)
+            self._load_positions(p,data)
+            return p
+        elif isinstance(obj,Fund):
+            p = self.make_portfolio(obj.code, id, dt = dt, description = obj.description)
+            data = team_portfolio_positions(logger = self.logger, fund = obj, dt = dt)
+            self._load_positions(p,data)
+            return p
+        else:
+            pass
+        
+    def _get_position_value(self, position, fi, dt):
+        '''Return value and size of position'''
+        size = float(str(position.size))
+        if isinstance(position,Position):
+            return position.value, size
+        else:
+            return fi.price_to_value(position.price,size,dt), size
     
     def positions(self, portfolio):
         '''Generator of positions.
@@ -62,12 +96,12 @@ class FinRoot(finins.Root):
         '''Aggregate fund for a given team'''
         data = team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
         
-    def get_object_id(self, obj):
+    def _get_object_id(self, obj):
         '''Given an object instance it return a unique id across all models
         '''
         opt = obj._meta
         ct = ContentType.objects.get_for_model(obj)
-        return 'jflow-trade:%s:%s' % (ct.id,obj.id)
+        return '%s:%s' % (ct.id,obj.id)
         
     def get_instrument_id_from_position(self, position):
         dataid = position.dataid
@@ -82,13 +116,15 @@ class FinRoot(finins.Root):
                 'ccy': obj.curncy}
     
     
-    def get_team(self, name, dt):
+    def get_team(self, team, dt = None):
         '''For a given team and date aggregate all portfolios
         
             * **name** string code defining the team
             * **date** date of calculation
         '''
-        tobj = Team(name = name, dt = dt)
+        if not isinstance(team,FundHolder):
+            team = FundHolder.objects.get(name = team)
+        tobj = Team(name = team.code, dt = dt)
         agg  = cache.get(tobj.namekey())
         if agg:
             return self.loads(agg)
@@ -111,3 +147,5 @@ class FinRoot(finins.Root):
             if p:
                 yield p
             
+            
+finins = FinRoot()

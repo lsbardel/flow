@@ -264,11 +264,11 @@
 			// Portfolio defaults
 			this.defaults = {
 				show:          true,
-				requestParams: {},
-				responcetype:  'json',
-				requestMethod: 'post',
-				loadingClass:  'loading',
-				displayLabel:  'Select fields',
+				requestParams:    {},
+				responcetype:  	  'json',
+				requestMethod:    'get',
+				loadingClass:  	  'loading',
+				displayLabel:  	  'Select fields',
 				beforeAddFolder:  null,
 				beforeEditFolder: null,
 				beforeMoveNode:   null,

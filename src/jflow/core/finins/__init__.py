@@ -17,33 +17,22 @@ from jflow.core.dates import date2yyyymmdd
 
 
 class Root(LoggingClass):
+    keyprefix = 'jflow-finins'
     
     InstrumentFactory = {'equity':equity,
                          'etf':etf}
     
-    def _load_positions(self, portfolio, gendata):
-        '''Given a portfolio instance and a generator of data, load the portfolio positions:
-        
-            * *portfolio* Porfolio instance
-            * *gendata* iterable on positions
-        '''
-        skey    = portfolio.setkey()
-        cache.delete(skey)
-        dt      = portfolio.dt
-        pids    = []
-        for position in gendata:
-            pid = self.get_object_id(position)
-            p   = cache.get(pid)
-            if not p:
-                p = self.create_position(pid, position)
-                if p:
-                    cache.set(p.id,p)
-            if p:
-                pids.append(p.id)
-        N = cache.sadd(skey,pids)
-        self.logger.debug("added %s positions to portfolio %s" % (N,portfolio))
-        return N
-        
+    #__________________________________________________ API
+    def get(self, id):
+        '''Obtain portfolio or instrument from id and date. It check cache first, otherwise build and cache it.
+        Returns an instance of :ref:`FinInsBase` or None'''
+        el = cache.get(id)
+        if not el:
+            el = self._get(id)
+            if el:
+                cache.set(el.id,el)
+        return el
+    
     def get_portfolio(self, name, dt = None):
         '''For a given portfolio name returns a portfolio instance
         
@@ -60,32 +49,33 @@ class Root(LoggingClass):
             cache.set(namekey,p)
         return p
     
-    def get_object_id(self, obj):
+    def make_portfolio(self, name, id, dt = None, description = ''):
+        '''Create a portfolio object with
+        
+            * *name* name of portfolio
+            * *id* unique id for cache
+            * *dt* portfolio date
+            * *description* string describing the portfolio
+        '''
+        return Portfolio(name = name , id = id, dt = dt, description = description)
+    
+    def get_object_id(self, obj, dt = None):
+        '''Generate a unique id from object and date'''
+        id = '%s:%s' % (self.keyprefix,self._get_object_id(obj))
+        if dt:
+           id = '%s:%s' % (id,date2yyyymmdd(dt))
+        return id
+    
+    #___________________________________________________ IMPLEMENTATION
+    
+    def _get(self, id, dt = None):
+        '''Obtain portfolio or instrument from id and date'''
+        raise NotImplementedError('Cannot obtain data for %s.' % id)
+    
+    def _get_object_id(self, obj):
         '''Given an instance *obj* return a unique ID used for storing the object in the
         poorfolio cache'''
-        raise NotImplementedError
-    
-    def create_position(self, pid, position):
-        '''create a finins position'''
-        sid,name,obj = self.get_instrument_id_from_position(position)
-        if not sid:
-            return
-        
-        fi  = cache.get(sid)
-        if not fi:
-            factory  = self.InstrumentFactory.get(name,None)
-            if not factory:
-                return
-            fi = factory(id = sid, **self.instobjmapper(obj))
-            if fi:
-                cache.set(fi.id,fi)
-                return Position(sid   = fi.id,
-                                id    = pid,
-                                ccy   = fi.ccy,
-                                name  = fi.name,
-                                size  = position.size,
-                                value = position.value,
-                                dt    = position.dt) 
+        raise NotImplementedError('Cannot obtain id for %s' % obj)
     
     def instobjmapper(self, obj):
         raise NotImplementedError('Cannot obtain instrument information form %s' % obj)
@@ -94,10 +84,58 @@ class Root(LoggingClass):
         raise NotImplementedError('cannot obtain positions for portfolio %s' % portfolio)
     
     def get_instrument_id_from_position(self, position):
-        raise NotImplementedError('Cannot obtain instrument id and name from position')
+        raise NotImplementedError('Cannot obtain instrument id and name from position.')
     
-    def get_team_data(self, team, date):
-        raise NotImplementedError('This function needs to be implemented by derived class')
+    def _get_position_value(self, position, fi):
+        '''return a 2-elements tuple defining the position value and size'''
+        return position.value, position.size
+    
+    def _load_positions(self, portfolio, gendata):
+        '''Given a portfolio instance and a generator of data, load the portfolio positions:
+        
+            * *portfolio* Porfolio instance
+            * *gendata* iterable on positions
+        '''
+        skey    = portfolio.setkey()
+        cache.delete(skey)
+        dt      = portfolio.dt
+        pids    = []
+        for position in gendata:
+            pid = self.get_object_id(position,dt)
+            p   = cache.get(pid)
+            if not p:
+                p = self.create_position(portfolio, pid, position)
+                if p:
+                    cache.set(p.id,p)
+            if p:
+                pids.append(p.id)
+        N = cache.sadd(skey,pids)
+        self.logger.debug("added %s positions to portfolio %s" % (N,portfolio))
+        return N
+    
+    def create_position(self, portfolio, pid, position):
+        '''create a finins position for *portfolio*'''
+        sid,name,obj = self.get_instrument_id_from_position(position)
+        if not sid:
+            return
+        
+        dt  = portfolio.dt
+        fi  = cache.get(sid)
+        if not fi:
+            factory  = self.InstrumentFactory.get(name,None)
+            if not factory:
+                return
+            fi = factory(id = sid, **self.instobjmapper(obj))
+            if fi:
+                cache.set(fi.id,fi)
+                value, size = self._get_position_value(position,fi,dt)
+                return Position(sid   = fi.id,
+                                id    = pid,
+                                ccy   = fi.ccy,
+                                name  = fi.name,
+                                size  = size,
+                                value = value,
+                                dt    = dt) 
     
 
     

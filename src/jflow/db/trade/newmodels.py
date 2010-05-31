@@ -414,5 +414,12 @@ class ManualTrade(TimeStamp):
     price           = models.FloatField(default = 0)
     comment         = models.TextField()
     
+    objects = managers.ManualTradeManager()
+    
     def __unicode__(self):
         return u'%s (%s)' % (self.dataid,self.open_date)
+
+    @property
+    def size(self):
+        return self.quantity
+    

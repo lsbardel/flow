@@ -4,6 +4,7 @@ __all__ = ['todate',
            'toboostdate',
            'qdatetodate',
            'date2yyyymmdd',
+           'yyyymmdd2date',
            'get_date']
 
 def get_date(dte):
