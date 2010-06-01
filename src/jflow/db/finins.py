@@ -12,7 +12,7 @@ from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
 
 
 
-def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = None):
+def team_portfolio_positions(dt = None, fund = None, team = None, logger = None):
     '''Generator of positions for a given date'''
     if team:
         if not isinstance(team,FundHolder):
@@ -23,14 +23,14 @@ def team_portfolio_positions(dt = None, portfolio = None, team = None, logger = 
                 raise StopIteration
         positions = Position.objects.for_team(dt = dt, team = team)
         trades = ManualTrade.objects.for_team(team, dt = dt)
-    elif portfolio:
-        if not isinstance(portfolio,Fund):
+    elif fund:
+        if not isinstance(fund,Fund):
             try:
-                portfolio = Fund.objects.get(code = settings.TRIM_STRING_CODE(portfolio))
+                fund = Fund.objects.get(code = settings.TRIM_STRING_CODE(fund))
             except ObjectDoesNotExist:
-                logger.warning("portfolio %s not available" % portfolio)
+                logger.warning("portfolio %s not available" % fund)
                 raise StopIteration
-        positions = Position.objects.for_fund(dt = dt, fund = portfolio)
+        positions = Position.objects.for_fund(dt = dt, fund = fund)
         trades = ManualTrade.objects.for_fund(team, dt = dt)
     else:
         positions = Position.objects.status_date_filter(dt = dt)
@@ -89,7 +89,7 @@ class FinRoot(finins.Root):
         '''Generator of positions.
         Implements virtual method from parent class by obtaining
         data from the database.'''
-        return team_portfolio_positions(logger = self.logger, portfolio = portfolio.name, dt = portfolio.dt)
+        return team_portfolio_positions(logger = self.logger, fund = portfolio.name, dt = portfolio.dt)
     
     def funds(self, team):
         '''Aggregate fund for a given team'''

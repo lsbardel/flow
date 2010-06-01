@@ -1,8 +1,9 @@
+import datetime
 
 from django.test import TestCase
 from django.conf import settings
 
-from jflow.db.trade.models import Trader,PortfolioDisplay
+from jflow.db.trade.models import Trader,PortfolioDisplay,Fund
 from jflow.db.finins import finins
 from jflow.utils.anyjson import json
 
@@ -42,4 +43,12 @@ class FinInsTest(TestCase):
     def testPortfolioDisplay(self):
         d = PortfolioDisplay.objects.for_user(self.trader.user)
         self.assertEqual(d.count(),1)
+        
+    def testLoadFundFromId(self):
+        '''Load Fund from id'''
+        name = 'LUCAFUND'
+        obj = Fund.objects.get(code = name)
+        id = finins.get_object_id(obj, datetime.date(2010,6,1))
+        fi = finins.get(id)
+        self.assertEqual(fi.id,id)
         

@@ -219,6 +219,7 @@
 			var extraTools     = {};
 			var events         = {};
 			var tableEvents    = {};
+			var actions        = {};
 			var debug	       = false;
 		
 			// Right click menu defaults
@@ -230,11 +231,13 @@
 		
 			// Portfolio defaults
 			this.defaults = {
-				show:          true,
+				show:          	  true,
 				requestParams:    {},
 				responcetype:  	  'json',
 				requestMethod:    'get',
 				loadingClass:  	  'loading',
+				// Object with all fields to be displayied by the portfoli columns
+				fields:			  {},
 				displayLabel:  	  'Select fields',
 				beforeAddFolder:  null,
 				beforeEditFolder: null,
@@ -756,7 +759,7 @@
 	 	 * 
 	 	 * @param $this	portfolio object
 	 	 */
-	 	function _request($this)  {
+	 	function _request($this, a)  {
 	 		var options  = $this[0].options;
 	 		var url 	 = options.url;
 	 		if(!url)  {return;}
@@ -764,6 +767,9 @@
 	 		var params   = {
 	 			timestamp: +new Date()
 	 		};
+	 		if(a) {
+	 			params.action = a.name;
+	 		}
 	 		$.each(options.requestParams, function(key, param) {
 	 			params[key] = typeof param == "function" ? param() : param;
 	 		}); 
@@ -773,21 +779,26 @@
 				data: $.param(params),
 				dataType: options.responcetype,
 				success: function(data) {
-					log("Got the response from server. Parsing data.");
-					var ok = true;
-					if(options.parse)  {
-						try {
-							data = options.parse(data,$this);
+	 				if(a) {
+	 					a.success($this,data);
+	 				}
+	 				else {
+						log("Got the response from server. Parsing data.");
+						var ok = true;
+						if(options.parse)  {
+							try {
+								data = options.parse(data,$this);
+							}
+							catch(e) {
+								ok = false;
+								log("Failed to parse data. " + e);
+							}
 						}
-						catch(e) {
-							ok = false;
-							log("Failed to parse data. " + e);
+						options.stopLoading($this);
+						if(ok)  {
+							_finaliseLoad($this,data);
 						}
-					}
-					options.stopLoading($this);
-					if(ok)  {
-						_finaliseLoad($this,data);
-					}
+	 				}
 				}
 				});
 	 	}
@@ -807,7 +818,6 @@
 		function _initialize(urlOrData, options_)  {
 			var isUrl  = typeof urlOrData == "string";
 			var $this = $(this);
-			//var phead = _processheaders(headers);
 				
 			var options = {
 					url: isUrl ? urlOrData : null,
@@ -825,7 +835,8 @@
 				
 			$.extend(true, options, $.portfolio.defaults);
 			$.extend(true, options, options_);
-			$this[0].options = options;
+			$this[0].options = options; // options
+			$this[0].views   = {};		// The cache view
 			$this.addClass(options.holderClass);
 			$this.fadeOut(options.defaultFade).html("");
 				
@@ -921,7 +932,20 @@
 		this.construct      	 = _initialize;
 		this.debug		   		 = function(){return debug;};
 		this.setdebug		 	 = function(v){debug = v;};
+		
+		this.addAction = function(action) {
+			actions[action.name] = action;
+		}
+		
+		this.action = function($this, name) {
+			var a = actions[name];
+			if(a) {
+				_request($this,a);
+			}
+		}
+		
 	}
+		
 	});
 	
 	
@@ -1545,146 +1569,5 @@
 		type: "numeric"
 	});
 	
-	//////////////////////////////////////////////////////////////////
-	// PORTFOLIO PAGINATION
-	//////////////////////////////////////////////////////////////////
-	portf.paginate = function($this) {
-		var options = $this[0].options;
-		
-		function _createMenuBar() {
-			var ul = $("<ul></ul>");
-			var li = $("<li></li>").appendTo(ul);
-			if(options.displayLabel) {
-				li.append($(document.createElement("label")).html(options.displayLabel));
-			}
-			var displays = $(document.createElement("select")).appendTo(li);
-			options.htmls.displays = displays; 
-			ul.append($(document.createElement("li")).append($(document.createElement("a"))
-					.attr({'title':'Reload'}).addClass(options.reloadClass)));
-			ul.append($(document.createElement("li")).append($(document.createElement("a"))
-					.attr({'title':'Expand sub-portfolios'}).addClass('tgport tog-out')));
-
-			/*
-			$.each(options.header_choices, function(i,el){
-				var nv = {};
-				$.each(el.values, function(ii,iel){
-					nv[iel] = false;
-				});
-				el.columns = nv;
-				displays.append($(document.createElement("option")).text(el.name).val(i));
-			});
-			*/
-			
-			return ul;
-		}
-	
-		// Tool panel elements
-		var menulist   = _createMenuBar();
-		var toolspanel = $(document.createElement("div"))
-			.addClass(options.toolsPanelClass).appendTo($this);
-		var toolsheader = $(document.createElement("div"))
-			.addClass(options.menubarClass).appendTo(toolspanel);
-		var tul = $(document.createElement("ul")).appendTo(toolsheader);
-		var expandTools = $(document.createElement("a"))
-			.attr({'title':'expand'})
-			.addClass(options.toolsResizerClass).addClass(options.expandToolsClass)
-			.appendTo($(document.createElement("li")).appendTo(tul));
-		var toolTitle = $(document.createElement("p"))
-			.appendTo($(document.createElement("li")).appendTo(tul));
-		var poutpanel = $(document.createElement("div"))
-				.addClass(options.portfolioOutPanelClass).appendTo($this);
-		var poutpanel2 = $(document.createElement("div"))
-				.addClass(options.portfolioOutPanelClass2).appendTo(poutpanel);
-		var portfoliopanel = $(document.createElement("div"))
-				.addClass(options.portfolioPanelClass).appendTo(poutpanel2);
-		var	menubar = $(document.createElement("div"))
-			.addClass(options.menubarClass).append(menulist)
-			.appendTo(portfoliopanel);
-
-		// Create the table
-		var tablecontainer = $(document.createElement("div"))
-			.addClass(options.containerClass).appendTo(portfoliopanel);
-		var tbl = $(document.createElement('table')).attr({'cellspacing':'1'})
-			.addClass(options.tableClass).appendTo(tablecontainer);
-		var headrow = $(document.createElement('tr'))
-			.appendTo($(document.createElement('thead')).appendTo(tbl));
-		tbl.append($(document.createElement('tbody')));
-		
-		options.htmls.toolspanel = toolspanel;
-		options.htmls.toolTitle  = toolTitle;
-		options.htmls.poutpanel  = poutpanel;
-		options.htmls.headrow 	 = headrow;
-		options.htmls.menubar    = menulist;
-	};
-	
-	
-	
-	if($.djpcms) {		
-		/**
-		 * Parse data arriving from server and build a new portfolio.
-		 * 
-		 * @param data, object, data from server
-		 * @param $this, portfolio jquery object
-		 */
-		$.parseFinInsPortfolio = function(data, port)  {
-			obj = port[0];
-			var root = data;
-			var options  = obj.options;
-			var table    = $('table.'+options.tableClass,port);
-			var thead    = $('thead',table);
-			var make     = $.portfolio.createNode;
-			$('tbody',table).remove();
-			var bdy  	 = $('<tbody></tbody>').insertAfter(thead).hide();
-			
-			function parsePortfolioData(el, parent)  {
-				var child;
-				//var el  = elements[id];
-				var row = make(parent, el, port).hide();
-				row.appendTo(bdy);
-				if(el.positions) {
-					$.each(el.positions, function(i,cid) {
-						parsePortfolioData(cid,row);
-					});
-				}
-				return row;
-			}
-			
-			port.ptree   = parsePortfolioData(root).expand();
-		};
-		
-		/**
-		 * Decorator for Portfolio Application in Djpcms.
-		 */
-		$.djpcms.addDecorator({
-			id:"portfolio-application",
-			decorate: function(elem,config) {
-            	$(".portfolio-application",elem).each(function() {
-					var el   = $(this);
-					var url  = $('a',el).attr('href');
-					var code = $('.code',el);
-					var cmline;
-					if(code.length) {
-						cmline = {symbol: code.html()};
-					}
-					else {
-						cmline = null;
-					}
-					el.html('');
-					var info = $(".server-logger");
-					var elems_ = null;
-					if(info) {
-						elems_ = {'info': info};
-					}
-					var options = {
-						parse: $.parseFinInsPortfolio
-					};
-					
-					$.portfolio.setdebug($.djpcms.options.debug);
-					el.portfolio(url,options);
-            	});
-			}
-		});
-		
-	}
 	
 })(jQuery);

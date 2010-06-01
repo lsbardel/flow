@@ -8,6 +8,7 @@ from djpcms.plugins import DJPplugin
 from djpcms.views import appsite
 
 from jflow.conf import settings 
+from jflow.utils.anyjson import json
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView
 from jflow.db.finins import finins
 
@@ -78,17 +79,18 @@ class PortfolioApplication(DJPplugin):
         js = ['txdo/JSON.js',
               'txdo/Orbited.js',
               'txdo/protocol/stomp.js',
-              'trade/portfolio/jquery.portfolio.js']
+              'trade/portfolio/jquery.portfolio.js',
+              'trade/portfolio/portfolio_actions.js']
         
     def render(self, djp, wrapper, prefix, api_url = '.', height = 0, **kwargs):
-        height = abs(int(height))
+        height = abs(int(height or 0))
         instance = djp.instance
         id = finins.get_object_id(instance,datetime.date.today())
-        if id:
-            api_url = '%s?id=%s' % (api_url,id)
         options = {}
-        ctx = {'url':api_url,
-               'options': options}
+        ctx = {'url': api_url,
+               'id': id,
+               'options': options,
+               'fields': mark_safe(json.dumps(finins.fields()))}
         if height:
             options['height'] = height
         return loader.render_to_string('trade/portfolio-application.html', ctx)

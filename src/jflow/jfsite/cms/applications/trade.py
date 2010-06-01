@@ -8,9 +8,10 @@ from djpcms.utils import mark_safe
 from djpcms.utils.html import FormHelper, Fieldset, ModelChoiceField
 
 from jflow.db import geo
+from jflow.utils.anyjson import json
 from jflow.db.finins import finins
 from jflow.db.instdata.models import DataId, Cash
-from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade
+from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade, PortfolioDisplay
 from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
 
 
@@ -26,9 +27,14 @@ class PortfolioData(appview.AppView):
         if not request.is_ajax():
             raise http.Http404
         data = dict(request.GET.items())
-        id = data.pop('id',None)
-        fi = finins.get(id)
-        return http.HttpResponse(fi.tojson(), mimetype='application/javascript')
+        id = data.get('id',None)
+        action = data.get('action','load')
+        if action == 'load':
+            fi = finins.get(id)
+            data = fi.todict()
+        elif action == 'display':
+            data = PortfolioDisplay.objects.dict_user(request.user)    
+        return http.HttpResponse(json.dumps(data), mimetype='application/javascript')
 
 
 class FundHolderApplication(appsite.ModelApplication):
@@ -59,8 +65,9 @@ class PortfolioViewView(appview.ViewView):
 
 class FundApplication(appsite.ModelApplication):
     search = appview.SearchView(in_navigation = False)
+    data   = PortfolioData(regex = 'data')
     view   = PortfolioViewView(regex = '(?P<id>[-\.\w]+)')
-    view2  = PortfolioViewView(regex = '(?P<view_id>\d+)', parent = 'view')
+    #view2  = PortfolioViewView(regex = '(?P<view_id>\d+)', parent = 'view')
     
     def title_object(self, obj):
         if isinstance(obj,PortfolioView):

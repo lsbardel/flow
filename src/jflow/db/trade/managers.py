@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db import models
 
+from jflow.utils.anyjson import json
 
 ROUNDING   = 4
 MAX_DIGITS = 18
@@ -363,3 +364,9 @@ class PortfolioDisplayManager(models.Manager):
                 return self.filter(user = None)
             else:
                 return ps
+    
+    def dict_user(self, user):
+        ps = self.for_user(user)
+        d = dict((d.name,d.fieldlist()) for d in ps.order_by('name'))
+        return d
+    

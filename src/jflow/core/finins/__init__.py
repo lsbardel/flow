@@ -9,6 +9,7 @@ from future import *
 from portfolio import *
 from equity import *
 from formatter import *
+from fields import *
 
 from jflow.log import LoggingClass
 from jflow.core.dates import date2yyyymmdd
@@ -66,6 +67,9 @@ class Root(LoggingClass):
         if dt:
            id = '%s:%s' % (id,date2yyyymmdd(dt))
         return id
+    
+    def fields(self):
+        return finfields
     
     #___________________________________________________ IMPLEMENTATION
     
