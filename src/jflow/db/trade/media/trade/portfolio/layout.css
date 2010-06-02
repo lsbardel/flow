@@ -1,0 +1,9 @@
+div.portfolio-holder {
+	overflow: hidden;
+}
+.portfolio-menubar select {
+	padding: 3px 10px;
+}
+.portfolio-menubar {
+	height: 30px;
+}

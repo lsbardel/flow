@@ -31,10 +31,10 @@ class PortfolioData(appview.AppView):
         action = data.get('action','load')
         if action == 'load':
             fi = finins.get(id)
-            data = fi.todict()
+            data = fi.tojson()
         elif action == 'display':
-            data = PortfolioDisplay.objects.dict_user(request.user)    
-        return http.HttpResponse(json.dumps(data), mimetype='application/javascript')
+            data = json.dumps(PortfolioDisplay.objects.dict_user(request.user))    
+        return http.HttpResponse(data, mimetype='application/javascript')
 
 
 class FundHolderApplication(appsite.ModelApplication):

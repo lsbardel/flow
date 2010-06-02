@@ -51,4 +51,5 @@ class FinInsTest(TestCase):
         id = finins.get_object_id(obj, datetime.date(2010,6,1))
         fi = finins.get(id)
         self.assertEqual(fi.id,id)
+        jd = fi.tojson()
         

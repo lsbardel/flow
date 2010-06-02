@@ -76,6 +76,10 @@ class PortfolioApplication(DJPplugin):
     form        = PortfolioApplicationForm
     
     class Media:
+        css = {
+               'all': ('trade/portfolio/layout.css',
+                       'trade/portfolio/themes/simple/style.css')
+               }
         js = ['txdo/JSON.js',
               'txdo/Orbited.js',
               'txdo/protocol/stomp.js',

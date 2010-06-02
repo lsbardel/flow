@@ -29,14 +29,18 @@ class Fields(object):
 
 _f = Fields()
 
+
 _f.fstring('id')
 _f.fstring('code')
 _f.fstring('name')
 _f.fstring('ccy')
 
+_f.fnumber('price')
+
 _f.fpercentage('volatility')
 
 _f.fcurrency('notional')
+_f.fcurrency('nav')
 
 
 finfields = _f.fields
