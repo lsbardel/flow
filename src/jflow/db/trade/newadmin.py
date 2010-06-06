@@ -41,7 +41,7 @@ class UserViewDefaultAdmin(admin.ModelAdmin):
     list_display = ('user','view')
 
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('code','view','fund','parent','cash_account')
+    list_display = ('name','view','fund','parent','cash_account')
 
 #class PortfolioDisplayAdmin(admin.ModelAdmin):
 #    list_display = ('code','name','description','display')
@@ -53,6 +53,9 @@ class PortfolioDisplayElementAdmin(admin.ModelAdmin):
 class ManualTradeAdmin(admin.ModelAdmin):
     list_display = ('dataid','user','open_date','close_date',
                     'fund','quantity','price')
+    
+class PortfolioDisplayAdmin(admin.ModelAdmin):
+    list_display = ('name','user','fields')
 
 
 admin.site.register(FundHolder,FundHolderAdmin)
@@ -64,7 +67,6 @@ admin.site.register(PortfolioView,PortfolioViewAdmin)
 admin.site.register(UserViewDefault,UserViewDefaultAdmin)
 admin.site.register(Portfolio,PortfolioAdmin)
 admin.site.register(ManualTrade,ManualTradeAdmin)
-#admin.site.register(PortfolioDisplay,PortfolioDisplayAdmin)
-#admin.site.register(PortfolioDisplayElement,PortfolioDisplayElementAdmin)
+admin.site.register(PortfolioDisplay,PortfolioDisplayAdmin)
 
-#admin.site.register(ManualTrade,ManualTradeAdmin)
+

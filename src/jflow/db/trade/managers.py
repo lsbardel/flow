@@ -14,6 +14,7 @@ MAX_DIGITS = 18
 POSITION_STATUS_DUMMY       = 0
 POSITION_STATUS_SYNCRONIZED = 1
 POSITION_STATUS_MANUAL      = 2
+INITIAL_FIELDS = 'name,description,ccy,size'
 #POSITION_STATUS_TRADE_TRACK = 3
 #_______________________________________________
 
@@ -338,14 +339,16 @@ class ManualTradeManager(models.Manager):
     
     def for_fund(self, fund, dt = None):
         return self.status_date_filter(dt = dt, fund = fund)
-    
+
+
+
     
 
 class PortfolioDisplayManager(models.Manager):
     
     def create_default(self, user = None):
         m = self.model(name = 'default',
-                       fields = 'code,name,ccy',
+                       fields = INITIAL_FIELDS,
                        user = user)
         m.save()
         

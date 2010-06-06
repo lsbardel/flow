@@ -11,7 +11,7 @@ from jflow.db import geo
 from jflow.utils.anyjson import json
 from jflow.db.finins import finins
 from jflow.db.instdata.models import DataId, Cash
-from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade, PortfolioDisplay
+from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade
 from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
 
 
@@ -27,14 +27,10 @@ class PortfolioData(appview.AppView):
         if not request.is_ajax():
             raise http.Http404
         data = dict(request.GET.items())
-        id = data.get('id',None)
-        action = data.get('action','load')
-        if action == 'load':
-            fi = finins.get(id)
-            data = fi.tojson()
-        elif action == 'display':
-            data = json.dumps(PortfolioDisplay.objects.dict_user(request.user))    
-        return http.HttpResponse(data, mimetype='application/javascript')
+        id = data.pop('id',None)
+        action = data.pop('action','load')
+        newdata = finins.do_action(request,action,id,data)
+        return http.HttpResponse(newdata, mimetype='application/javascript')
 
 
 class FundHolderApplication(appsite.ModelApplication):

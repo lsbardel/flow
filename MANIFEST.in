@@ -5,7 +5,9 @@ include README.rst
 include requirements.txt
 recursive-include src/jflow/db/instdata/media *
 recursive-include src/jflow/db/instdata/templates *
+recursive-include src/jflow/db/instdata/fixtures *
 recursive-include src/jflow/db/trade/media *
 recursive-include src/jflow/db/trade/templates *
+recursive-include src/jflow/db/trade/fixtures *
 recursive-include src/jflow/jfsite/media *
 recursive-include src/jflow/jfsite/templates *

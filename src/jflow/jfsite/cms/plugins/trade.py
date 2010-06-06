@@ -23,6 +23,8 @@ def item_description(item):
         d = item.description or item.code
     return mark_safe(d)
 
+
+
 class PortfolioList(DJPplugin):
     name = "porfolio-list"
     description = "Team and portfolio list"
@@ -68,6 +70,7 @@ class PortfolioApplicationForm(forms.Form):
     height = forms.IntegerField(initial = 0, required = False)
 
 
+
 class PortfolioApplication(DJPplugin):
     '''Display the position of a team base on some inputs specified by the plugin form 
     '''
@@ -77,19 +80,23 @@ class PortfolioApplication(DJPplugin):
     
     class Media:
         css = {
-               'all': ('trade/portfolio/layout.css',
+               'all': ('djpcms/rightclickmenu/rightclickmenu.css',
+                       'trade/portfolio/layout.css',
                        'trade/portfolio/themes/simple/style.css')
                }
         js = ['txdo/JSON.js',
               'txdo/Orbited.js',
               'txdo/protocol/stomp.js',
+              'djpcms/rightclickmenu/rightclickmenu.js',
               'trade/portfolio/jquery.portfolio.js',
               'trade/portfolio/portfolio_actions.js']
         
     def render(self, djp, wrapper, prefix, api_url = '.', height = 0, **kwargs):
         height = abs(int(height or 0))
         instance = djp.instance
-        id = finins.get_object_id(instance,datetime.date.today())
+        request  = djp.request
+        obj = finins.get_display_object(instance, request.user)
+        id  = finins.get_object_id(obj,datetime.date.today())
         options = {}
         ctx = {'url': api_url,
                'id': id,

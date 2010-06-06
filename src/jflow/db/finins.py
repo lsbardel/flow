@@ -8,9 +8,62 @@ from jflow.core import finins
 from jflow.core.dates import yyyymmdd2date
 from jflow.conf import settings
 from jflow.utils.encoding import smart_str
-from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
+from jflow.utils.anyjson import json
+from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, UserViewDefault
+from jflow.db.trade.models import PortfolioView, PortfolioDisplay
 
 
+class portfolio_view(finins.Portfolio):
+    
+    def __init__(self, fund_id, **kwargs):
+        self.fund_id = fund_id
+        super(portfolio_view,self).__init__(**kwargs)
+        
+    def get_data(self, obj):
+        '''Build portfolio view data from database
+        '''
+        pass
+
+
+def get_object_from_id(id):
+    ids = id.split(':')
+    obj = None
+    dt  = None
+    N   = len(ids)
+    if N == 4:
+        dt = yyyymmdd2date(int(ids[-1]))
+
+    if N >= 3:
+        try:
+            ct = ContentType.objects.get_for_id(int(ids[1]))
+            obj = ct.get_object_for_this_type(id = int(ids[2]))
+        except:
+            pass
+    return obj,dt
+
+
+def default_view(fund, user):
+    root = fund.root()
+    if user.is_authenticated():
+        view = UserViewDefault.objects.filter(user = user, view__fund = root)
+        if view:
+            return view[0]
+    views = PortfolioView.objects.filter(fund = root)
+    if not views:
+        view = PortfolioView(fund = fund, default = True, name = 'default')
+        view.save()
+        return view
+    else:
+        if user.is_authenticated():
+            uviews = views.filter(user = user)
+            if uviews:
+                return uview[0]
+        uviews = views.filter(default = True)
+        if uviews:
+            return uviews[0]
+        else:
+            return views[0]
+    
 
 def team_portfolio_positions(dt = None, fund = None, team = None, logger = None):
     '''Generator of positions for a given date'''
@@ -42,40 +95,44 @@ def team_portfolio_positions(dt = None, fund = None, team = None, logger = None)
         yield trade
 
 
-class Team(finins.Portfolio):
-    pass
 
 
 class FinRoot(finins.Root):
     '''Root class for financial instruments'''
     
     def _get(self, id):
-        '''Get portfolio data from id'''
-        ids = id.split(':')
-        obj = None
-        dt  = None
-        N   = len(ids)
-        if N == 4:
-            dt = yyyymmdd2date(int(ids[-1]))
-
-        if N >= 3:
-            try:
-                ct = ContentType.objects.get_for_id(int(ids[1]))
-                obj = ct.get_object_for_this_type(id = int(ids[2]))
-            except:
-                pass
+        '''Create portfolio data from id'''
+        obj,dt = get_object_from_id(id)
+        
         if isinstance(obj,FundHolder):
             p = self.make_portfolio(obj.code, id, dt = dt, description = obj.description)
             data = team_portfolio_positions(logger = self.logger, team = obj, dt = dt)
             self._load_positions(p,data)
             return p
         elif isinstance(obj,Fund):
-            p = self.make_portfolio(obj.code, id, dt = dt, description = obj.description)
+            if obj.parent:
+                p = self.make_portfolio(name = obj.code,
+                                        id = id,
+                                        dt = dt,
+                                        description = obj.description,
+                                        canaddto = not obj.children.count(),
+                                        ccy = obj.curncy)
             data = team_portfolio_positions(logger = self.logger, fund = obj, dt = dt)
             self._load_positions(p,data)
             return p
-        else:
-            pass
+        
+        if isinstance(obj,PortfolioView):
+            fund = obj.fund
+            fid  = self.get_object_id(fund,dt)
+            ff   = self.get(fid)
+            p    = portfolio_view(name = fund.code,
+                                  fund_id = fid,
+                                  id = id,
+                                  dt = dt,
+                                  description = obj.description)
+            data = p.get_data(obj)
+            self._load_positions(p,data)
+            return p
         
     def _get_position_value(self, position, fi, dt):
         '''Return value and size of position'''
@@ -146,5 +203,77 @@ class FinRoot(finins.Root):
             if p:
                 yield p
             
+    # SPECIFIC APPLICATION___________________________________________________________________________
+    
+    def view_for_funds(self, fund, dt, user):
+        '''List of fund views for a given date with user information'''
+        dviews = []
+        views = fund.views.all()
+        default = None
+        if not views:
+            view = PortfolioView(fund = fund,
+                                 name = "default")
+            view.save()
+            default = view
+            
+        for view in fund.views.all():
+            dviews.append({'id': self.get_object_id(view,dt),
+                           'name': obj.name,
+                           'description': view.description,
+                           'editable': view.user is user})
+
+        return dviews
+    
+    def update_view(self, view, dt):
+        '''Update a portfolio view according to a predifined algorithm:
+        
+            * *view* instance of PortfolioView
+            * *dt* date
+        '''
+        pass
+    
+    def get_display_object(self, instance, user):
+        if isinstance(instance,Fund):
+            return default_view(instance,user)
+        else:
+            return instance
+
+
+    def do_action(self, request, action, id, data):
+        func = getattr(self,'action_%s' % action.replace('-','_'))
+        if func:
+            return func(request, id, data)
+        else:
+            return ''
+        
+    # ------------------------------------------------------------ JSON API ACTIONS
+    
+    def action_load(self, request, id, data):
+        '''Load portfolio from id. Returns a json string'''
+        fi = self.get(id)
+        return fi.tojson()
+    
+    def action_display(self, request, id, data):
+        return json.dumps(PortfolioDisplay.objects.dict_user(request.user))
+        
+    def action_add_edit_node(self, request, id, data):
+        '''Add or edit a portfolio'''
+        fi = finins.get(id)
+        if data.pop("editing",False):
+            fi.edit(data)
+            return fi.tojson()
+        elif fi.canaddto:
+            obj,dt = get_object_from_id(id)
+            name   = data.get('name',None)
+            description = data.get('description','')
+            if not name:
+                return
+            
+            
+            
+            
+            
             
 finins = FinRoot()
+    
+    

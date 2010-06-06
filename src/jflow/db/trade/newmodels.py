@@ -48,7 +48,7 @@ class Fund(models.Model):
     description     = models.CharField(max_length=255, blank = True)
     fund_holder     = models.ForeignKey(FundHolder, verbose_name = 'team', related_name = 'funds')
     curncy          = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
-    parent          = models.ForeignKey('self', null = True, blank = True)
+    parent          = models.ForeignKey('self', null = True, blank = True, related_name = 'children')
     dataid          = models.ForeignKey('instdata.DataId',
                                         blank = True,
                                         null = True,
@@ -76,6 +76,12 @@ class Fund(models.Model):
     def ccy(self):
         return self.curncy
     
+    def root(self):
+        if self.parent:
+            return self.parent.root()
+        else:
+            return self
+        
     def accounts(self):
         return CustodyAccount.objects.filter(fund=self)
     
@@ -204,9 +210,7 @@ class PortfolioView(TimeStamp):
     name         = models.CharField(max_length=32)
     default      = models.BooleanField(default = False)
     description  = models.TextField(blank = True, null = True)
-    user         = models.ForeignKey(User)
-    
-    objects = managers.PortfolioViewManager()
+    user         = models.ForeignKey(User, null = True)
     
     def __unicode__(self):
         return u'%s: %s (%s)' % (self.fund,self.name,self.user)
@@ -290,7 +294,7 @@ class PortfolioView(TimeStamp):
 
 class UserViewDefault(models.Model):
     user = models.ForeignKey(User)
-    view = models.ForeignKey(PortfolioView)
+    view = models.ForeignKey(PortfolioView, related_name = 'user_default')
     
     def __unicode__(self):
         return '%s - %s' % (self.view,self.user)
@@ -305,18 +309,17 @@ class Portfolio(TimeStamp):
     Portfolio model.
     If cash_account is set, then this portfolio is treated as a cash account
     '''
-    code          = models.CharField(max_length=22)
-    name          = models.CharField(max_length=32, blank = True)
+    name          = models.CharField(max_length=64)
     description   = models.TextField(blank = True)
     parent        = models.ForeignKey('self', blank=True, null=True, related_name="children")
-    view          = models.ForeignKey(PortfolioView)
+    view          = models.ForeignKey(PortfolioView, related_name = 'portfolios')
     fund          = models.ForeignKey(Fund)
     position      = models.ManyToManyField('Position', blank = True, null=True)
     cash_account  = models.BooleanField(default = False)
     
     class Meta:
         verbose_name = 'sub portfolio'
-        ordering  = ('view','code',)
+        ordering  = ('name',)
         
     def save(self):
         if self.parent:

@@ -23,6 +23,8 @@ class Root(LoggingClass):
     InstrumentFactory = {'equity':equity,
                          'etf':etf}
     
+    make_portfolio = Portfolio
+    
     #__________________________________________________ API
     def get(self, id):
         '''Obtain portfolio or instrument from id and date. It check cache first, otherwise build and cache it.
@@ -50,16 +52,6 @@ class Root(LoggingClass):
             self._load_positions(p, data)
             cache.set(namekey,p)
         return p
-    
-    def make_portfolio(self, name, id, dt = None, description = ''):
-        '''Create a portfolio object with
-        
-            * *name* name of portfolio
-            * *id* unique id for cache
-            * *dt* portfolio date
-            * *description* string describing the portfolio
-        '''
-        return Portfolio(name = name , id = id, dt = dt, description = description)
     
     def get_object_id(self, obj, dt = None):
         '''Generate a unique id from object and date'''

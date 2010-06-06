@@ -28,11 +28,15 @@ class JSONRPCEncoder(json.JSONEncoder):
 class FinInsBase(object):
     notavailable  = '#N/A'
     
-    def __init__(self, id = None, name = '', description = '', ccy = None):
+    def __init__(self, id = None, name = '', description = '', ccy = None,
+                 editable = False, canaddto = False, movable = False):
         self.id = str(id)
         self.name = str(name)
         self.description = str(description)
         self.ccy = str(ccy).upper()
+        self.editable = editable
+        self.canaddto = canaddto
+        self.movable  = movable
         
     def __repr__(self):
         return self.name
@@ -73,6 +77,10 @@ class FinDated(FinInsBase):
 class Portfolio(FinDated):
     '''A portfolio containing positions and portfolios'''
     
+    def __init__(self, pid = None, **kwargs):
+        self.pid = pid
+        super(Portfolio,self).__init__(**kwargs)
+        
     def get(self, id, default = None):
         code = '%s:position:$%s' % (self.key(),id)
         return cache.get(code.lower(),default)
@@ -107,6 +115,7 @@ class Portfolio(FinDated):
     def todict(self):
         d = super(Portfolio,self).todict()
         ps = []
+        d['folder'] = True
         d['positions'] = ps
         for position in self.positions():
             ps.append(position.todict())
@@ -142,6 +151,15 @@ class Position(FinDated):
         self.size   = size
         self.value  = value
         super(Position,self).__init__(**kwargs)
+        
+    def todict(self):
+        d = super(Position,self).todict()
+        if self.sid:
+            f = cache.get(self.sid)
+            if f:
+                if not self.description:
+                    d['description'] = f.description
+        return d             
 
     def security(self):
         if self.sid:

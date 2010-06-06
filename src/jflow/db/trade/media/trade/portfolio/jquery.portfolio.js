@@ -44,50 +44,6 @@
 (function($) {
 	
 	/**
-	 * Utility function to display an inline row for editing a subportfolio
-	 * 
-	 * @param	parent, portfolioNode, node which receive the inline row
-	 */
-	$.editPortfolio = function(parent) {
-		var row    = $.portfolio.setEditRow(parent,true);
-		var p      = parent.portfolio;
-		var $this  = p.port;
-		var elm    = $('<ul></ul>').appendTo(row.label)
-		.css({'list-style-type':'none','display':'inline','float':'left'});
-		var code   = $('<input type="text" maxlength="32"/>').val(p.code);
-		var desc   = $('<input type="text" maxlength="200"/>');
-		var edit   = $('<input class="default" type="submit" value="done"/>');
-		var cancel = $('<input type="submit" value="cancel"/>');
-		elm.append($('<li></li>').append(code));
-		elm.append($('<li>description</li>'));
-		elm.append($('<li></li>').append(desc));
-		elm.append($('<li></li>').append(edit));
-		elm.append($('<li></li>').append(cancel));
-		lis = $('li',elm).css({'list-style-type':'none','display':'inline',
-			'float':'left','padding-right':'3px'});
-		
-		row.fadeIn($this.options.defaultFade);
-		
-		function handle(sub) {
-			$.portfolio.clearEditRow($this);
-			if(sub) {
-				row = $.portfolio.editNode({'code': code.val(), 'name':desc.val()}, parent);
-			}
-			else {
-				parent.fadeIn($this.options.defaultFade);
-			}
-		}
-		
-		// Handle the click to Add new subfolder
-		edit.click(function(e) {
-			handle(true);
-		});
-		cancel.click(function(e) {
-			handle(false);
-		});
-	};
-	
-	/**
 	 * Utility function to display an inline row for adding a new subportfolio
 	 * 
 	 * @param	parent, portfolioNode, node which receive the inline row
@@ -126,87 +82,6 @@
 	};
 	
 	/**
-	 * Create a right click menu element To add, delete and rename subfolders
-	 */
-	$.fn.rightClickMenu = function(portfolio_, options_) {
-		var $this  = this;
-		
-		var defaults = {
-				x: 20,
-				y: 10,
-				fade: 300,
-				actionClass: 'rightClickAction',
-				actions: []
-		};
-		
-		/**
-		 * Display the right-click menu at the portfolio element selected
-		 * 
-		 * @param x - float, the x coordinate
-		 * @param y - float, the y coordinate
-		 * @param el - jQuery Portfolio Node
-		 * @return this
-		 */
-		function _display(x, y, el) {
-			$this.current  = el;
-			var p    = el.portfolio;
-			$this.portfolio.log('displaing right-click menu for '+p.code);
-			$.each(this.options.actions, function(i,v) {
-				if(v.display(p)) {
-					v.element.show();
-				}
-				else {
-					v.element.hide();
-				}
-			});
-			this.hide().css({top: y + this.options.y,left: x + this.options.x}).fadeIn(this.options.fade);
-			return this;
-		}
-		
-		/**
-		 * Initailize the right-click menu
-		 */
-		function init_() {
-			// API
-			$this.options   = {};
-			$this.portfolio = portfolio_;
-			$this.current   = null;
-			
-			// Initialize
-			$.extend(true, $this.options, defaults);
-			$.extend(true, $this.options, options_);
-			var menu    = {};
-			var ul      = $('<ul></ul>').appendTo($this);
-			var options = $this.options;
-			var actions = options.actions;
-			options.actions = {};
-			
-			// Loop over actions and create a list entry
-			$.each(actions, function(i,v) {
-				var act = $('<a name="' + v.code + '">' + v.name + '</a>').addClass(options.actionClass);
-				v.element = $('<li></li>').appendTo(ul).append(act);
-				options.actions[v.code] = v;
-				act.click(function(e) {
-					if($this.current) {
-						v.click($this.current);
-					}
-				});
-			});
-		}
-		
-		// Initialize
-		init_();
-		
-		
-		// 	API
-		this.display = _display;
-		
-		
-		return this;
-	};
-	
-	
-	/**
 	 * The portfolio class
 	 * 
 	 * This define a new object in the jQuery name-space which holds
@@ -222,34 +97,23 @@
 			var actions        = {};
 			var debug	       = false;
 		
-			// Right click menu defaults
-			var rcoptions = {
-				selectedClass: 'rclk',
-				menuClass: 'portfolio-rightClickMenu',
-				actions: []
-			};
-		
 			// Portfolio defaults
 			this.defaults = {
-				show:          	  true,
-				requestParams:    {},
-				responcetype:  	  'json',
-				requestMethod:    'get',
-				loadingClass:  	  'loading',
-				// Object with all fields to be displayied by the portfoli columns
-				fields:			  {},
-				displayLabel:  	  'Select fields',
-				beforeAddFolder:  null,
-				beforeEditFolder: null,
-				beforeMoveNode:   null,
-				beforeRemoveNode: null,
-				defaultFade:	 300,
-				rightClickMenu: rcoptions,
+				show:          	   true,
+				requestParams:     {},
+				responcetype:  	   'json',
+				requestMethod:     'get',
+				loadingClass:  	   'loading',
+				fields:			   {},
+				displayLabel:  	   'Select fields',
+				beforeAddFolder:   null,
+				beforeEditFolder:  null,
+				beforeMoveNode:    null,
+				beforeRemoveNode:  null,
+				defaultFade:	   300,
 				//
 				editable:	   false,
-				parse:		   null,
 				loadData:	   null,
-				autoload:	   true,
 				displayeffect: null,
 				toolswidth: {min: "300px",
 							max: "600px"},
@@ -373,37 +237,72 @@
 				_writeData(row,rowdata,$this,ctag);
 				return row;
 			}
-        
-			/**
-			 * Create a new portfolio Node
-			 * @param parent jQuery.portfolioNode or null
-			 * @param data JSON data to initialise the new Node
-			 * @param $this, portfolio object
-			 * @param hiding boolean or null,
-			 *		  if true the node is created on the fly, otherwise it is the first load.
-			 * @return a jQuery.portfolioNode
-			 */
-			function _createNode(parent, data, $this, hiding) {
-				var row = _createNewRow(data, $this);
-				
-				var options = $this[0].options;
-				
-				//if(hiding) {
-				//$this.showColumns($this.currentView(), row);
-				//}
-				$this.showColumns($this.currentView(), row);
 			
-				row = row.portfolioNode(options, parent, data, $this);
+			/**
+			 * Create a new edit row for adding/editing portfolio nodes.
+			 * The action "add-edit-node" must be implemented
+			 * 
+			 * @param row HTMLElement
+			 * @param field String name of field to edit
+			 * @param edit boolean if true the node is edited otherwise another node is added
+			 */
+			function _editrow(row, field, edit) {
+				var node	= row.node;
+				if(!node) {return;}
+				var port	= node.portfolio;
+				var options = node.options;
+				if(options.editrow) {return;}
+				var fields  = $.portfolio.fields(port);
+				var td		= $('<td colspan='+fields.length+'></td>')
+				var erow    = $('<tr class="edit"></tr>').append(td).insertAfter(row);
+				var elm     = $('<ul></ul>').appendTo(td)
+				.css({'list-style-type':'none','display':'inline','float':'left'});
+				var code   = $('<input type="text" maxlength="32"/>');
+				var desc   = $('<input type="text" maxlength="200"/>');
+				var done   = $('<input class="default" type="submit" value="done"/>');
+				var cancel = $('<input type="submit" value="cancel"/>');
+				elm.append($('<li></li>').append(code));
+				elm.append($('<li>description</li>'));
+				elm.append($('<li></li>').append(desc));
+				elm.append($('<li></li>').append(done));
+				elm.append($('<li></li>').append(cancel));
+				lis = $('li',elm).css({'list-style-type':'none','display':'inline',
+					'float':'left','padding-right':'3px'});
 				
-				//write data into columns
-				//_writeData(row,data,$this);
-    		
-				if(hiding && row.portfolio.id) {
-					_registerTableEvents($this,row);
+				// Handle the click to Add new subfolder
+				function close_() {
+					if(options.editrow) {
+						options.editrow.remove();
+						options.editrow = null;
+						if(edit) {
+							node.fadeIn(options.defaultFade);
+						}
+					}
 				}
 				
-				return row;
-			}
+				done.click(function(e) {
+					var data = {name: code.val(),
+								description:desc.val(),
+								editing: edit || false,
+								id: node.id};
+					var a = $.portfolio.action(port,'add-edit-node', data);
+					if(!a) {close_();}	
+				});
+				cancel.click(function(e) {
+					close_();
+				});
+				
+				erow.insertAfter(row).hide();
+				options.editrow = erow;
+				if(edit) {
+					code.val(node.data[field]);
+					row.hide();
+				}
+				else {
+					node.expand();
+				}
+				erow.fadeIn(options.defaultFade);
+			};
         
 			/**
 			 * Add a new folder
@@ -681,126 +580,47 @@
 				 holder[id] = el;
 			 }
 		 }
-		 
-		 /**
-		  * Preprocess portfolio headers
-		  * @param headers Object, headers to process
-		  * @return Object, preprocessed headers
-		  */
-		 function _processheaders(headers) {
-			 var nchoices = [];
-			 if(!headers.choices) {
-				 var vals = {};
-				 $.each(headers.elements, function(i,el) {
-					 vals[el.code] = i;
-				 });
-				 nchoices.push({code:"default",
-					 	 	    description:"",
-					 		    name:"Default View",
-					 		    values: vals});
-			 }
-			 else {
-				 $.each(headers.choices, function(i,v) {
-					 var vobj = {};
-					 $.each(v.values, function(j,code) {
-						 vobj[code] = j; 
-					 });
-					 v.values = vobj;
-					 nchoices.push(v);
-				 });
-			 }
-			 
-			 return {elements: headers.elements,
-				 	 choices:  nchoices};
-		 }
-		 
-		 ////////////////////////////////////////////////////////////
-		 //	BUILD ELEMENT CACHE
-		 ////////////////////////////////////////////////////////////
-		 function _buildCache($this) {
-			 log("Building element's cache.");
-			 var options  = $this.options;
-			 var headers  = options.header_columns;
-			 var colcache = {};
-			 options.colcache = colcache;
-				
-			 $.each(headers, function(i,v) {
-				 colcache[v.code] = $('.'+v.classname,$this);
-			 });
-		 }
-		
-	 	/**
-	 	 * Add data to portfolio object table
-	 	 * 
-	 	 * @param $this, portfolio object
-	 	 */
-	 	function _finaliseLoad($this)  {
-	 		 var options = $this[0].options;
-	 		
-	 		 if(options.tablesorter) {
-	 			var tblopts   = {};
-		 		 tblopts.debug = debug;
-		 		 $.each(options.tableoptions, function(key, param) {
-		 			 tblopts[key] = typeof param == "function" ? param() : param;
-		 		 });
-	 			 var tbl = $('table',$this);
-	 			 tbl.tablesorter(tblopts);
-	 		 }
-		
-	 		 // Create the column cache
-	 		 _buildCache($this);
-	 		 $this.changeView();
-	 		_registerTableEvents($this);
-	 		$('tbody',$this).fadeIn(options.defaultFade);
-	 	}
 	 
 	 	/**
-	 	 * Send request to server
+	 	 * Send requests (actions) to server
 	 	 * 
 	 	 * @param $this	portfolio object
+	 	 * @param a Object action
 	 	 */
-	 	function _request($this, a)  {
+	 	function _request($this, a, data)  {
 	 		var options  = $this[0].options;
-	 		var url 	 = options.url;
+	 		var data	 = data || {};
+	 		var url 	 = a.url ? a.url : options.url;
 	 		if(!url)  {return;}
-	 		log("Preparing to send ajax request to " + url);
+	 		log("Sending ajax request " + a.name + " to " + url);
 	 		var params   = {
-	 			timestamp: +new Date()
+	 			timestamp: +new Date(),
+	 			action: a.name
 	 		};
-	 		if(a) {
-	 			params.action = a.name;
-	 		}
 	 		$.each(options.requestParams, function(key, param) {
 	 			params[key] = typeof param == "function" ? param() : param;
-	 		}); 
+	 		});
+	 		$.each(data, function(key,param) {
+	 			params[key] = param;
+	 		});
+	 		$this.trigger(a.name+"-start",$this);
 	 		options.startLoading($this);
 	 		$.ajax({url: url,
 				type: options.requestMethod,
 				data: $.param(params),
 				dataType: options.responcetype,
 				success: function(data) {
-	 				if(a) {
+	 				log("Got the response from request " + a.name + ". Parsing data.");
+	 				try {
 	 					a.success($this,data);
 	 				}
-	 				else {
-						log("Got the response from server. Parsing data.");
-						var ok = true;
-						if(options.parse)  {
-							try {
-								data = options.parse(data,$this);
-							}
-							catch(e) {
-								ok = false;
-								log("Failed to parse data. " + e);
-							}
-						}
-						options.stopLoading($this);
-						if(ok)  {
-							_finaliseLoad($this,data);
-						}
+	 				catch(e) {
+	 					log("Failed to parse " + a.name + " data. " + e);
 	 				}
+	 				$this.trigger(a.name+"-end",$this);
+					options.stopLoading($this);
 				}
-				});
+			});
 	 	}
 	 
 	 	/**
@@ -818,6 +638,7 @@
 		function _initialize(urlOrData, options_)  {
 			var isUrl  = typeof urlOrData == "string";
 			var $this = $(this);
+			var elem  = $this[0];
 				
 			var options = {
 					url: isUrl ? urlOrData : null,
@@ -826,82 +647,53 @@
 					htmls: {},
 					frozen: false,
 					editrow: null,
+					cacheview: {},
+					displays: {},
 					hideFloating: function() {
 						$.each(this.floatingPanels, function(k,v) {
 							v.hide();
 						});
 					}
 			};
+			options["log"] = log;
 				
 			$.extend(true, options, $.portfolio.defaults);
 			$.extend(true, options, options_);
-			$this[0].options = options; // options
-			$this[0].views   = {};		// The cache view
+			elem.options = options;
 			$this.addClass(options.holderClass);
 			$this.fadeOut(options.defaultFade).html("");
-				
+			
+			// Create the main portfoilio table
+			var tbl = $('<table></table>').attr({'cellspacing':'1'}).addClass(options.tableClass);
+			options.ptable = {
+					table: tbl,
+					thead: $('<thead></thead>').appendTo(tbl),
+					tbody: $('<tbody></tbody>').appendTo(tbl)
+				};
+		
 			if($.portfolio.paginate) {
 				$.portfolio.paginate($this);
 			}
+				
+			$.each(floatingPanels, function(k,v) {
+    			log('Registering floating panel '+k);
+    			var p = v.register($this);
+    			if(p) {
+    				options.floatingPanels[k] = p;
+    			}
+    		});
 			
-			/*
-			// Loop over coluns and create the table headers
-			$.each(options.header_columns, function(i,c) {
-					var fo = parsers[c.formatter];
-					c.parser = fo ? fo : defparser;
-					//c.classname = options.columnClass(c.code);
-					c.classname = options.columnClass(i+'');
-					options.htmls.headrow.append($(document.createElement('th'))
-							.html(c.name ? c.name : c.code)
-							.addClass(c.classname));
-			});
-			log("Created " + options.header_columns.length + " table headers");
-			*/
-			
-			// API
-			$this.currentView = function() {
-				var i = parseInt(this.options.htmls.displays.val(),10);
-				return this.options.header_choices[i].values;
-			};
-				
-			$this.changeView = function() {
-				var v = this.currentView();
-				this.showColumns(v);
-			};
-				
-			$this.clearselected = function() {
-				this.options.hideFloating();
-				var rcm = $this.options.rightClickMenu;
-				$('.'+rcm.selectedClass,this).removeClass(rcm.selectedClass);
-			};
-				
-			$this.showColumns = function(codelist) {
-				$.each(this.options.colcache, function(code, cache) {
-					 var p = codelist[code];
-					 if(p == null) {
-						 cache.hide();
-					 }
-					 else {
-						 cache.show();
-					 }
-				});
-			};
-				
-			$this.log = log;
-				
-			// First build of the cache and set the first view
-			//_buildCache($this);
-			//$this.changeView();
-				
-			_registerFloating($this);
 			_registerTools($this,options.htmls.menubar);
 			_registerEvents($this);
 			$this.fadeIn(options.defaultFade);
-				
-			if(options.autoload) {
-				$.portfolio.loadData($this);
-			}
-				
+			
+			$.each(actions, function(n,a) {
+				if(typeof a.registerevents == "function") {
+					a.registerevents($this);
+				}
+			});
+			
+			$.portfolio.action($this, function(a) {return a.autoload;});	
 			return $this;
 		}
 		
@@ -910,8 +702,8 @@
 		//	API FUNCTIONS
 		///////////////////////////////////////////////////
 		this.paginate		 	 = null;
+		this.editrow			 = _editrow;
 		this.loadData    		 = _request;
-		this.createNode 		 = _createNode;
 		this.createNewRow		 = _createNewRow;
 		this.addFolder			 = _addFolder;
 		this.addNewFolder   	 = _addNewFolder;
@@ -933,15 +725,116 @@
 		this.debug		   		 = function(){return debug;};
 		this.setdebug		 	 = function(v){debug = v;};
 		
-		this.addAction = function(action) {
-			actions[action.name] = action;
+		/**
+		 * Clear the portfolio element
+		 */
+		this.clear = function(port) {
+			var options = port[0];
+			options.tree = {};
+			options.cacheview = {};
+			options.loaded = false;
 		}
 		
-		this.action = function($this, name) {
-			var a = actions[name];
-			if(a) {
-				_request($this,a);
+		this.createNode = function(parent, data, $this, ct) {
+			var ctag    = ct ? ct : 'td';
+			return new $.portfolioNode({"ctag":ctag},parent,data,$this,log);
+		};
+		
+		this.get_row = function(elem) {
+			var row = $(elem).parents('tr');
+			if(row.length) {
+				return row[0];
 			}
+			else {return null;}
+		}
+		
+		this.get_node = function(elem) {
+			var html = this.get_row(elem)
+			if(html) {
+				return html.node;
+			}
+		};
+		
+		/**
+		 * Utility function which returns an array of fields displayed in the portfolio table
+		 * 
+		 * @param port jQuery portfolio object
+		 * @return array of fields
+		 */
+		this.fields = function(port) {
+			var view = this.get_view(port);
+			return port[0].options.displays[view];
+		};
+		
+		/**
+		 * Render new portfolio display if not available, otherwise
+		 * render what is avilable in the cache
+		 */
+		this.display = function(el, view, fields) {
+			var port      = $(el);
+			var options   = port[0].options;
+			var view_data = options.cacheview[view];
+			var thead	  = options.ptable.thead;
+			var tbody     = options.ptable.tbody;
+			
+			if(!view_data) {
+				var  display_node = $.portfolio.display_node;
+				var _header = '<tr>';
+				$.each(fields,function(i,name) {
+					_header += '<th>'+name+'</th>';
+				});
+				_header += '</tr>';
+				
+				options.root.newview(view, fields,tbody);
+				
+				view_data = {body: tbody.html(),
+							 header: _header};
+				options.cacheview[view] = view_data;
+				thead.html(view_data.header);
+			}
+			else {
+				thead.html(view_data.header);
+				tbody.html(view_data.body);
+			}
+			_registerTableEvents(port);
+		};
+		
+		/**
+		 * Add new action to the portfolio. Action are interaction with the server via AjAX
+		 */
+		this.addAction = function(action) {
+			actions[action.name] = action;
+		};
+		
+		this.rcmenu = [];
+			
+		/**
+		 * Perform a remote action on the server
+		 * 
+		 * @param $this - jQuery portfolio object
+		 * @param name - String action name
+		 * @param data - Object extra parameters/data to send to server
+		 * @return the number of action performed
+		 */
+		this.action = function($this, name, data) {
+			if(typeof name == "function") {
+				var N = 0;
+				$.each(actions, function(n,a) {
+					if(name(a)) {
+						N += 1;
+						_request($this,a,data);
+					}
+				});
+				return N;
+			}
+			else if(name) {
+				var a = actions[name];
+				if(a) {
+					_request($this,a,data);
+					return 1;
+				}
+			}
+			return 0;
 		}
 		
 	}
@@ -957,7 +850,63 @@
 	});
 	
 	
+	$.portfolio.displayview = function(event,el) {
+		var $this = $(el);
+		var options = el.options;
+		if(options.loaded) {return;}
+		var view = $.portfolio.get_view($this);
+		if(view) {
+			var fields = options.displays[view];
+			if(fields) {
+				options.log("displaying view " + view);
+				options.loaded = true;
+				$.portfolio.display(el,view,fields);
+			}
+		}
+	};
 	
+	
+	/**
+	 * Action for loading portfolios.
+	 * It creates the root node and the portfoli tree
+	 */
+	$.portfolio.addAction({
+		name: 'load',
+		autoload: true,
+		success: function(port,data) {
+			var obj		 = port[0];
+			var root 	 = data;
+			var options  = obj.options;
+			var log		 = options.log;
+			var tree	 = {};
+			options.tree = tree;
+			make		 = $.portfolio.createNode;
+			var count	 = 0;
+			
+			function parsePortfolioData(el, parent)  {
+				count  += 1
+				var node = make(parent, el, port);
+				if(!node.id) {
+					node.id = 'id-' + count;
+				}
+				tree[node.id] = node;
+				log("Added new entry "+node.id+" to portfolio");
+				if(el.positions) {
+					$.each(el.positions, function(i,cid) {
+						parsePortfolioData(cid,node);
+					});
+				}
+				return node;
+			}
+			options.root = parsePortfolioData(root);
+		},
+		registerevents: function(port) {
+			port.bind("load-start",function(event,el) {
+				$.portfolio.clear($(el));
+			});
+			port.bind("load-end",$.portfolio.displayview);
+		}
+	});
 	
 	
 	
@@ -968,39 +917,15 @@
 	 * @param	options_	Object,			   	  	Options
 	 * @param	parent_ 	portfolioNode or null	The parent Node
 	 * @param	el 			Object					Data element used to create the portfolio node
-	 * @parms   $this		Object					The jquery portfolio holding the node
+	 * @parms   port		Object					The jquery portfolio holding the node
 	 */
-	$.fn.portfolioNode = function(options_, parent_, el, $this) {
-		var holder    = this;
-		var _colfirst = $($('td',this)[0]);
-		var _label    = null;
-		var options   = options_;
-		var _rowdict  = parent_ ? parent_.rowdict : {};
-		var rightMenu = null;
+	$.portfolioNode = function(options_, parent_, el, port, log) {
+		var me		   = this;
+		var options	   = port[0].options;
+		var noptions   = options_;
+		var tree       = options.tree;
+		var rightMenu  = null;
 		var elemRightSelected = null;
-		
-		function log(s) {
-			if(options.debug) {
-				if (typeof console != "undefined" && typeof console.debug != "undefined") {
-					console.log(s);
-				} else {
-					alert(s);
-				}
-			}
-		}
-		
-		var _portfolio = {
-			port:	  $this,
-			parent:   parent_,
-			tree:	  {},
-			level:	  null,
-			folder:   el.folder ? el.folder : false,
-			movable:  el.movable ? el.movable : false,
-			editable: el.editable ? el.editable : false,
-			canaddto: el.canaddto ? el.canaddto : false,
-			id:		  el.id ? el.id : null,
-			code:	  el.code ? el.code : ''
-		};
 		
 		function removeMenu() {
 			if(rightMenu) {
@@ -1016,8 +941,8 @@
 			return (level-1)*options.firstColumnIndent + 5;
 		}
     	
-		function _level(row,l) {
-			var p = row.portfolio.parent;
+		function _level(node,l) {
+			var p = node.parent;
 			if(p) {
 				return _level(p,l+1);
 			}
@@ -1026,84 +951,96 @@
 			}
 		}
 		
-		function _collapse(node, secondary) {
-			if(node.portfolio.folder) {
-				node.removeClass(options.expandClass);
-				$.each(node.portfolio.tree, function(i,child) {
-					_collapse(child,true);
-					if(secondary) {
-						child.hide();
-					}
-					else {
-						//child.slideUp(options.defaultFade);
-						child.hide();
-					}
-				});
-			}
+		function _hide(node) {
+			$.each(node.rows, function(name,row) {
+				row.hide();
+			});
+		}
+		
+		function _show(node) {
+			$.each(node.rows, function(name,row) {
+				row.show();
+			});
+		}
+		
+		function _collapse(node) {
+			if(!node.folder) {return;}
+			node.expanded = false;
+			$.each(node.children, function(i,child) {
+				child.hide();
+			});
+			$.each(node.rows, function(name,row) {
+				row.removeClass(options.expandClass);
+			});
 		}
 		
 		function _expand(node) {
-			if(node.portfolio.folder) {
-				node.show();
-				node.addClass(options.expandClass);
-				$.each(node.portfolio.tree, function(i,child) {
-					//child.slideDown(options.defaultFade).show();
-					child.show();
-				});
-			}
+			if(!node.folder) {return;}
+			node.expanded = true;
+			$.each(node.rows, function(name,row) {
+				row.show();
+				row.addClass(options.expandClass);
+			});
+			$.each(node.children, function(i,child) {
+				child.show();
+			});
 		}
 		
-		function _toggleBranch() {
-    		if(this.hasClass(options.expandClass)) {
-    			_collapse(this);
-    		}
-    		else {
-    			_expand(this);
-    		}
-    	}
+		/**
+		 * Create a new node row for a view
+		 * 
+		 * @param fiels Array of field to display
+		 * @body jQuery object for the tbody of the portfolio table
+		 * @level recursive node level
+		 */
+		function _new_row(node, view, fields, body, level, hide) {
+			var lev     = level || 1;
+			node.level  = lev;
+			row 	    = $('<tr></tr>').attr({'id':node.id}).css({'display':'table-row'});
+			row[0].node = node;
+			if(hide) {row.hide();}
+			node.rows[view]   = row;
+			$.each(fields,function(i,field) {
+				row.append(node.get(i,field));
+			});
+			body.append(row);
+			$.each(node.children, function(id,child) {
+				_new_row(child, view, fields, body, lev+1, true);
+			});
+		};
 		
-    	/**
-    	 * Initialize node
-    	 * @return null
-    	 */
-		function _init()  {
-			var id = _portfolio.id;
-			var pa = _portfolio.parent;
-			
-			holder.rowdict  = _rowdict;
-			if(id) {
-				_rowdict[id] = holder;
-				holder.attr('id',id);
-				if(pa) {
-					log("Added new entry "+id+" to portfolio "+pa.portfolio.id);
-					pa.portfolio.tree[id] = holder;
-				}
-				else {
-					log("Added root entry "+id+" to portfolio");
-				}
+		/**
+		 * Obtain html string for a given key and position
+		 * 
+		 * @param i integer indicating column position
+		 * @param key String indicating column header name
+		 * @return String
+		 */
+		function _get(i,key) {
+			var val   = this.data[key] || '';
+			var c = $('<td></td>');
+			if(i) {
+				return c.html(''+val);
 			}
-				
-			_label = $(document.createElement('span'))
-					.html(_colfirst.html()).addClass(options.labelClass);
-			if(el.editable | el.canaddto) {
-				_label.addClass(options.editableClass);
+			c.addClass('first');
+			var padd    = paddfirst(this.level);
+			var options = this.options;
+			var label = $('<span></span>').html(val).addClass(options.labelClass);
+			if(this.editable | this.canaddto) {
+				label.addClass(options.editableClass);
 			}
-			if(el.movable) {
-				_label.addClass(options.movableClass);
+			if(this.movable) {
+				label.addClass(options.movableClass);
 			}
-			
-			_colfirst.html("");
-			if(el.folder) {
-				_label.addClass(options.folderClass);
-				_colfirst.append($(document.createElement('span'))
-						.addClass(options.togglerClass)
+			if(this.folder) {
+				label.addClass(options.folderClass);
+				c.append($('<span></span>').addClass(options.togglerClass)
 						.css({"padding-left":options.firstColumnIndent+"px"}));
 			}
-			else if(id) {
-				_label.addClass(options.positionClass);
+			else {
+				label.addClass(options.positionClass);
 			}
-			
-			_colfirst.append(_label);
+			return c.append(label).css({'padding-left': padd+'px'});
 		}
 		
 		function _addEvents(el)  {
@@ -1158,49 +1095,40 @@
 			if(parent) {
 				log("Moved node "+id+" from parent "+parent.portfolio.id+" to "+target.portfolio.id);}
 			return this;
-		}
-		
-		// Initialize
-		_init();
-		
+		}		
 		
 		// API
-		this.portfolio     = _portfolio;
-		this.label         = _label;
-		this.colfirst      = _colfirst;
-		this.removeNode    = _removeNode;
-		this.toggleBranch  = _toggleBranch;
-		this.setparent     = _setparent;
+		this.options		= options;
+		this.portfolio  	= port;
+		this.children		= {};
+		this.parent			= parent_,
+		this.level			= _level(this,1);
+		this.data			= el;
+		this.folder			= el.folder ? el.folder : false;
+		this.movable    	= el.movable ? el.movable : false;
+		this.editable		= el.editable ? el.editable : false;
+		this.canaddto		= el.canaddto ? el.canaddto : false;
+		this.id				= el.id ? el.id : null;
+		this.rows			= {};
+		this.expanded		= false;
 		
-		/**
-		 * Utility function
-		 */
-		this.refresh   = function(pnode) {
-			this.removeClass(options.expandClass);
-			if(pnode) {
-				this.hide().insertAfter(pnode);
-			}
-			var lev  = _level(this,1);
-			this.portfolio.level = lev;
-    		var padd = paddfirst(lev);
-    		this.colfirst.css({'padding-left': padd+'px'});
-    		var node = this;
-    		if(this.portfolio.folder) {
-    			$.each(node.portfolio.tree, function(i,child) {
-    				node = child.refresh(node);
-    			});
-    		}
-    		return node;
-		};
+		this.newview		= function(view, fields, body) {_new_row(this, view, fields, body); return this;}
+		this.get	      	= _get;
+		this.removeNode    	= _removeNode;
+		this.toggleBranch  	= function(){if(this.expanded) {_collapse(this);} else {_expand(this);}};
+		this.expand			= function(){_expand(this);};
+		this.show			= function(){_show(this);}
+		this.hide			= function(){_hide(this);}
+		this.setparent     	= _setparent;
 		
 		this.expand = function() {
 			_expand(this);
 			return this;
 		};
 		
-		this.refresh();
-		
-		return this;
+		if(this.parent) {
+			this.parent.children[this.id] = this;
+		}
 	};
 	
 	
@@ -1223,43 +1151,6 @@
 		$('tbody',$this).html(html);
 	};
 	
-	/**
-	 * Parse data arriving from server and build a new portfolio.
-	 * 
-	 * @param data, object, data from server
-	 * @param $this, portfolio jquery object
-	 */
-	$.parsePortfolio = function(data, $this)  {
-		data = data.result;
-		var options  = $this.options;
-		var elements = data.elements;
-		var root	 = data.root;
-		var table    = $('table.'+options.tableClass,$this);
-		var thead    = $('thead',table);
-		
-		$('tbody',table).remove();
-		var bdy  	 = $('<tbody></tbody>').insertAfter(thead).hide();
-		
-		function parsePortfolioData(id,parent)  {
-			var child;
-			var el  = elements[id];
-			var row = $.portfolio.createNode(parent, el, $this).hide();
-			row.appendTo(bdy);
-			if(el.tree) {
-				$.each(el.tree, function(i,cid) {
-					parsePortfolioData(cid,row);
-				});
-			}
-			return row;
-		}
-		
-		$this.ptree   = parsePortfolioData(root).expand();
-	};
-	
-	
-	
-	
-	
 	
 	var portf = $.portfolio;
 	
@@ -1277,16 +1168,10 @@
 	portf.addFloatingPanel({
 		id: "rclkmenu",
 		register: function($this) {
-			// Create right click menu
-			var rcm = $this[0].options.rightClickMenu;
-			if(rcm) {
-				var rclkMenu = $(document.createElement('div')).hide()
-					.addClass(rcm.menuClass).appendTo($this);
-				return rclkMenu.rightClickMenu($this,rcm);
-			}
-			else {
-				return null;
-			}
+			var options = $this[0].options;
+			var acts = $.portfolio.rcmenu;
+			if(!acts.length) {return null;}
+			return $('<div></div>').rightClickMenu($this, {actions: acts});
 		}
 	});
 	
@@ -1296,15 +1181,6 @@
 	//
 	//	This events are registered when the portfolio plugin is created
 	//////////////////////////////////////////////////////////////////////
-	
-	portf.addEvent({
-		id:"clear",
-		register: function($this) {
-			$('body').click(function(e) {
-				$this.clearselected();
-			});
-		}
-	});
 	
 	portf.addEvent({
 		id: "display-fields",
@@ -1375,8 +1251,10 @@
 			if(!elems){elems = $this;}
 			$('.'+options.togglerClass,elems).click(function() {
 				var html = $(this).parents('tr')[0];
-				var node = $this.ptree.rowdict[html.id];
-				node.toggleBranch();
+				var node = options.tree[html.id];
+				if(node) {
+					node.toggleBranch();
+				}
 			});
 		}
 	});
@@ -1396,11 +1274,24 @@
 	});
 	
 	
+	portf.addTableEvent({
+		id: "rightClickMenu",
+		register: function($this,elems) {
+			var options = $this[0].options;
+			if(!elems){elems = $this;}
+			var pannel    = options.floatingPanels.rclkmenu;
+			if(!pannel) {return;}
+			var pels = $('span.label',elems);
+			pannel.register(pels);
+		}
+	});
+	
+	
 	/**
 	 * Register the right-click menu, and the drag and drop functionality
 	 */
 	portf.addTableEvent({
-		id: "rightClickMenu-Drap-Drop",
+		id: "Drag-Drop",
 		register: function($this,elems) {
 			var options = $this[0].options;
 			if(!elems){elems = $this;}
@@ -1409,21 +1300,6 @@
 			
 			var editables = $('.'+options.editableClass,elems);
 			var movables  = $('.'+options.movableClass,elems);
-			
-			editables.rightMouseDown(function(e) {
-				$this.clearselected();
-				$(this).addClass(options.rightClickMenu.selectedClass);					
-			})
-			.rightMouseUp(function(e) {
-				var elem = $(this);
-				var html = elem.parents('tr')[0];
-		        var node = $this.ptree.rowdict[html.id];
-		        var pos  = this.offset();
-		        var p    = options.floatingPanels.rclkmenu;
-		        if(p) {
-		        	p.display(pos.left,pos.top,node);
-		        }
-			});
 			
 			// Movable event on movable rows
 			movables.draggable({

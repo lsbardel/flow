@@ -33,7 +33,7 @@ div.portfolio-menubar p {
 
 table.portfoliotable {
 	font-family:arial;
-	background-color: #CDCDCD;
+	background-color: transparent;
 	margin:10px 0pt 15px;
 	font-size: 8pt;
 	width: 100%;
@@ -135,40 +135,6 @@ div.portfolio-panel .portfolio-menubar a {
 }
 .portfolio-menubar .tools-resizer.reduce {
 	background-image:  url(control_fastforward.png);
-}
-
-/* Right Click Menu 
- * -------------------------------------------------------------------------- */
-.rclk {
-	background: rgb(220,220,220);
-}
-.portfolio-rightClickMenu {
-	position: absolute;
-	overflow: hidden;
-	background-color: rgb(204,217,255);
-	padding: 3px 0;
-	border: 1px solid rgb(51,102,255);
-}
-.portfolio-rightClickMenu ul {
-	float: left;
-	width: 100%;
-}
-.portfolio-rightClickMenu li {
-	float: left;
-	width: 100%;
-	clear: right;
-}
-.portfolio-rightClickMenu li a,
-.portfolio-rightClickMenu li a:visited,
-.portfolio-rightClickMenu li a:hover {
-	display: block;
-	background-color: rgb(204,217,255);
-	cursor: pointer;
-	width: 100%;
-	padding: 2px 20px 2px 10px;
-}
-.portfolio-rightClickMenu li a:hover {
-	background-color: rgb(143,171,255);
 }
 
 /* Hover */
