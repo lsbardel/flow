@@ -16,6 +16,15 @@ from jflow.core.dates import date2yyyymmdd
 
 
 
+class portfolio_generator(object):
+    
+    def __init__(self):
+        '''Utility class for generating portfolios
+        '''
+        pass
+
+
+
 
 class Root(LoggingClass):
     keyprefix = 'jflow-finins'
@@ -27,7 +36,7 @@ class Root(LoggingClass):
     
     #__________________________________________________ API
     def get(self, id):
-        '''Obtain portfolio or instrument from id and date. It check cache first, otherwise build and cache it.
+        '''Obtain portfolio or instrument from id. It check cache first, otherwise build and cache it.
         Returns an instance of :ref:`FinInsBase` or None'''
         el = cache.get(id)
         if not el:
@@ -75,6 +84,7 @@ class Root(LoggingClass):
         raise NotImplementedError('Cannot obtain id for %s' % obj)
     
     def instobjmapper(self, obj):
+        '''Given an object *obj* return a dictionary containing information about the object'''
         raise NotImplementedError('Cannot obtain instrument information form %s' % obj)
     
     def _positions(self, portfolio):
@@ -92,7 +102,7 @@ class Root(LoggingClass):
         '''Given a portfolio instance and a generator of data, load the portfolio positions:
         
             * *portfolio* Porfolio instance
-            * *gendata* iterable on positions
+            * *gendata* iterable on positions/subportfolios
         '''
         skey    = portfolio.setkey()
         cache.delete(skey)

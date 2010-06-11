@@ -29,14 +29,18 @@ class FinInsBase(object):
     notavailable  = '#N/A'
     
     def __init__(self, id = None, name = '', description = '', ccy = None,
-                 editable = False, canaddto = False, movable = False):
+                 editable = False, canaddto = False, movable = False,
+                 group = None, user = None):
         self.id = str(id)
         self.name = str(name)
         self.description = str(description)
-        self.ccy = str(ccy).upper()
-        self.editable = editable
-        self.canaddto = canaddto
-        self.movable  = movable
+        self.ccy         = str(ccy).upper()
+        self.editable    = editable
+        self.canaddto    = canaddto
+        self.movable     = movable
+        self.folder      = False
+        self.group       = group
+        self.user        = user
         
     def __repr__(self):
         return self.name
@@ -51,7 +55,8 @@ class FinInsBase(object):
         return '%s:%s' % (self.__class__.__name__.lower(),date2yyyymmdd(self.dt))
         
     def key(self):
-        return '%s:#%s' % (self.prekey(),self.id)
+        return self.id
+        #return '%s:#%s' % (self.prekey(),self.id)
     
     def namekey(self):
         return '%s:$%s' % (self.prekey(),self.name)
@@ -62,6 +67,9 @@ class FinInsBase(object):
     
     def tojson(self):
         return json.dumps(self.todict(), cls = JSONRPCEncoder)
+    
+    def add_new_view(self, *args, **kwargs):
+        raise NotImplementedError("Cannot add new view.")
     
 
 class FinDated(FinInsBase):
@@ -80,13 +88,14 @@ class Portfolio(FinDated):
     def __init__(self, pid = None, **kwargs):
         self.pid = pid
         super(Portfolio,self).__init__(**kwargs)
+        self.folder   = True
         
     def get(self, id, default = None):
         code = '%s:position:$%s' % (self.key(),id)
         return cache.get(code.lower(),default)
     
     def setkey(self):
-        return '%s:positions' % self.namekey()
+        return '%s:positions' % self.key()
     
     def positions(self):
         '''Portfolio positions'''
@@ -115,7 +124,6 @@ class Portfolio(FinDated):
     def todict(self):
         d = super(Portfolio,self).todict()
         ps = []
-        d['folder'] = True
         d['positions'] = ps
         for position in self.positions():
             ps.append(position.todict())

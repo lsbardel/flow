@@ -2,6 +2,7 @@
 portfolio data.
 '''
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from jflow.core import finins
@@ -10,19 +11,100 @@ from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 from jflow.utils.anyjson import json
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, UserViewDefault
-from jflow.db.trade.models import PortfolioView, PortfolioDisplay
+from jflow.db.trade.models import Portfolio, Trader, PortfolioView, PortfolioDisplay
 
 
-class portfolio_view(finins.Portfolio):
+class AuthenticationError(Exception):
+    pass
+
+
+def get_user(user, force = True):
+    try:
+        if isinstance(user,User):
+            return user
+        elif isinstance(user,Trader):
+            return user.user
+        else:
+            return User.objects.get(username = str(user))
+    except:
+        if force:
+            if not user:
+                raise ValueError('User not available')
+            else:
+                raise ValueError('User %s not available' % user)
+        else:
+            return None
     
-    def __init__(self, fund_id, **kwargs):
-        self.fund_id = fund_id
-        super(portfolio_view,self).__init__(**kwargs)
-        
-    def get_data(self, obj):
-        '''Build portfolio view data from database
-        '''
+
+
+class FinPortfolio(finins.Portfolio):
+    
+    def __init__(self, **kwargs):
+        super(FinPortfolio,self).__init_(**kwargs)
+    
+    def can_modify(self, user):
         pass
+        
+    def add_new_view(self, user, name, description = '', default = False):
+        if not self.can_modify(user):
+            raise AuthenticationError()
+
+class fund_generator(finins.portfolio_generator):
+    
+    def __init__(self, fund, dt):
+        self.fund     = fund
+        self.dt       = dt
+        self.children = fund.children.all()
+        self.canaddto = not self.children
+            
+    def __call__(self):
+        if self.children:
+            for child in self.children:
+                id = finins.get_object_id(child,self.dt)
+                yield finins.get(id)
+        
+        else:
+            positions = Position.objects.for_fund(dt = self.dt, fund = self.fund)
+            trades = ManualTrade.objects.for_fund(self.fund, dt = self.dt)
+            for position in positions:
+                yield position
+            for trade in trades:
+                yield trade
+            
+
+class portfolio_view_generator(fund_generator):
+    '''Create a new Portfolio from a portfolio view object.
+    A portfolio_view set as default without a user, is the auto-generated view.'''
+    
+    def __init__(self, view, dt, fund = None):
+        fund = fund or view.fund
+        super(portfolio_view_generator,self).__init__(fund, dt)
+        self.view = view
+        self.fid  = finins.get_object_id(self.fund,dt)
+        self.ff   = finins.get(self.fid)
+        
+    def __call__(self):
+        if self.children:
+            for child in children:
+                g = portfolio_view_generator(self.view,self.dt,child)
+                yield g()
+        
+        portfolios = Portfolio.objects.filter(view = self.view, fund = self.fund, parent = None)
+        pdict = dict((p.id,p) for p in self.ff.positions())
+        for portfolio in portfolios:
+            yield sub_portfolio_generator(portfolio, pdict)
+        
+        
+class sub_portfolio_generator(finins.portfolio_generator):
+    
+    def __call__(self, portfolio, pdict):
+        for child in portfolio.children.all():
+            yield self.portfolio_generator(child, pdict)
+        
+        for position in portfolio.positions.all():
+            pid = finins.get_object_id(position,self.dt)
+            yield pdict.pop(pid,None)
+            
 
 
 def get_object_from_id(id):
@@ -40,29 +122,15 @@ def get_object_from_id(id):
         except:
             pass
     return obj,dt
-
-
-def default_view(fund, user):
-    root = fund.root()
-    if user.is_authenticated():
-        view = UserViewDefault.objects.filter(user = user, view__fund = root)
-        if view:
-            return view[0]
-    views = PortfolioView.objects.filter(fund = root)
-    if not views:
-        view = PortfolioView(fund = fund, default = True, name = 'default')
-        view.save()
-        return view
-    else:
-        if user.is_authenticated():
-            uviews = views.filter(user = user)
-            if uviews:
-                return uview[0]
-        uviews = views.filter(default = True)
-        if uviews:
-            return uviews[0]
-        else:
-            return views[0]
+    
+    
+def add_new_portfolio_view(id, user):
+    if not user or not user.is_authenticated():
+        raise ValueError("User not specified. Cannot create portfolio view")
+    p = finins.get(id)
+    
+    
+    
     
 
 def team_portfolio_positions(dt = None, fund = None, team = None, logger = None):
@@ -99,6 +167,7 @@ def team_portfolio_positions(dt = None, fund = None, team = None, logger = None)
 
 class FinRoot(finins.Root):
     '''Root class for financial instruments'''
+    make_portfolio = FinPortfolio
     
     def _get(self, id):
         '''Create portfolio data from id'''
@@ -110,28 +179,24 @@ class FinRoot(finins.Root):
             self._load_positions(p,data)
             return p
         elif isinstance(obj,Fund):
-            if obj.parent:
-                p = self.make_portfolio(name = obj.code,
-                                        id = id,
-                                        dt = dt,
-                                        description = obj.description,
-                                        canaddto = not obj.children.count(),
-                                        ccy = obj.curncy)
-            data = team_portfolio_positions(logger = self.logger, fund = obj, dt = dt)
-            self._load_positions(p,data)
+            gen = fund_generator(obj,dt)
+            p = self.make_portfolio(name = obj.code,
+                                    id = id,
+                                    dt = dt,
+                                    description = obj.description,
+                                    canaddto = gen.canaddto,
+                                    ccy = obj.curncy)
+            self._load_positions(p,gen())
             return p
         
         if isinstance(obj,PortfolioView):
-            fund = obj.fund
-            fid  = self.get_object_id(fund,dt)
-            ff   = self.get(fid)
-            p    = portfolio_view(name = fund.code,
-                                  fund_id = fid,
-                                  id = id,
-                                  dt = dt,
-                                  description = obj.description)
-            data = p.get_data(obj)
-            self._load_positions(p,data)
+            gen  = portfolio_view_generator(obj, dt)
+            fund = gen.fund
+            p    = self.make_portfolio(name = fund.code,
+                                       id = id,
+                                       dt = dt,
+                                       description = fund.description)
+            self._load_positions(p,gen())
             return p
         
     def _get_position_value(self, position, fi, dt):
@@ -232,11 +297,28 @@ class FinRoot(finins.Root):
         '''
         pass
     
-    def get_display_object(self, instance, user):
-        if isinstance(instance,Fund):
-            return default_view(instance,user)
+    def default_view(self, fund, user):
+        '''For a given fund and user get the default view. If not available, create a new one'''
+        root = fund.root()
+        if user and user.is_authenticated():
+            view = UserViewDefault.objects.filter(user = user, view__fund = root)
+            if view:
+                return view[0]
+        views = PortfolioView.objects.filter(fund = root)
+        if not views:
+            view = PortfolioView(fund = fund, default = True, name = 'default')
+            view.save()
+            return view
         else:
-            return instance
+            if user.is_authenticated():
+                uviews = views.filter(user = user)
+                if uviews:
+                    return uview[0]
+            uviews = views.filter(default = True)
+            if uviews:
+                return uviews[0]
+            else:
+                return views[0]
 
 
     def do_action(self, request, action, id, data):
@@ -245,6 +327,7 @@ class FinRoot(finins.Root):
             return func(request, id, data)
         else:
             return ''
+            
         
     # ------------------------------------------------------------ JSON API ACTIONS
     
