@@ -1,7 +1,6 @@
 import datetime
 from dateutil.parser import parse as dataparse
-
-from jflow.core.finins import future_month_list, future_month_dict
+from ccy import future_month_list
 
 
 class Converter(object):

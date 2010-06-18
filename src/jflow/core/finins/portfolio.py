@@ -1,40 +1,45 @@
-import time
 from datetime import date, datetime
-
-from stdnet.main import get_cache
-from stdnet.utils import json
+from stdnet import orm
+from stdnet.contrib.timeserie.models import TimeSerieField
 
 from jflow.conf import settings
-from jflow.core.dates import date2yyyymmdd
 
-__all__ = ['cache','FinInsBase','Portfolio','FinIns','Position']
-
-
-cache = get_cache(settings.PORTFOLIO_CACHE_BACKEND or settings.CACHE_BACKEND)
-
-rdate = lambda d: time.mktime(d.timetuple())
-
-class JSONRPCEncoder(json.JSONEncoder):
-    """
-    Provide custom serializers for JSON-RPC.
-    """
-    def default(self, obj):
-        if isinstance(obj, date) or isinstance(obj, datetime):
-            return rdate(obj)
-        else:
-            raise exceptions.JSONEncodeException("%r is not JSON serializable" % (obj,))
+__all__ = ['FinInsBase','Portfolio','FinIns','Position']
 
 
-class FinInsBase(object):
-    notavailable  = '#N/A'
+class FinInsBase(orm.StdModel):
+    '''Base class for Financial Model'''
+    ccy     = orm.AtomField()
     
-    def __init__(self, id = None, name = '', description = '', ccy = None,
-                 editable = False, canaddto = False, movable = False,
-                 group = None, user = None):
-        self.id = str(id)
-        self.name = str(name)
+    
+class FinIns(FinInsBase):
+    '''Financial instrument base class                
+    '''
+    name = orm.AtomField(unique = True)
+    data = TimeSerieField()
+        
+    def __init__(self, multiplier = 1.0, **kwargs):
+        self.multiplier    = multiplier
+        super(FinIns,self).__init__(**kwargs)
+        
+    def pv01(self):
+        '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to
+        all financial instruments'''
+        return 0
+    
+    def price_to_value(self, price, size, dt):
+        raise NotImplementedError("Cannot convert price and size to value")
+
+    
+
+class FinPositionBase(FinInsBase):
+    name = orm.AtomField()
+    dt   = orm.DateField()
+    
+    def __init__(self, description = '', editable = False,
+                 canaddto = False, movable = False,
+                 group = None, user = None, **kwargs):
         self.description = str(description)
-        self.ccy         = str(ccy).upper()
         self.editable    = editable
         self.canaddto    = canaddto
         self.movable     = movable
@@ -43,56 +48,46 @@ class FinInsBase(object):
         self.user        = user
         
     def __repr__(self):
-        return self.name
+        return '%s:%s' % (self.name,self.dt)
     
     def __str__(self):
         return self.__repr__()
     
-    def has_id(self, id):
-        return False
-    
-    def prekey(self):
-        return '%s:%s' % (self.__class__.__name__.lower(),date2yyyymmdd(self.dt))
-        
-    def key(self):
-        return self.id
-        #return '%s:#%s' % (self.prekey(),self.id)
-    
-    def namekey(self):
-        return '%s:$%s' % (self.prekey(),self.name)
-    
-    def todict(self):
-        d = self.__dict__.copy()
-        return d
-    
-    def tojson(self):
-        return json.dumps(self.todict(), cls = JSONRPCEncoder)
-    
     def add_new_view(self, *args, **kwargs):
         raise NotImplementedError("Cannot add new view.")
     
-
-class FinDated(FinInsBase):
     
-    def __init__(self, dt = None, **kwargs):
-        self.dt = dt or date.today()
-        super(FinDated,self).__init__(**kwargs)
+class Position(FinPositionBase):
+    '''Financial position::
+    
+        * *sid* security id or None. For securities this is the underlying financial instrument id.
+        * *size* size of position
+        * *value* initial value of position
+        * *dt* position date
+    '''
+    instrument = orm.ForeignKey(FinIns)
+    
+    def __init__(self, size = 1, value = 0, **kwargs):
+        self.size   = size
+        self.value  = value
+        super(Position,self).__init__(**kwargs)
         
-    def __repr__(self):
-        return '%s:%s' % (self.name,self.dt)
+    def todict(self):
+        d = super(Position,self).todict()
+        d['description'] = self.instrument.description
+        return d
 
-
-class Portfolio(FinDated):
-    '''A portfolio containing positions and portfolios'''
     
-    def __init__(self, pid = None, **kwargs):
-        self.pid = pid
+class Portfolio(FinPositionBase):
+    '''A portfolio containing positions and portfolios'''
+    team     = orm.AtomField(required = False)
+    parent   = orm.ForeignKey('self', required = False, related_name = 'children')
+    holder   = orm.ForeignKey('self', required = False, related_name = 'views')
+    position = orm.ForeignKey(Position, required = False, related_name = 'views')
+    
+    def __init__(self, **kwargs):
         super(Portfolio,self).__init__(**kwargs)
         self.folder   = True
-        
-    def get(self, id, default = None):
-        code = '%s:position:$%s' % (self.key(),id)
-        return cache.get(code.lower(),default)
     
     def setkey(self):
         return '%s:positions' % self.key()
@@ -128,49 +123,3 @@ class Portfolio(FinDated):
         for position in self.positions():
             ps.append(position.todict())
         return d
-    
-    
-class FinIns(FinInsBase):
-    '''Financial instrument base class                
-    '''    
-    def __init__(self, multiplier = 1.0, **kwargs):
-        self.multiplier    = multiplier
-        super(FinIns,self).__init__(**kwargs)
-        
-    def pv01(self):
-        '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to
-        all financial instruments'''
-        return 0
-    
-    def price_to_value(self, price, size, dt):
-        raise NotImplementedError("Cannot convert price and size to value")
- 
- 
-class Position(FinDated):
-    '''Financial position::
-    
-        * *sid* security id or None. For securities this is the underlying financial instrument id.
-        * *size* size of position
-        * *value* initial value of position
-        * *dt* position date
-    '''
-    def __init__(self, sid = None, size = 1, value = 0, **kwargs):
-        self.sid    = sid
-        self.size   = size
-        self.value  = value
-        super(Position,self).__init__(**kwargs)
-        
-    def todict(self):
-        d = super(Position,self).todict()
-        if self.sid:
-            f = cache.get(self.sid)
-            if f:
-                if not self.description:
-                    d['description'] = f.description
-        return d             
-
-    def security(self):
-        if self.sid:
-            return cache.get(self.sid)
-    
-    

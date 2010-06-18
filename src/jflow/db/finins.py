@@ -34,8 +34,37 @@ def get_user(user, force = True):
                 raise ValueError('User %s not available' % user)
         else:
             return None
-    
 
+
+def get_portfolio_object(instance, user = None):
+    if isinstance(instance,Fund):
+        return default_view(instance,user)
+    else:
+        return instance    
+
+
+def default_view(fund, user):
+    '''For a given fund and user get the default view. If not available, create a new one'''
+    root = fund.root()
+    if user and user.is_authenticated():
+        view = UserViewDefault.objects.filter(user = user, view__fund = root)
+        if view:
+            return view[0]
+    views = PortfolioView.objects.filter(fund = root)
+    if not views:
+        view = PortfolioView(fund = fund, default = True, name = 'default')
+        view.save()
+        return view
+    else:
+        if user.is_authenticated():
+            uviews = views.filter(user = user)
+            if uviews:
+                return uview[0]
+        uviews = views.filter(default = True)
+        if uviews:
+            return uviews[0]
+        else:
+            return views[0]
 
 class FinPortfolio(finins.Portfolio):
     
