@@ -1,7 +1,8 @@
 
 import os
 import packages
-os.environ['JFLOW_SETTINGS_MODULE'] = 'jflow.jfsite.jflowsettings'
+os.environ['JFLOW_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.release'
+os.environ['STDNET_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.release'
 PSETTINGS = packages.install()
 
 if not PSETTINGS.dev:

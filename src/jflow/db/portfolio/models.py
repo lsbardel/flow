@@ -116,7 +116,12 @@ class Portfolio(FinPositionBase):
                                     holder = self.holder, user = self.user,
                                     group = self.group, dt = self.dt)
             return folder.save()
+        
+    def addposition(self, pos):
+        pass
     
+class PortfoloPosition(orm.StdModel):
+    pass
 
     
 class Position(FinPositionBase):

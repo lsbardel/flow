@@ -13,7 +13,7 @@ def add_new_portfolio_view(portfolio, user, name, description = '', default = Fa
         * *description* optional description of view
         * *default* if true the view is set as default
     '''
-    return api().add_new_view(portfolio, user, name, description, default)
+    return _api().add_new_view(portfolio, user, name, description, default)
 
 
 
@@ -23,4 +23,4 @@ def get_portfolio_object(instance, user = None):
         * **instance** could be a Fund instance, or a unique id
         * **user**
     '''
-    return api().get_portfolio()
+    return _api().get_portfolio_object(instance,user)
