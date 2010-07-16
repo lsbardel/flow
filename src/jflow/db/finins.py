@@ -2,10 +2,13 @@
 portfolio data.
 '''
 import logging
+from datetime import date
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+
+import stdnet
 
 from jflow.core import finins
 from jflow.core.dates import yyyymmdd2date
@@ -13,7 +16,8 @@ from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
-from jflow.db.portfolio.models import Portfolio
+
+from jflow.db.portfolio.models import PortfolioHolder, Portfolio
 
 
 class AuthenticationError(Exception):
@@ -38,14 +42,41 @@ def get_user(user, force = True):
             return None
 
 
-def get_portfolio_object(instance, user = None):
+def get_portfolio_object(instance, user = None, dt = None):
+    '''Get a portfolio object'''
     if isinstance(instance,Portfolio):
-        if instance.holder:
-            return instance
-        else:
-            return default_view(instance,user)
-    else:
-        return get_portfolio_object(Portfolio.objects.get(id = instance),user)    
+        return default_view(instance,user)
+    elif isinstance(instance,Fund):
+        try:
+            holder = PortfolioHolder.objects.get(name = instance.code)
+        except stdnet.ObjectNotFund:
+            holder = PortfolioHolder(name  = instance.code,
+                                     group = instance.fund_holder.code,
+                                     description = instance.description,
+                                     ccy   = instance.curncy).save()
+        dt = dt or date.today()
+        portfolio = Portfolio.objects.filter(holder = holder, dt = dt)
+        if not portfolio.count():
+            children = instance.children.all()
+            if children:
+                for child in children:
+                    pass
+            else:
+                positions = instance.positions.all(dt__lte = dt)
+                if positions.count():
+                    latest_date = positions.latest().dt
+                    if latest_date < dt:
+                        portfolio = Portfolio.objects.filter(holder = holder, dt = latest_date)
+                    else:
+                        latest_date = dt
+                    if not portfolio.count():
+                        portfolio = Portfolio(holder = holder, dt = latest_date).save()
+                    positions = positions.filter(dt = latest_date)
+                    for position in positions:
+                        pass
+                    
+            
+        #return get_portfolio_object(Portfolio.objects.get(id = instance),user)    
 
 
 def default_view(fund, user):
@@ -55,27 +86,48 @@ def default_view(fund, user):
         view = UserViewDefault.objects.filter(user = user, view = root)
         if view:
             return view[0]
-    views = Portfolio.objects.filter(holder = root)
-    if not views:
-        view = root.create_view('default',user)
-        if not user:
-            build_view(view)
-        return view
+        views = root.views.filter()
+        
+        if not views:
+            view = root.create_view('default',user)
+            if not user:
+                build_view(view)
+            return view
+    # No user
     else:
-        if user.is_authenticated():
-            uviews = views.filter(user = user)
-            if uviews:
-                return uview[0]
-        uviews = views.filter(name = 'default')
+        uviews = root.views.filter(name = 'default')
         if uviews:
             return uviews[0]
         else:
-            return views[0]
+            view = root.create_view('default')
+            return build_new_view(view)
+
+
+def build_new_view(view, portfolio = None):
+    '''Build a new view based on position instrument type'''
+    portfolio = portfolio or view.portfolio
+    children = portfolio.children.all()
+    if children:
+        for child in children:
+            build_new_view(view, child)
+    else:
+        positions = list(portfolio.positions.all())
+        for pos in portfolio.positions.all():
+            type   = pos.type
+            folder = view.folders.filter(name = type)
+            if folder:
+                folder = folder[0]
+            else:
+                folder = view.addfolder(name = type)
+            folder.positions.add(pos)
+            folder.save()
+            
+    return view
 
 
 def build_view(view):
     '''Build a view based on position instrument type'''
-    positions = dict((p.id,p) for p in view.holder.positions.all())
+    positions = dict((p.id,p) for p in view.portfolio.positions.all())
     children = view.children.all()
     # First loop over children
     for child in children:

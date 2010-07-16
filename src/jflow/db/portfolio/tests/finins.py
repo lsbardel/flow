@@ -15,17 +15,17 @@ from stdnet.stdtest import TestBase
 from stdnet.utils import populate
 
 import ccy
-from jflow.db.portfolio.models import FinIns, Portfolio, Position, UserViewDefault
+from jflow.db.portfolio.models import *
 from jflow.utils.anyjson import json
 from jflow import api
 
 # Number of instruments
 NUMINSTS = 100
 GROUPS   = 3
-NUMFUNDS = 20
+NUMFUNDS = 5
 NUMDATES = 2
-MIN_POSITIONS_PER_FUND = 20
-MAX_POSITIONS_PER_FUND = 50
+MIN_POSITIONS_PER_FUND = 10
+MAX_POSITIONS_PER_FUND = 30
 
 
 #Create Random Data
@@ -44,6 +44,8 @@ dates      = populate('date',NUMDATES,start=date.today()-timedelta(3*360))
 orm.register(FinIns)
 orm.register(Portfolio)
 orm.register(Position)
+orm.register(PortfolioView)
+orm.register(PortfolioViewFolder)
 orm.register(UserViewDefault)
 
 
@@ -80,13 +82,22 @@ class FinInsTest(TestBase):
     def testDefaultView(self):
         '''Test the default view'''
         self.fill()
-        funds = Portfolio.objects.filter(holder = None, parent = None)
+        funds = Portfolio.objects.filter(parent = None)
         # pick a random fund
         fund = funds[randint(0,len(funds)-1)]
         # call the api to obtain the view
         view = api.get_portfolio_object(fund)
-        self.assertEqual(view.holder,fund)
-        self.assertEqual(view.group,fund.group)
+        self.assertEqual(view.portfolio,fund)
+        self.assertEqual(view.name,'default')
+        self.assertEqual(view.ccy,fund.ccy)
+        folders = view.folders.all()
+        self.assertTrue(folders.count()>0)
+        #The total number of positions in folders
+        #must be the same as the number of position in porfolio
+        N = 0
+        for folder in folders:
+            N += folder.positions.size()
+        self.assertEqual(N,fund.positions.all().count())
         
     def _get_id(self, name, dt = None):
         fund = Fund.objects.get(code = name)

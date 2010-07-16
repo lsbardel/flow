@@ -16,10 +16,7 @@ from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
 
 
 class PortfolioData(appview.AppView):
-    '''
-    view used to obtain timeseries.
-    The only view available is an Ajax Get view
-    '''
+    '''Fetch portfolio view data. The only view available is an Ajax Get view'''
     _methods      = ('get',)
     
     def get_response(self, djp):

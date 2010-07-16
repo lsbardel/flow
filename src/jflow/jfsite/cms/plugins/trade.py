@@ -10,7 +10,8 @@ from djpcms.views import appsite
 from jflow.conf import settings 
 from jflow.utils.anyjson import json
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView
-from jflow.db.finins import finins
+
+from jflow import api
 
 
 class PortfolioForm(forms.Form):
@@ -95,7 +96,7 @@ class PortfolioApplication(DJPplugin):
         height = abs(int(height or 0))
         instance = djp.instance
         request  = djp.request
-        obj = finins.get_display_object(instance, request.user)
+        obj = api.get_portfolio_object(instance, request.user)
         id  = finins.get_object_id(obj,datetime.date.today())
         options = {}
         ctx = {'url': api_url,
