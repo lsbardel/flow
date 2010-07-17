@@ -13,7 +13,7 @@ from stdnet import orm
 from stdnet.utils import populate
 
 import ccy
-from jflow.db.portfolio.models import *
+from jflow.models import *
 from jflow.utils.anyjson import json
 from jflow.utils.tests import jFlowTest
 from jflow import api
@@ -40,13 +40,6 @@ fundccys   = populate('choice',NUMFUNDS,choice_from=['EUR','GBP','USD'])
 fundgroups = populate('choice',NUMFUNDS,choice_from=groupnames)
 dates      = populate('date',NUMDATES,start=date.today()-timedelta(3*360))
 
-orm.register(FinIns)
-orm.register(Portfolio)
-orm.register(Position)
-orm.register(PortfolioView)
-orm.register(PortfolioViewFolder)
-orm.register(UserViewDefault)
-
 
 class FinInsTest(jFlowTest):
     
@@ -61,9 +54,10 @@ class FinInsTest(jFlowTest):
         n = 0
         t = timer()
         for name,ccy,group in izip(fundnames,fundccys,fundgroups):
+            holder = PortfolioHolder(name = name, ccy = ccy, group = group).save()
             for dt in dates:
                 n+=1
-                Portfolio(name = name, ccy = ccy, dt = dt, group = group).save()
+                Portfolio(holder = holder, dt = dt).save()
         logger.info('Built %s master portfolios in %s seconds' % (n,timer()-t))
         funds  = Portfolio.objects.all()
         finins = list(FinIns.objects.all())
@@ -81,9 +75,11 @@ class FinInsTest(jFlowTest):
     def testDefaultView(self):
         '''Test the default view'''
         self.fill()
-        funds = Portfolio.objects.filter(parent = None)
+        funds = PortfolioHolder.objects.filter(parent = None)
         # pick a random fund
-        fund = funds[randint(0,len(funds)-1)]
+        holder = funds[randint(0,len(funds)-1)]
+        funds  = holder.dates.all()
+        fund   = funds[randint(0,len(funds)-1)]
         # call the api to obtain the view
         view = api.get_portfolio_object(fund)
         self.assertEqual(view.portfolio,fund)

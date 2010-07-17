@@ -17,7 +17,7 @@ from jflow.utils.encoding import smart_str
 
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
 
-from jflow.db.portfolio.models import PortfolioHolder, Portfolio
+from jflow.models import PortfolioHolder, Portfolio
 
 
 class AuthenticationError(Exception):
@@ -95,7 +95,7 @@ def default_view(fund, user):
             return view
     # No user
     else:
-        uviews = root.views.filter(name = 'default')
+        uviews = root.views.filter(name = 'default', user = None)
         if uviews:
             return uviews[0]
         else:
@@ -106,12 +106,11 @@ def default_view(fund, user):
 def build_new_view(view, portfolio = None):
     '''Build a new view based on position instrument type'''
     portfolio = portfolio or view.portfolio
-    children = portfolio.children.all()
+    children = portfolio.children()
     if children:
         for child in children:
             build_new_view(view, child)
     else:
-        positions = list(portfolio.positions.all())
         for pos in portfolio.positions.all():
             type   = pos.type
             folder = view.folders.filter(name = type)

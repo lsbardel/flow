@@ -1,8 +1,0 @@
-plugins are independent applications.
-
-This module should added to the PYTHON path so that sub-modules can be
-accessed as stand-alone applications.
-Alternatively each module under plugins
-can be installed into the site-library directory.
-
-djcms is a django application for web pagination and django-ajax interaction.

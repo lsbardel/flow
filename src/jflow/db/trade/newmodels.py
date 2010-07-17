@@ -290,17 +290,6 @@ class PortfolioView(TimeStamp):
     
     def rootfolders(self):
         return self.portfolio_set.filter()
-        
-
-class UserViewDefault(models.Model):
-    user = models.ForeignKey(User)
-    view = models.ForeignKey(PortfolioView, related_name = 'user_default')
-    
-    def __unicode__(self):
-        return '%s - %s' % (self.view,self.user)
-    
-    class Meta:
-        unique_together = ('user','view')
     
 
 
@@ -427,22 +416,3 @@ class ManualTrade(TimeStamp):
         return self.quantity
             
     
-class PortfolioDisplay(models.Model):
-    '''
-    Model for a portfolio display configuration
-    '''
-    name = models.CharField(max_length=200)
-    user = models.ForeignKey(User, null = True)
-    fields = models.TextField(blank=True)
-    
-    objects = managers.PortfolioDisplayManager()
-    
-    #class Meta:
-    #    order = ('name',)
-        
-    def fieldlist(self):
-        return self.fields.replace(' ','').split(',')
-        
-    def todict(self):
-        return {'name': self.name,
-                'fields': self.fieldlist()}

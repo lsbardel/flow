@@ -4,8 +4,12 @@ from datetime import date, datetime
 from stdnet import orm
 from stdnet.contrib.timeserie.models import TimeSerieField
 
-__all__ = ['FinIns','Portfolio','Position',
-           'PortfolioView','PortfolioViewFolder',
+__all__ = ['FinIns',
+           'PortfolioHolder',
+           'Portfolio',
+           'Position',
+           'PortfolioView',
+           'PortfolioViewFolder',
            'UserViewDefault']
 
 
@@ -74,11 +78,27 @@ class FinPositionBase(orm.StdModel):
     
 class Portfolio(FinPositionBase):
     '''A portfolio containing positions and portfolios'''
-    holder     = orm.ForeignKey(PortfolioHolder)
+    holder     = orm.ForeignKey(PortfolioHolder, related_name = 'dates')
     dt         = orm.DateField()
     
     def __str__(self):
         return '%s: %s' % (self.holder,self.dt)
+    
+    def root(self):
+        '''Return Root Portfolio'''
+        root = self.holder.root()
+        if root == self.holder:
+            return self
+        else:
+            raise NotImplementedError
+        
+    def children(self):
+        children = self.holder.children.all()
+        if children:
+            for child in children:
+                raise NotImplementedError
+        else:
+            return None
         
     def customAttribute(self, name):
         return getattr(self.holder,name)
@@ -190,13 +210,3 @@ class UserViewDefault(orm.StdModel):
     portfolio = orm.ForeignKey(Portfolio, related_name = 'user_defaults')
     view = orm.ForeignKey(PortfolioView, related_name = 'user_defaults')
 
-
-
-def register(**kwargs):
-    orm.register(FinIns, **kwargs)
-    orm.register(PortfolioHolder, **kwargs)
-    orm.register(Portfolio, **kwargs)
-    orm.register(Position, **kwargs)
-    orm.register(PortfolioView, **kwargs)
-    orm.register(PortfolioViewFolder, **kwargs)
-    orm.register(UserViewDefault, **kwargs)
