@@ -7,16 +7,15 @@ logging.basicConfig(level = logging.DEBUG)
 logger = logging.getLogger('Portfolio Tests')
 
 from random import randint, uniform
-from unittest import TestCase
 from django.conf import settings
 
 from stdnet import orm
-from stdnet.stdtest import TestBase
 from stdnet.utils import populate
 
 import ccy
 from jflow.db.portfolio.models import *
 from jflow.utils.anyjson import json
+from jflow.utils.tests import jFlowTest
 from jflow import api
 
 # Number of instruments
@@ -49,7 +48,7 @@ orm.register(PortfolioViewFolder)
 orm.register(UserViewDefault)
 
 
-class FinInsTest(TestBase):
+class FinInsTest(jFlowTest):
     
     def setUp(self):
         self.user  = 'superman'

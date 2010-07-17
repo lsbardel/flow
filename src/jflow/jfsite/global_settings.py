@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'flowrepo',
     #
     'ccy.basket',
+    'jflow',
     'jflow.db.instdata',
     'jflow.db.trade',
     'unuk.contrib.txdo',
