@@ -1,4 +1,4 @@
-
+from ccy import currency
 from datetime import date, datetime
 
 from stdnet import orm
@@ -16,15 +16,21 @@ __all__ = ['FinIns',
 class FinIns(orm.StdModel):
     '''Financial instrument base class. Contains a time-serie field.                
     '''
-    name   = orm.AtomField(unique = True)
-    ccy    = orm.AtomField()
-    type   = orm.AtomField()
-    data   = TimeSerieField()
+    name    = orm.AtomField(unique = True)
+    ccy     = orm.AtomField()
+    country = orm.AtomField()
+    type    = orm.AtomField()
+    data    = TimeSerieField()
         
-    def __init__(self, multiplier = 1.0, description = '', **kwargs):
+    def __init__(self, multiplier = 1.0, description = '', ccy = None, country = None, **kwargs):
+        c = currency(ccy)
+        if not c:
+            raise ValueError('currency must be defined')
+        if not country:
+            country = c.default_country
         self.multiplier    = multiplier
         self.description   = description
-        super(FinIns,self).__init__(**kwargs)
+        super(FinIns,self).__init__(ccy = c.code, country = country, **kwargs)
         
     def pv01(self):
         '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to

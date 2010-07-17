@@ -156,7 +156,8 @@ class CollateralCreator(Converter):
 
 class BondclassCreator(Converter):
     
-    def get_or_create(self, bondcode,
+    def get_or_create(self,
+                      bondcode,
                       curncy = '',
                       country='',
                       convertible = None,

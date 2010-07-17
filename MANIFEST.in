@@ -11,3 +11,7 @@ recursive-include src/jflow/db/trade/templates *
 recursive-include src/jflow/db/trade/fixtures *
 recursive-include src/jflow/jfsite/media *
 recursive-include src/jflow/jfsite/templates *
+include docs/make.bat
+include docs/Makefile
+include docs/source/conf.py
+recursive-include docs *.rst

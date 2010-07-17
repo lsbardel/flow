@@ -23,7 +23,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "_ext"))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 #extensions = ['sphinx.ext.todo', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig']
 #extensions = ['djpcmsdoc']
-extensions = ['sphinxtogithub']
+extensions = ['sphinxtogithub','sphinx.ext.autodoc', 'sphinx.ext.pngmath']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

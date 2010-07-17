@@ -16,8 +16,8 @@ from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
-
-from jflow.models import PortfolioHolder, Portfolio
+import jflow.db.instdata.signals
+from jflow.models import PortfolioHolder, Portfolio, FinIns
 
 
 class AuthenticationError(Exception):
@@ -44,39 +44,12 @@ def get_user(user, force = True):
 
 def get_portfolio_object(instance, user = None, dt = None):
     '''Get a portfolio object'''
+    if isinstance(instance,Fund):
+        instance = create_portfolio_from_fund(instance, dt)
     if isinstance(instance,Portfolio):
         return default_view(instance,user)
-    elif isinstance(instance,Fund):
-        try:
-            holder = PortfolioHolder.objects.get(name = instance.code)
-        except stdnet.ObjectNotFund:
-            holder = PortfolioHolder(name  = instance.code,
-                                     group = instance.fund_holder.code,
-                                     description = instance.description,
-                                     ccy   = instance.curncy).save()
-        dt = dt or date.today()
-        portfolio = Portfolio.objects.filter(holder = holder, dt = dt)
-        if not portfolio.count():
-            children = instance.children.all()
-            if children:
-                for child in children:
-                    pass
-            else:
-                positions = instance.positions.all(dt__lte = dt)
-                if positions.count():
-                    latest_date = positions.latest().dt
-                    if latest_date < dt:
-                        portfolio = Portfolio.objects.filter(holder = holder, dt = latest_date)
-                    else:
-                        latest_date = dt
-                    if not portfolio.count():
-                        portfolio = Portfolio(holder = holder, dt = latest_date).save()
-                    positions = positions.filter(dt = latest_date)
-                    for position in positions:
-                        pass
-                    
-            
-        #return get_portfolio_object(Portfolio.objects.get(id = instance),user)    
+    
+        
 
 
 def default_view(fund, user):
@@ -145,5 +118,49 @@ def build_view(view):
     return view
     
     
-    
-    
+########################################################################################    
+# INTERNAL FUNCTIONS
+
+
+def create_portfolio_from_fund(instance, dt):
+    try:
+        holder = PortfolioHolder.objects.get(name = instance.code)
+    except stdnet.ObjectNotFund:
+        holder = PortfolioHolder(name  = instance.code,
+                                 group = instance.fund_holder.code,
+                                 description = instance.description,
+                                 ccy   = instance.curncy).save()
+    dt = dt or date.today()
+    portfolio = Portfolio.objects.filter(holder = holder, dt = dt)
+    if not portfolio.count():
+        children = instance.children.all()
+        if children:
+            for child in children:
+                pass
+        else:
+            positions = instance.position_set.filter(dt__lte = dt)
+            if positions.count():
+                latest_date = positions.latest().dt
+                if latest_date < dt:
+                    portfolio = Portfolio.objects.filter(holder = holder, dt = latest_date)
+                else:
+                    latest_date = dt
+                if not portfolio.count():
+                    portfolio = Portfolio(holder = holder, dt = latest_date).save()
+                    positions = positions.filter(dt = latest_date)
+                    for position in positions:
+                        did = position.dataid
+                        try:
+                            fins = FinIns.objects.get(name = did.code)
+                        except stdnet.ObjectNotFund:
+                            inst = did.instrument
+                            fins = FinIns(name = did.code,
+                                          country = did.country,
+                                          ccy  = did.curncy,
+                                          type = inst._meta.module_name).save()
+                        portfolio.addnewposition(fins, position.size, position.value)
+                else:
+                    portfolio = portfolio[0]
+    else:
+        portfolio = portfolio[0]
+    return portfolio

@@ -39,6 +39,10 @@ def updatetags(id, commit = True):
         if commit:
             id.save()
     
+    
+def adddataid(code, **kwargs):
+    id, created = models.DataId.objects.get_or_create(code = code, **kwargs)
+    return id
 
 
 class InfoHandler(AnonymousBaseHandler):

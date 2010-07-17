@@ -10,7 +10,7 @@ if not PSETTINGS.dev:
 
 DEBUG = PSETTINGS.debug
 TEMPLATE_DEBUG = DEBUG
-TEST_RUNNER = 'jflow.db.testrunner.JflowTestSuiteRunner'
+#TEST_RUNNER = 'jflow.db.testrunner.JflowTestSuiteRunner'
     
 
 ADMINS = (
@@ -101,8 +101,8 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     #
     'djpcms',
-    'djpcms.contrib.admin',
-    #'django.contrib.admin',
+    #'djpcms.contrib.admin',
+    'django.contrib.admin',
     #'djpcms.contrib.compressor',
     'tagging',
     'flowrepo',

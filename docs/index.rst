@@ -17,10 +17,7 @@ Finance is an area where well-written open-source projects could make a tremendo
 .. toctree::
    :maxdepth: 2
    
-   contents
-
-First steps
-===========
+   api
 
 
 

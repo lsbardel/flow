@@ -48,8 +48,8 @@ class FinInsTest(jFlowTest):
         
     def fill(self):
         t = timer()
-        for name,ccy,typ in izip(instnames,instccys,insttypes):
-            FinIns(name = name, ccy = ccy, type = typ).save()
+        for name,curncy,typ in izip(instnames,instccys,insttypes):
+            FinIns(name = name, ccy = curncy, type = typ).save()
         logger.info('Built %s instruments in %s seconds' % (NUMINSTS,timer()-t))
         n = 0
         t = timer()
