@@ -171,8 +171,11 @@ class Position(FinPositionBase):
     
     def customAttribute(self, name):
         return getattr(self.instrument,name)
-        
     
+    @property
+    def dt(self):
+        return self.portfolio.dt
+        
     
 class PortfolioView(FinPositionBase):
     name = orm.AtomField()
@@ -192,6 +195,17 @@ class PortfolioView(FinPositionBase):
     def get_tree(self):
         return [p.alldata() for p in self.folders.all()]
     
+    def isdefault(self, user):
+        defaults = UserViewDefault.objects.filter(user = str(user), portfolio = self.portfolio)
+        if defaults:
+            return defaults[0].view == self
+        else:
+            return False
+        
+    @property
+    def dt(self):
+        return self.portfolio.dt
+    
     
 class PortfolioViewFolder(FinPositionBase):
     '''A Folder within a portfolio view'''
@@ -208,6 +222,21 @@ class PortfolioViewFolder(FinPositionBase):
         tree = [p.alldata() for p in self.children.all()]
         [tree.append(p.alldata()) for p in self.positions.all()]
         return tree
+    
+    @property
+    def reference(self):
+        if self.view:
+            return self.view
+        else:
+            return self.parent
+        
+    @property
+    def user(self):
+        return self.reference.user
+    
+    @property
+    def dt(self):
+        return self.reference.dt
     
     
     

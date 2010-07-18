@@ -15,9 +15,9 @@ from jflow.core.dates import yyyymmdd2date
 from jflow.conf import settings
 from jflow.utils.encoding import smart_str
 
-from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade
+from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
 import jflow.db.instdata.signals
-from jflow.models import PortfolioHolder, Portfolio, FinIns
+from jflow.models import PortfolioHolder, Portfolio, FinIns, UserViewDefault, PortfolioView
 
 
 class AuthenticationError(Exception):
@@ -25,6 +25,11 @@ class AuthenticationError(Exception):
 
 
 def get_user(user, force = True):
+    if not user:
+        if force:
+            raise AuthenticationError('User not available')
+        return None
+    
     try:
         if isinstance(user,User):
             return user
@@ -34,46 +39,46 @@ def get_user(user, force = True):
             return User.objects.get(username = str(user))
     except:
         if force:
-            if not user:
-                raise AuthenticationError('User not available')
-            else:
-                raise AuthenticationError('User %s not available' % user)
+            raise AuthenticationError('User %s not available' % user)
         else:
             return None
 
 
-def get_portfolio_object(instance, user = None, dt = None):
+def get_portfolio_object(instance, user = None, dt = None, name = None):
     '''Get a portfolio object'''
     if isinstance(instance,Fund):
         instance = create_portfolio_from_fund(instance, dt)
     if isinstance(instance,Portfolio):
-        return default_view(instance,user)
-    
-        
+        return default_view(instance,user,name)
 
 
-def default_view(fund, user):
+def default_view(portfolio, user, name):
     '''For a given fund and user get the default view. If not available, create a new one'''
-    root = fund.root()
+    root = portfolio.root()
+    user = get_user(user,False)
     if user and user.is_authenticated():
-        view = UserViewDefault.objects.filter(user = user, view = root)
+        username = user.username
+    else:
+        username = None
+        
+    if name:
+        view = PortfolioView.objects.filter(user = username, name = name, portfolio = portfolio)
         if view:
             return view[0]
-        views = root.views.filter()
-        
-        if not views:
-            view = root.create_view('default',user)
-            if not user:
-                build_view(view)
-            return view
-    # No user
+    
+    if username:
+        view = UserViewDefault.objects.filter(user = username, view = root)
+        if view:
+            return view[0]
+    
+    # No user view
+    uviews = root.views.filter(name = 'default', user = None)
+    if uviews:
+        return uviews[0]
     else:
-        uviews = root.views.filter(name = 'default', user = None)
-        if uviews:
-            return uviews[0]
-        else:
-            view = root.create_view('default')
-            return build_new_view(view)
+        view = root.create_view('default')
+        return build_new_view(view)
+    
 
 
 def build_new_view(view, portfolio = None):

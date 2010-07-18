@@ -10,7 +10,7 @@ if not PSETTINGS.dev:
 
 DEBUG = PSETTINGS.debug
 TEMPLATE_DEBUG = DEBUG
-#TEST_RUNNER = 'jflow.db.testrunner.JflowTestSuiteRunner'
+TEST_RUNNER = 'jflow.utils.tests.jFlowTestSuiteRunner'
     
 
 ADMINS = (

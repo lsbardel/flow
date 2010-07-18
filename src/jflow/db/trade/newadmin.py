@@ -36,9 +36,6 @@ class PositionAdmin(admin.ModelAdmin):
 class UserViewDefaultAdmin(admin.ModelAdmin):
     list_display = ('user','view')
 
-class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('name','view','fund','parent','cash_account')
-
 
 class ManualTradeAdmin(admin.ModelAdmin):
     list_display = ('dataid','user','open_date','close_date',
@@ -50,7 +47,6 @@ admin.site.register(Trader,TraderAdmin)
 admin.site.register(Fund,FundAdmin)
 admin.site.register(CustodyAccount,CustodyAccountAdmin)
 admin.site.register(Position,PositionAdmin)
-admin.site.register(Portfolio,PortfolioAdmin)
 admin.site.register(ManualTrade,ManualTradeAdmin)
 
 
