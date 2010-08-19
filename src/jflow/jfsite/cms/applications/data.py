@@ -13,10 +13,11 @@ from jflow.db.instdata.forms import DataIdForm, EconometricForm
 from djpcms.conf import settings
 from djpcms.utils import form_kwargs
 from djpcms.utils.ajax import jhtmls
-from djpcms.utils.html import htmlwrap, form, formlet, box, FormHelper, FormLayout, FormInlineHelper
-from djpcms.utils.html import HtmlForm, Fieldset, ModelMultipleChoiceField, AutocompleteManyToManyInput
+from djpcms.utils.html import htmlwrap, form, formlet, box, FormInlineHelper
+from djpcms.utils.html import ModelMultipleChoiceField, AutocompleteManyToManyInput
+from djpcms.utils.uniforms import FormHelper, FormLayout, HtmlForm, Fieldset, inlineLabels
 from djpcms.views import appsite, appview
-from djpcms.views.apps.tagging import tagurl
+from djpcms.views.apps.tagging import TagApplication
 
 from dateutil.parser import parse as DateFromString
 from unuk.core.jsonrpc import Proxy
@@ -73,10 +74,10 @@ class NiceDataIdForm(DataIdForm):
     helper.layout = FormLayout(
                              Fieldset('code', 'name', 'isin', 'firm_code', 'content_type',
                                       'tags', 'country',
-                                      css_class = Fieldset.inlineLabels, key = 'main'),
+                                      css_class = inlineLabels, key = 'main'),
                              Fieldset('description', key = 'descr'),
                              Fieldset('live', 'default_vendor',
-                                      css_class = Fieldset.inlineLabels, key = 'second'),
+                                      css_class = inlineLabels, key = 'second'),
                              template = 'instdata/dataid_change_form.html')
 
 class InstrumentForm(forms.ModelForm):
@@ -102,7 +103,7 @@ def change_type(djp):
 data_extra_views = {'content_type': change_type}
 slug_regex = '(?P<id>[-\.\w]+)'
 
-class DataApplication(tagurl.TagApplication):
+class DataApplication(TagApplication):
     inherit   = True
     form      = NiceDataIdForm
     
@@ -180,7 +181,7 @@ class DataApplication(tagurl.TagApplication):
         return fhtml
     
 
-class EconometricApplication(tagurl.TagApplication):
+class EconometricApplication(TagApplication):
     inherit = True
     form = EconometricForm
     form_withrequest = True
@@ -234,7 +235,7 @@ class ReportForm(FlowItemForm):
                              Fieldset('name', 'description', 'body', key = 'body'),
                     
                              Fieldset('visibility', 'allow_comments',
-                                      css_class = Fieldset.inlineLabels),
+                                      css_class = inlineLabels),
                             
                              Fieldset('authors', 'tags', 'data_ids'),
                              

@@ -5,7 +5,8 @@ from django.template import loader
 
 from djpcms.views import appsite, appview
 from djpcms.utils import mark_safe
-from djpcms.utils.html import FormHelper, Fieldset, ModelChoiceField
+from djpcms.utils.html import ModelChoiceField
+from djpcms.utils.uniforms import FormHelper, Fieldset, inlineLabels
 
 from jflow.db import geo
 from jflow.utils.anyjson import json
@@ -132,7 +133,7 @@ class SecurityTradeForm(ManualTradeForm):
     
     helper.layout.add(Fieldset('dataid'),
                       Fieldset('fund','open_date','quantity','price','add_cash_trade',
-                                css_class = Fieldset.inlineLabels))
+                                css_class = inlineLabels))
     
     class Meta:
         fields = ['fund','open_date','quantity','price']
@@ -146,7 +147,8 @@ class CashTradeForm(ManualTradeForm):
     
     helper = FormHelper()
     
-    helper.layout.add(Fieldset('currency','fund','open_date','quantity', css_class = Fieldset.inlineLabels))
+    helper.layout.add(Fieldset('currency','fund','open_date','quantity',
+                               css_class = inlineLabels))
     
     class Meta:
         fields = ['fund','open_date','quantity']
