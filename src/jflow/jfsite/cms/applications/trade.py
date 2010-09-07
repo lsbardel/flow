@@ -1,12 +1,12 @@
 import datetime
 
 from django import forms, http
-from django.template import loader
 
+from djpcms.template import loader
 from djpcms.views import appsite, appview
 from djpcms.utils import mark_safe
 from djpcms.utils.html import ModelChoiceField
-from djpcms.utils.uniforms import FormHelper, Fieldset, inlineLabels
+from djpcms.utils.uniforms import FormLayout, Fieldset, inlineLabels
 
 from jflow.db import geo
 from jflow.utils.anyjson import json
@@ -129,11 +129,10 @@ class PortfolioViewApplication(appsite.ModelApplication):
 class SecurityTradeForm(ManualTradeForm):
     dataid = ModelChoiceField(DataId.objects, label = 'security')
     add_cash_trade = forms.BooleanField(initial = False, required = False)
-    helper = FormHelper()
     
-    helper.layout.add(Fieldset('dataid'),
-                      Fieldset('fund','open_date','quantity','price','add_cash_trade',
-                                css_class = inlineLabels))
+    layout = FormLayout(Fieldset('dataid'),
+                        Fieldset('fund','open_date','quantity','price','add_cash_trade',
+                                 css_class = inlineLabels))
     
     class Meta:
         fields = ['fund','open_date','quantity','price']
@@ -145,10 +144,8 @@ class SecurityTradeForm(ManualTradeForm):
 class CashTradeForm(ManualTradeForm):
     currency = forms.ChoiceField(choices = geo.currency_tuples())
     
-    helper = FormHelper()
-    
-    helper.layout.add(Fieldset('currency','fund','open_date','quantity',
-                               css_class = inlineLabels))
+    layout = FormLayout(Fieldset('currency','fund','open_date','quantity',
+                                 css_class = inlineLabels))
     
     class Meta:
         fields = ['fund','open_date','quantity']
@@ -163,7 +160,7 @@ class CashTradeForm(ManualTradeForm):
 class ManualTradeApplication(appsite.ModelApplication):
     form = SecurityTradeForm
     form_withrequest = True
-    
+    search   = appview.SearchView()
     add      = appview.AddView()
     add_cash = appview.AddView(regex = 'addcash', form = CashTradeForm)
     

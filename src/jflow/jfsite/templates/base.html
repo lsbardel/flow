@@ -1,49 +1,45 @@
 {% extends "djpcms/base.html" %}{% load djpcmstags %}
 
 {% block branding-banner %}
-  <div class="{{ grid.container_class }}">
-   <div class="{{ grid.column_1_2 }}">
-    <h1>
-	<a href="/">jFlow</a>
-	</h1>
-   </div>
-   <div class="{{ grid.column_1_2 }}">
-   <ul class="simple-nav user">{% if edit_content_url %}
+<div id="top-banner">
+ <div class="{{ grid.container_class }}">
+  <div class="{{ grid.column1 }}">
+   <ul class="simple-nav right user">{% if edit_content_url %}
     <li class="secondary"><a href="{{ edit_content_url }}">edit</a></li>{% else %}{% if exit_edit_url %}
     <li class="secondary"><a href="{{ exit_edit_url }}">exit</a></li>{% endif %}{% endif %}{% if user.is_authenticated %}
-    <li class="secondary"><a href="/accounts/">{{ user.username }}</a></li>
+    <li class="secondary"><a href="/accounts/">{{ user.username }}</a></li>{% if user.is_staff %}
+    <li class="secondary"><a href="{{ site_admin_url }}">admin</a></li>{% endif %}
     <li class="secondary"><a href="{{ logout_url }}?next={{ djp.url }}">logout</a></li> {% else %}{% if login_url %}
     <li class="secondary"><a href="{{ login_url }}?next={{ djp.url }}">login</a></li>{% if register_url %} 
     <li class="secondary"><a href="{{ register_url }}">register</a></li>{% endif %}{% endif %}{% endif %}
    </ul>
-   </div>
-   {{ grid.clear }}
   </div>
+  {{ grid.clear }}
+ </div>
+</div>
+<div id="middle-banner" class="{{ grid.container_class }}">
+ <div class="{{ grid.column1 }}">
+   <h1>
+	<a href="/">jFlow</a>
+   </h1>
+ </div>
+ {{ grid.clear }}
+</div>
 {% endblock %}
 
 {% block post-banner %}
-<div id="site-navigation-banner">
-<div class="{{ grid.container_class }}">
+<div class="{{ grid.container_class }} nav-container">
 <div class="{{ grid.column1 }}">
-<ul class="nav main">{% for navitem in sitenav %}
-<li{% if navitem.classes %} class="{{ navitem.classes }}"{% endif %}>
-<a href="{{ navitem.url }}">{{ navitem.name }}</a>{% if navitem.nav.count %}
-<ul>{% for sitem in navitem.nav %}
-<li><a href="{{ sitem.url }}">{{ sitem.name }}</a></li>{% endfor %}
-</ul>{% endif %}
-</li>{% endfor %}{% if user.is_staff %}
-<li class="secondary"><a href="{{ site_admin_url }}">admin</a></li>{% endif %}
-</ul>
+{% include "djpcms/bits/navigation2.html" %}
 </div>
 {{ grid.clear }}
-</div>
 </div>{% endblock %}
 
 {% block site-content-class %} class="{{ grid.container_class }}"{% endblock %}
 
 {% block page-footer %}
  <div class="{{ grid.container_class }}">
-  <div class="{{ grid.column1 }}">
+  <div id="copy" class="{{ grid.column1 }}">
    Copyright &copy; 2008-{{ now.year }} <a href="http://www.quantmind.com/">quantmind</a>
    <br{{ htmldoc.slash }}>
    <a href="http://creativecommons.org/licenses/by/2.0/uk/" title="Licensed under a Creative Commons Attributes license" rel="license" target="_blank">Some right reserved</a>

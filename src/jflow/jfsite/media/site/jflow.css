@@ -1,0 +1,70 @@
+body {
+	font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;
+	font-size:14px;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:1.4em;
+}
+.nav-container {
+	font-size: 90%;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+#top-banner {
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+	background: #000;
+	font-size:90%;
+}
+#middle-banner {
+	height: 60px;
+	line-height: 60px;
+}
+#middle-banner h1 a:link,
+#middle-banner h1 a:visited {
+	font-size: 180%;
+	color: #363636;
+}
+#middle-banner h1 a:hover {
+	color: #4297d7;
+}
+a:link, a:visited {
+	text-decoration: none;
+	color: #1d5987;
+	font-size: bold;
+}
+a:hover {
+	text-decoration: none;
+	color: #e17009;
+	font-size: bold;
+}
+#top-banner a:link,
+#top-banner a:visited {
+	color: rgb(240,240,240);
+}
+#bread-crumbs {
+	text-align: center;
+	height: 50px;
+	line-height: 50px;
+	font-size: 130%;
+	border-bottom:1px dotted #C2C2C2;
+}
+#page-messages {
+	min-height: 50px;
+}
+#content {
+	min-height: 400px;
+}
+#page-footer {
+	fornt-size: 90%;
+	min-height: 300px;
+	text-align: center;
+	background: #aaaaaa;
+}
+#page-footer #copy {
+	padding: 10px 0;
+}

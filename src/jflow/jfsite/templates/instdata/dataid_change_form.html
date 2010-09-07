@@ -1,12 +1,13 @@
-<div class="dataid-change"> 
- <div class="grid_6">
-  {{ main }}
-  {{ html }}
- </div>
- <div class="grid_6">
-  <div class="report-edit">
-  {{ body }}
-  </div>
- </div>
- <div class="clear"></div>
-</div>
+{% extends "djpcms/yui/yui-g.html" %}{% block pre-yui %}
+{% if uniform.tag %}<form {{ uniform.flatattr }}>{% if uniform.use_csrf_protection %}
+{% csrf_token %}{% endif %}
+<div class="form-messages ctrlHolder"></div>{% endif %}{% endblock %}
+{% block left-column %}
+{{ fdict.html1 }}
+{{ inlines }}
+{{ inputs }}{% endblock %}
+{% block right-column %}
+<div class="data-id-instrument">{% if fdict.html2 %}
+{{ fdict.html2 }}{% endif %}
+</div>{% endblock %}{% block post-yui %}
+</form>{% endblock %}

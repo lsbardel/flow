@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 
-from djpcms.utils.html import autocomplete
 from djpcms.conf import settings
+from djpcms.utils.html import autocomplete
 from djpcms.views import appsite
-from djpcms.views.user import UserApplication
+from djpcms.views.apps.user import UserApplication
 from djpcms.views.apps.memcache import MemcacheApplication
+
 
 from jflow.db.instdata.models import DataId
 from flowrepo.models import Report, FlowItem

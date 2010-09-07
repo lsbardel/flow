@@ -1,8 +1,10 @@
-
 import os
 import packages
+
 os.environ['JFLOW_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.release'
 os.environ['STDNET_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.release'
+
+
 PSETTINGS = packages.install()
 
 if not PSETTINGS.dev:
@@ -42,14 +44,8 @@ DATE_FORMAT            = 'D d M y'
 DATETIME_FORMAT        = 'D d M y P'
 SERVE_STATIC_FILES     = PSETTINGS.servs
 MEDIA_ROOT             = PSETTINGS.media_root()
-MEDIA_URL              = '/media/'
-ADMIN_MEDIA_PREFIX     = MEDIA_URL + 'django_admin/'
 SECRET_KEY             = PSETTINGS.id.SECRET_KEY
 ADMIN_URL_PREFIX       = PSETTINGS.id.ADMIN_URL_PREFIX
- 
-USER_ACCOUNT_HOME_URL  = '/accounts/'
-LOGIN_URL  = '%slogin/' % USER_ACCOUNT_HOME_URL
-LOGOUT_URL = '%slogout/' % USER_ACCOUNT_HOME_URL
 
 # EMAILS
 SEND_BROKEN_LINK_EMAILS = True
@@ -61,8 +57,6 @@ EMAIL_HOST_PASSWORD    = PSETTINGS.id.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS          = PSETTINGS.id.EMAIL_USE_TLS
 DEFAULT_FROM_EMAIL     = PSETTINGS.id.DEFAULT_FROM_EMAIL
 
-
-ROOT_URLCONF = 'jfsite.urls'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -103,28 +97,35 @@ INSTALLED_APPS = (
     'djpcms',
     #'djpcms.contrib.admin',
     'django.contrib.admin',
-    #'djpcms.contrib.compressor',
     'tagging',
     'flowrepo',
+    'dynts',
     #
     'ccy.basket',
     'jflow',
     'jflow.db.instdata',
     'jflow.db.trade',
-    'unuk.contrib.txdo',
     #
     #'south'
 )
 
 LEAH_SERVER_URL = PSETTINGS.leahurl
 
-COMPRESS = True
+
+
 # DJPCMS SETTINGS
+MEDIA_URL           = '/media/'
+ADMIN_MEDIA_PREFIX  = MEDIA_URL + 'admin/'
+DJPCMS_STYLE    = 'redmond'
+USER_ACCOUNT_HOME_URL  = '/accounts/'
+LOGIN_URL  = '%slogin/' % USER_ACCOUNT_HOME_URL
+LOGOUT_URL = '%slogout/' % USER_ACCOUNT_HOME_URL
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
                    'flowrepo.cms',
                    'jfsite.cms.plugins.*',
                    'jfsite.applications.trade']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID
+ROOT_URLCONF            = 'jfsite.urls'
 APPLICATION_URL_MODULE  = 'jfsite.appurls'
-GRID960_DEFAULT_FIXED   = True
+

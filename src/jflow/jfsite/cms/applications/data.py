@@ -1,31 +1,20 @@
-from django import http, forms
-from django.contrib.auth.models import User
+from django import http
+from django.contrib.contenttypes.models import ContentType
 from django.forms.models import modelform_factory
-
-from tagging.models import Tag
-from tagging.forms import TagField
 
 from flowrepo.models import Report
 
-from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
-from jflow.db.instdata.forms import DataIdForm, EconometricForm
-
 from djpcms.conf import settings
-from djpcms.utils import form_kwargs
 from djpcms.utils.ajax import jhtmls
-from djpcms.utils.html import htmlwrap, form, formlet, box, FormInlineHelper
-from djpcms.utils.html import ModelMultipleChoiceField, AutocompleteManyToManyInput
-from djpcms.utils.uniforms import FormHelper, FormLayout, HtmlForm, Fieldset, inlineLabels
 from djpcms.views import appsite, appview
 from djpcms.views.apps.tagging import TagApplication
 
 from dateutil.parser import parse as DateFromString
 from unuk.core.jsonrpc import Proxy
 
+from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
+from jflow.jfsite.cms.applications.forms import NiceDataIdForm, ReportForm, EconometricForm, InstrumentForm
 
-def AutocompleteTagField(required = False):
-    wg = AutocompleteManyToManyInput(Tag, ['name'], separator = ' ', inline = True)
-    return TagField(required = required, widget = wg)
 
 def date2yyyymmdd(dte):
     return dte.day + 100*(dte.month + 100*dte.year)
@@ -62,65 +51,41 @@ class TimeserieView(appview.AppView):
         return http.HttpResponse(sdata, mimetype='application/javascript')
 
 
-
-class NiceDataIdForm(DataIdForm):
-    tags   = AutocompleteTagField()
-    
-    helper = FormHelper()
-    
-    helper.inlines.append(FormInlineHelper(DataId,VendorId))
-    
-    # add the layout object
-    helper.layout = FormLayout(
-                             Fieldset('code', 'name', 'isin', 'firm_code', 'content_type',
-                                      'tags', 'country',
-                                      css_class = inlineLabels, key = 'main'),
-                             Fieldset('description', key = 'descr'),
-                             Fieldset('live', 'default_vendor',
-                                      css_class = inlineLabels, key = 'second'),
-                             template = 'instdata/dataid_change_form.html')
-
-class InstrumentForm(forms.ModelForm):
-    helper = FormHelper()
-
-def change_type(djp):
+def change_type(self, djp):
     '''Ajax view to change instrument form'''
-    view = djp.view
-    request = djp.request
-    obj  = djp.instance
-    data = request.POST or request.GET
-    initial = dict(data.items())
-    form = view.appmodel.form(initial = initial, instance = djp.instance)
-    iform = view.appmodel.instrument_form(request, form.content_form)
-    if iform:
-        iform = iform(initial = initial)
-        html = iform.helper.layout.render(iform)
+    form = self.get_form(djp)
+    forms = list(form.forms_only())
+    if len(forms) == 2:
+        form = forms[1]
+        html = form.layout.render(form)
     else:
         html = ''
-    data = jhtmls(html = html, identifier = '.data-id-instrument')
-    return http.HttpResponse(data.dumps(), mimetype='application/javascript')
+    return jhtmls(html = html, identifier = '.data-id-instrument')
 
-data_extra_views = {'content_type': change_type}
+
+
+class DataAddView(appview.AddView):
+
+    def ajax__content_type(self, djp):
+        return change_type(self,djp)
+
+class DataEditView(appview.EditView):
+
+    def ajax__content_type(self, djp):
+        return change_type(self,djp)
+
+
 slug_regex = '(?P<id>[-\.\w]+)'
 
 class DataApplication(TagApplication):
     inherit   = True
     form      = NiceDataIdForm
+    form_template = 'instdata/dataid_change_form.html'
     
-    add       = appview.AddView(regex = 'add',
-                                isplugin = False,
-                                ajax_views = data_extra_views)
     timeserie = TimeserieView(regex = 'timeserie')
-    edit      = appview.EditView(regex = 'edit/%s' % slug_regex,
-                                 parent = None,
-                                 ajax_views = data_extra_views)
-    view      = appview.ViewView(regex = slug_regex)
-    
-    class Media:
-        css = {
-            'all': ('instdata/layout.css',)
-            }
-        js = ['instdata/decorator.js']
+    add       = DataAddView(regex = 'add', isplugin = False)
+    edit      = DataEditView(regex = 'edit/%s' % slug_regex, parent = None)
+    view      = appview.ViewView(regex = slug_regex, parent = None)
     
     def objectbits(self, obj):
         '''
@@ -143,42 +108,32 @@ class DataApplication(TagApplication):
         except:
             return None
     
-    def instrument_form(self, request, content_form):
-        if content_form:
-            model = content_form._meta.model
-            return modelform_factory(model, InstrumentForm)
+    def instrument_form(self, request, instance):
+        data     = request.POST or request.GET
+        initial  = dict(data.items())
+        ct = initial.get('content_type',None)
+        if not ct and instance:
+            ct = djp.instance.content_type
+        if ct:
+            try:
+                ct = ContentType.objects.get(id = ct)
+                model = ct.model_class()
+                f = modelform_factory(model, InstrumentForm)
+                minstance = None
+                if instance and isinstance(model,instance.instrument):
+                    minstance = instance.instrument
+                return f(initial = initial, instance = minstance)
+            except:
+                return None
         else:
             return None
         
     def get_form(self, djp, **kwargs):
-        f = super(DataApplication,self).get_form(djp,**kwargs)
-        f.instrument_form = self.instrument_form(djp.request, f.form.content_form)
+        iform = self.instrument_form(djp.request, djp.instance)
+        f = super(DataApplication,self).get_form(djp, **kwargs)
+        if iform:
+            f.add(iform)
         return f
-        
-    def get_form2(self, djp, initial = None, **kwargs):
-        instance   = djp.instance
-        request    = djp.request
-        mform      = modelform_factory(self.model, self.form)
-        initial    = self.update_initial(request, mform, initial)
-        f1, f2, f3, f4 = mform.make(request.user,
-                                    **form_kwargs(request = djp.request,
-                                                  instance = instance,
-                                                  initial = initial))
-        fhtml = form(method = self.form_method,
-                     template = 'instdata/addform.html',
-                     url = djp.url,
-                     cn = 'aligned')
-        if self.form_ajax:
-            fhtml.addClass(self.ajax.ajax)
-        wrapper = djp.wrapper
-        layout  = None
-        if wrapper:
-            layout = wrapper.form_layout
-        fhtml['dataid']         = formlet(form = f1, layout = layout)
-        fhtml['vendorids']      = formlet(form = f2, layout = layout)
-        fhtml['instrumenttype'] = formlet(form = f3, layout = layout, submit = self.submit(instance))
-        fhtml['instdata']       = formlet(form = f4, layout = layout)
-        return fhtml
     
 
 class EconometricApplication(TagApplication):
@@ -192,16 +147,7 @@ class EconometricApplication(TagApplication):
     
 
 from flowrepo.models import Report, Attachment, Image
-from flowrepo.forms import FlowItemForm, add_related_upload
 from flowrepo.cms import FlowItemApplication, ReportApplication
-from flowrepo import markups
-
-CRL_HELP = htmlwrap('div',
-                    htmlwrap('div',markups.help()).addClass('body').render()
-                   ).addClasses('flowitem report').render()
-
-collapse = lambda title, html, c, cl: box(hd = title, bd = html, collapsable = c, collapsed = cl)
-
 
 
 #_______________________________________________________________________ MANUAL TRADE
@@ -210,62 +156,7 @@ class ManualTradeApplication(appsite.ModelApplication):
     add = appview.AddView()
 
 
-
-
-
-#_______________________________________________________________________ REPORT
-
-class ReportForm(FlowItemForm):
-    authors  = ModelMultipleChoiceField(User.objects, required = False)
-    data_ids = ModelMultipleChoiceField(DataId.objects, required = False, label = 'Related securities')
-    attachments  = ModelMultipleChoiceField(Attachment.objects, required = False, label = 'Available attachments',
-                                            help_text = 'To select/deselect multiple files to attach press ctrl')
-    images       = ModelMultipleChoiceField(Image.objects, required = False, label = 'Available images',
-                                            help_text = 'To select/deselect multiple files to attach press ctrl')
-    tags         = AutocompleteTagField()
-    attachment_1 = forms.FileField(required = False)
-    attachment_2 = forms.FileField(required = False)
-    attachment_3 = forms.FileField(required = False)
-    
-    # Attach a formHelper to your forms class.
-    helper = FormHelper()
-    
-    # add the layout object
-    helper.layout = FormLayout(
-                             Fieldset('name', 'description', 'body', key = 'body'),
-                    
-                             Fieldset('visibility', 'allow_comments',
-                                      css_class = inlineLabels),
-                            
-                             Fieldset('authors', 'tags', 'data_ids'),
-                             
-                             HtmlForm(CRL_HELP, key = 'help',
-                                      renderer = lambda html : collapse('Writing Tips',html,True,True)),
-                            
-                             Fieldset('attachments', 'images',
-                                      key = 'current_attachments',
-                                      renderer = lambda html : collapse('Attached files',html,True,False)),
-                             
-                             Fieldset('attachment_1', 'attachment_2', 'attachment_3',
-                                      key = 'attachments',
-                                      renderer = lambda html : collapse('New attachments',html,True,False)),
-                                      
-                             Fieldset('slug', 'timestamp', 'markup', 'parent',
-                                      key = 'metadata',
-                                      renderer = lambda html : collapse('Metadata',html,True,True)),
-                    
-                             template = 'flowrepo/report_form.html')
-    
-    def save(self, commit = True):
-        instance = super(ReportForm,self).save(commit = commit)
-        add_related_upload(self.cleaned_data['attachment_1'],instance)
-        add_related_upload(self.cleaned_data['attachment_2'],instance)
-        add_related_upload(self.cleaned_data['attachment_3'],instance)
-        return instance
-    
-    class Meta:
-        model = Report
-    
+#_______________________________________________________________________ REPORT  
     
 class BlogApplication(ReportApplication):
     form_ajax = False
@@ -282,3 +173,4 @@ class BlogApplication(ReportApplication):
 
 class ItemApplication(FlowItemApplication):
     name      = 'items'
+    
