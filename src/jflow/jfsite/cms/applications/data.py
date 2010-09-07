@@ -53,7 +53,7 @@ class TimeserieView(appview.AppView):
 
 def change_type(self, djp):
     '''Ajax view to change instrument form'''
-    form = self.get_form(djp, bound = False)
+    form = self.get_form(djp, withdata = False)
     forms = list(form.forms_only())
     if len(forms) == 2:
         form = forms[1]
@@ -91,20 +91,9 @@ class DataApplication(TagApplication):
     edit      = DataEditView()
     
     def objectbits(self, obj):
-        '''
-        Get arguments from model instance used to construct url
-        By default it is the object id
-        @param obj: instance of self.model
-        @return: dictionary of url bits 
-        '''
         return {'id': obj.code}
     
     def get_object(self, *args, **kwargs):
-        '''
-        Retrive an instance of self.model for arguments.
-        By default arguments is the object id,
-        Reimplement for custom arguments
-        '''
         try:
             id = kwargs.get('id',None)
             return self.model.objects.get(code = id)
@@ -136,8 +125,11 @@ class DataApplication(TagApplication):
         else:
             return None
         
-    def get_form(self, djp, bound = True, **kwargs):
-        f = super(DataApplication,self).get_form(djp, **kwargs)
+    def get_form(self, djp, withdata = True, initial = None, **kwargs):
+        initial = initial or {}
+        if not withdata:
+            initial.update(dict(djp.request.POST.items()))
+        f = super(DataApplication,self).get_form(djp, initial = initial, withdata = withdata, **kwargs)
         dataform = f.forms[0][1]
         iform    = dataform.content_form
         if iform:
@@ -145,7 +137,6 @@ class DataApplication(TagApplication):
         return f
     
     def object_from_form(self, form):
-        '''Save form and return an instance pof self.model'''
         form.forms.pop()
         return super(DataApplication,self).object_from_form(form)
     

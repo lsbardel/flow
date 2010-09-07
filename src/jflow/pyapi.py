@@ -10,6 +10,21 @@ def _instapi():
     from jflow.db.instdata import api
     return api
 
+class holder:
+    controller = None
+    
+_controller = holder()
+
+def get_controller():
+    global _controller
+    return _controller.controller
+
+def set_controller(controller):
+    global _controller
+    _controller.controller = controller
+    
+    
+
 ###################################################################################
 # API START
 
