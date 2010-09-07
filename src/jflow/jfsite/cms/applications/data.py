@@ -35,6 +35,11 @@ def econometric_data(data,url):
         return ''
 
 
+def getserver():
+    #from jflow.db.netdata.models import ServerMachine
+    #return ServerMachine.objects.get_for_machine('jflow-data-server')
+    return 'http://localhost:9010/'
+
 class TimeserieView(appview.AppView):
     '''
     view used to obtain timeseries.
@@ -47,7 +52,8 @@ class TimeserieView(appview.AppView):
         if not request.is_ajax():
             raise http.Http404
         data = dict(request.GET.items())
-        sdata = econometric_data(data,settings.LEAH_SERVER_URL)
+        server = getserver()
+        sdata = econometric_data(data,server)
         return http.HttpResponse(sdata, mimetype='application/javascript')
 
 
@@ -85,7 +91,7 @@ class DataApplication(TagApplication):
     form      = NiceDataIdForm
     form_template = 'instdata/dataid_change_form.html'
     
-    timeserie = TimeserieView(regex = 'timeserie')
+    timeserie = TimeserieView(regex = 'timeseries')
     add       = DataAddView(regex = 'add', isplugin = False)
     view      = appview.ViewView(regex = slug_regex, parent = None)
     edit      = DataEditView()

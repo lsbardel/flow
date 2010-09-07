@@ -29,7 +29,7 @@ def makeoptions():
 
 
 if __name__ == '__main__':
-    import environment
+    from environment import local_dir
     options, args = makeoptions().parse_args()
     base = 'allsettings'
     if options.debug:
@@ -45,13 +45,13 @@ if __name__ == '__main__':
    
     from unuk.contrib.txweb import jsonrpc, djangoapp, start
     from unuk.utils import get_logger
-    from jflow.rpc import JFlowRPC
 
     rpcport = options.port or settings.RPC_SERVER_PORT
     webport = rpcport+1
     webserver, rpcserver = None,None
     try:
         if options.rpcserver:
+            from jflow.rpc import JFlowRPC
             rpcserver = jsonrpc.ApplicationServer(JFlowRPC, port = rpcport)
             rpcserver.service.logger.info('Listening on port %s'% rpcport)
         if options.webserver:
@@ -59,9 +59,10 @@ if __name__ == '__main__':
             webserver.service.logger.info('Listening on port %s'% webport)
         
         if not (webserver or rpcserver):
-            rpcserver = jsonrpc.ApplicationServer(SiroRPC, port = rpcport)
+            rpcserver = jsonrpc.ApplicationServer(JFlowRPC, port = rpcport)
             webserver = djangoapp.ApplicationServer(local_dir, port = webport)
     except Exception, e:
+        print(e)
         exit()
     
     start()
