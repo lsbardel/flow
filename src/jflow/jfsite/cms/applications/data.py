@@ -53,7 +53,7 @@ class TimeserieView(appview.AppView):
 
 def change_type(self, djp):
     '''Ajax view to change instrument form'''
-    form = self.get_form(djp)
+    form = self.get_form(djp, bound = False)
     forms = list(form.forms_only())
     if len(forms) == 2:
         form = forms[1]
@@ -73,6 +73,9 @@ class DataEditView(appview.EditView):
 
     def ajax__content_type(self, djp):
         return change_type(self,djp)
+    
+    def title(self, page, **urlargs):
+        return u'edit'
 
 
 slug_regex = '(?P<id>[-\.\w]+)'
@@ -84,8 +87,8 @@ class DataApplication(TagApplication):
     
     timeserie = TimeserieView(regex = 'timeserie')
     add       = DataAddView(regex = 'add', isplugin = False)
-    edit      = DataEditView(regex = 'edit/%s' % slug_regex, parent = None)
     view      = appview.ViewView(regex = slug_regex, parent = None)
+    edit      = DataEditView()
     
     def objectbits(self, obj):
         '''
@@ -108,32 +111,43 @@ class DataApplication(TagApplication):
         except:
             return None
     
-    def instrument_form(self, request, instance):
+    def instrument_form(self, request, instance, bound):
         data     = request.POST or request.GET
         initial  = dict(data.items())
         ct = initial.get('content_type',None)
+        instrument = None
+        imodel     = None
         if not ct and instance:
-            ct = djp.instance.content_type
-        if ct:
+            instrument = instance.instrument
+            if instrument:
+                imodel = instrument.__class__
+        if not imodel and ct:
             try:
                 ct = ContentType.objects.get(id = ct)
-                model = ct.model_class()
-                f = modelform_factory(model, InstrumentForm)
-                minstance = None
-                if instance and isinstance(model,instance.instrument):
-                    minstance = instance.instrument
-                return f(initial = initial, instance = minstance)
+                imodel = ct.model_class()
             except:
-                return None
+                pass
+        if imodel:
+            f = modelform_factory(imodel, InstrumentForm)
+            if bound:
+                return f(data = data, instance = instrument)
+            else:
+                return f(initial = initial, instance = instrument)
         else:
             return None
         
-    def get_form(self, djp, **kwargs):
-        iform = self.instrument_form(djp.request, djp.instance)
+    def get_form(self, djp, bound = True, **kwargs):
         f = super(DataApplication,self).get_form(djp, **kwargs)
+        dataform = f.forms[0][1]
+        iform    = dataform.content_form
         if iform:
             f.add(iform)
         return f
+    
+    def object_from_form(self, form):
+        '''Save form and return an instance pof self.model'''
+        form.forms.pop()
+        return super(DataApplication,self).object_from_form(form)
     
 
 class EconometricApplication(TagApplication):

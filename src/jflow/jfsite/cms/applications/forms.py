@@ -31,17 +31,8 @@ def AutocompleteTagField(required = False):
 
 class NiceDataIdForm(DataIdForm):
     tags   = AutocompleteTagField()
-    
     layout = FormLayout()
-    #layout = FormLayout(
-    #                     Fieldset('code', 'name', 'isin', 'firm_code', 'content_type',
-    #                              'tags', 'country',
-    #                              css_class = inlineLabels, key = 'main'),
-    #                     Fieldset('description', key = 'descr'),
-    #                     Fieldset('live', 'default_vendor',
-    #                              css_class = inlineLabels, key = 'second'),
-    #                     template = 'instdata/dataid_change_form.html')
-    layout.inlines.append(ModelFormInlineHelper(DataId,VendorId))
+    layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=4))
 
 
 class InstrumentForm(forms.ModelForm):

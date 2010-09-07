@@ -123,6 +123,7 @@ LOGOUT_URL = '%slogout/' % USER_ACCOUNT_HOME_URL
 DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
                    'flowrepo.cms',
+                   'dynts.web.plugins',
                    'jfsite.cms.plugins.*',
                    'jfsite.applications.trade']
 GOOGLE_ANALYTICS_ID     = PSETTINGS.id.GOOGLE_ANALYTICS_ID

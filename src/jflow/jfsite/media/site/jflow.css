@@ -54,7 +54,7 @@ a:hover {
 	border-bottom:1px dotted #C2C2C2;
 }
 #page-messages {
-	min-height: 50px;
+	min-height: 20px;
 }
 #content {
 	min-height: 400px;

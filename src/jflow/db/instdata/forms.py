@@ -14,12 +14,6 @@ class DataIdForm(ExtraContentForm):
                                           required = False,
                                           label = 'instrument',
                                           widget = forms.Select({'class':'ajax'}))
-        
-    class Media:
-        css = {
-            'all': ('instdata/layout.css',)
-        }
-        js = ['instdata/decorator.js']
             
     class Meta:
         model   = DataId
