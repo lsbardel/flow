@@ -92,6 +92,7 @@ class DataApplication(TagApplication):
     form_template = 'instdata/dataid_change_form.html'
     
     timeserie = TimeserieView(regex = 'timeseries')
+    complete  = appview.AutocompleteView()
     add       = DataAddView(regex = 'add', isplugin = False)
     view      = appview.ViewView(regex = slug_regex, parent = None)
     edit      = DataEditView()

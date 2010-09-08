@@ -1,23 +1,18 @@
 from django.contrib.auth.models import User
 
 from djpcms.conf import settings
-from djpcms.utils.html import autocomplete
 from djpcms.views import appsite
 from djpcms.views.apps.user import UserApplication
+from djpcms.views.apps.tagging import Tag, TagsApplication
 from djpcms.views.apps.memcache import MemcacheApplication
-
 
 from jflow.db.instdata.models import DataId
 from flowrepo.models import Report, FlowItem
-from tagging.models import Tag
-
-autocomplete.register(DataId,['code','name'])
-autocomplete.register(Report,['slug','name'])
-autocomplete.register(Tag,['name'])
-autocomplete.register(User,['username','username'])
-
 
 from jflow.jfsite.cms.applications import data
+
+
+appsite.site.register('/tagging/', TagsApplication, model = Tag)
     
 #___________________________________ REGISTERING DYNAMIC APPLICATIONS
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)

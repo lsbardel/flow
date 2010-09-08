@@ -2,15 +2,14 @@ from django import forms
 from django.contrib.auth.models import User
 
 from djpcms.utils import form_kwargs
-from djpcms.utils.html import htmlwrap, box, ModelMultipleChoiceField, AutocompleteManyToManyInput
+from djpcms.utils.html import htmlwrap, box
 from djpcms.utils.uniforms import FormLayout, Html, Fieldset, inlineLabels, ModelFormInlineHelper
+from djpcms.forms import ModelMultipleChoiceField
+from djpcms.views.apps.tagging import TagField
 
 from flowrepo.models import Report, Attachment, Image
 from flowrepo.forms import FlowItemForm, add_related_upload
 from flowrepo import markups
-
-from tagging.models import Tag
-from tagging.forms import TagField
 
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
 from jflow.db.instdata.forms import DataIdForm, EconometricForm
@@ -24,13 +23,9 @@ CRL_HELP = htmlwrap('div',
 collapse = lambda title, html, c, cl: box(hd = title, bd = html, collapsable = c, collapsed = cl)
 
 
-def AutocompleteTagField(required = False):
-    wg = AutocompleteManyToManyInput(Tag, ['name'], separator = ' ', inline = True)
-    return TagField(required = required, widget = wg)
-
-
 class NiceDataIdForm(DataIdForm):
-    tags   = AutocompleteTagField()
+    tags   = TagField()
+    
     layout = FormLayout()
     layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=4))
 
@@ -48,7 +43,7 @@ class ReportForm(FlowItemForm):
                                             help_text = 'To select/deselect multiple files to attach press ctrl')
     images       = ModelMultipleChoiceField(Image.objects, required = False, label = 'Available images',
                                             help_text = 'To select/deselect multiple files to attach press ctrl')
-    tags         = AutocompleteTagField()
+    tags         = TagField()
     attachment_1 = forms.FileField(required = False)
     attachment_2 = forms.FileField(required = False)
     attachment_3 = forms.FileField(required = False)
