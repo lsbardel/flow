@@ -1,16 +1,12 @@
 import os
 import unittest
-import settings
 import types
-from django.core.management import setup_environ
 
-os.environ['JFLOW_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.tests'
-os.environ['STDNET_SETTINGS_MODULE'] = 'jflow.jfsite.allsettings.tests'
-
-setup_environ(settings)
+from environment import setup
+setup('tests')
 
 from stdnet import tests
-from jflow.db.portfolio import tests as ptests
+#from jflow import tests as ptests
 
 class TestLoader(unittest.TestLoader):
     
@@ -28,8 +24,8 @@ class TestLoader(unittest.TestLoader):
 
 def run():
     loader = TestLoader()
-    #suite  = loader.loadTestsFromModules(tests)
-    suite  = loader.loadTestsFromModules(ptests)
+    suite  = loader.loadTestsFromModules(tests)
+    #suite  = loader.loadTestsFromModules(ptests)
     #suite  = loader.loadTestsFromModules(tests,ptests)
     runner = unittest.TextTestRunner()
     runner.run(suite)

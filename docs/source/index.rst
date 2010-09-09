@@ -17,7 +17,16 @@ Finance is an area where well-written open-source projects could make a tremendo
 .. toctree::
    :maxdepth: 2
    
-   api
+   overview
+   pyapi
+   intro/index
+   database/index
+   misc/index
 
+Indices and tables
+==================
 
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

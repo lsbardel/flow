@@ -1,22 +1,17 @@
-<div class="report-form"> 
- <div class="grid_3">
+{% extends "djpcms/yui/yui-gf.html" %}
+{% block pre-yui %}
+<div class="report-form">{% endblock %}{% block left-column %}
   <div class="report-dashboard">
   {{ inputs }}
   {{ html }}
   </div>
   {{ metadata }}
- </div>
- <div class="grid_9">
-  <div class="report-edit">
-  {{ body }}
-  </div>
- </div>
- <div class="grid_4">
-    {{ help }}
+  {{ help }}
   <div class="separator"></div>
   {{ current_attachments }}
   <div class="separator"></div>
-  {{ attachments }}
- </div>
- <div class="clear"></div>
-</div>
+  {{ attachments }}{% endblock %}{% block right-column %}
+  <div class="report-edit">
+  {{ body }}
+  </div>{% endblock %}
+{% block post-yui %}</div>{% endblock %} 

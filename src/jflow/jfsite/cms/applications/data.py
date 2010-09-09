@@ -90,6 +90,7 @@ class DataApplication(TagApplication):
     inherit   = True
     form      = NiceDataIdForm
     form_template = 'instdata/dataid_change_form.html'
+    search_fields = ['code','name','description','tags','isin']
     
     timeserie = TimeserieView(regex = 'timeseries')
     complete  = appview.AutocompleteView()

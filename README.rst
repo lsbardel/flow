@@ -1,11 +1,14 @@
-==========================
-JFLOW
-==========================
+
+:Documentation: http://packages.python.org/jflow/
+:Dowloads: http://pypi.python.org/pypi/jflow/
+:Source: http://github.com/lsbardel/jflow
+:Keywords: finance, quantitative, timeseries, data, analysis, django, python
+
+--
 
 Python package for quantitative finance and econometric analysis
 
 
-======================
 Requirements
 ======================
 
@@ -14,21 +17,28 @@ Requirements
  * stdnet__
  * dynts__
 
-==================
+
 Running Tests
 ==================
 
-to run tests, move into the `jfsite` directory and type::
+To use jflow you need to install redis__, which is the only database back-end supported by stdnet__.
+If you are working in linux, simply download the latest redis version and compile it. If you are working on windows
+you can get binaries here__. Make sure the version you are  installing is greater than 2.0.
 
-    python manage.py test instdata trade
+Start redis and on a separate shell move into the ``jflow.jfsite`` directory and type::
+
+    python sntest.py
     
+    
+Good luck
 
 __ http://www.djangoproject.com/
 __ http://code.google.com/p/ccy/
 __ http://packages.python.org/python-stdnet/
-__ 
-    
-
+__ http://code.google.com/p/dynts/
+__ http://code.google.com/p/redis/
+__ http://packages.python.org/python-stdnet/
+__ http://code.google.com/p/servicestack/wiki/RedisWindowsDownload
 
 
 

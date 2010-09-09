@@ -1,9 +1,10 @@
-.. _contents:
+.. _python-api:
 
+.. module:: jflow.pyapi
 
+===================
 Python API
-=============================
-.. module:: jflow.api
+===================
 
 .. autofunction:: jflow.api.add_new_portfolio_view
 

@@ -36,7 +36,8 @@ class InstrumentForm(forms.ModelForm):
 
 class ReportForm(FlowItemForm):
     authors  = ModelMultipleChoiceField(User.objects, required = False)
-    data_ids = ModelMultipleChoiceField(DataId.objects, required = False, label = 'Related securities')
+    data_ids = ModelMultipleChoiceField(DataId.objects.all(),
+                                        required = False, label = 'Related securities')
     attachments  = ModelMultipleChoiceField(Attachment.objects,
                                             required = False,
                                             label = 'Available attachments',

@@ -29,7 +29,7 @@ def makeoptions():
 
 
 if __name__ == '__main__':
-    from environment import local_dir
+    from environment import local_dir, setup
     options, args = makeoptions().parse_args()
     base = 'allsettings'
     if options.debug:

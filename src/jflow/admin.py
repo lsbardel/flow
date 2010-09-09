@@ -3,6 +3,7 @@ from stdnet import orm
 from jflow.models import *
 
 def register(**kwargs):
+    '''Register Models'''
     orm.register(FinIns, **kwargs)
     orm.register(PortfolioHolder, **kwargs)
     orm.register(Portfolio, **kwargs)
