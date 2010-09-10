@@ -46,6 +46,13 @@ def ctids():
     return ContentType.objects.filter(pk__in = ids)
 
 
+def instrument_ct(name):
+    try:
+        return ContentType.objects.get_by_natural_key('instdata',name)
+    except:
+        return None 
+
+
 def cleanmodels():
     imodels = dbmodels()
     for m in imodels:

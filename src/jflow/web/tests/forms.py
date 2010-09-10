@@ -1,5 +1,4 @@
 from django.test import TestCase
-from jflow.db.instdata import instrument_type
 from djpcms.utils.uniforms import UniForm
 
 class TestDataIdForm(TestCase):
@@ -7,8 +6,9 @@ class TestDataIdForm(TestCase):
     
     def testEquity(self):
         from jflow.web.forms import NiceDataIdForm
+        from jflow.db.instdata.utils import instrument_ct
         data = {'code':'GOOG',
-                'content_type':instrument_type('equity').id,
+                'content_type':instrument_ct('equity').id,
                 'curncy':'USD'}
         self.assertFalse(NiceDataIdForm(data = data).is_valid())
         data.update({'country':'US'})

@@ -16,6 +16,7 @@ Requirements
  * ccy__
  * stdnet__
  * dynts__
+ * unuk__
 
 
 Running Tests
@@ -28,11 +29,7 @@ you can get binaries here__. Make sure the version you are  installing is greate
 Start redis and open a separate shell. You can run tests from the console from within the ``jflow`` source directory::
 
 	python runtests.py
-	
-or, once installed the package, from the interactive console::
-
-    import jflow
-    jflow.runtests()    
+ 
     
 Good luck
 
@@ -40,6 +37,7 @@ __ http://www.djangoproject.com/
 __ http://code.google.com/p/ccy/
 __ http://packages.python.org/python-stdnet/
 __ http://code.google.com/p/dynts/
+__ http://packages.python.org/unuk/
 __ http://code.google.com/p/redis/
 __ http://packages.python.org/python-stdnet/
 __ http://code.google.com/p/servicestack/wiki/RedisWindowsDownload
