@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     'dynts',
     #
     'ccy.basket',
-    'jflow',
+    'jflow.db.portfolio',
     'jflow.db.instdata',
     'jflow.db.trade',
     #

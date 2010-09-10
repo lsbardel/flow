@@ -4,7 +4,6 @@
 import ccy
 import jflow
 from jflow.db import finins as _api 
-from jflow.models import UserViewDefault
 
 class holder:
     controller = None
@@ -76,10 +75,10 @@ def create_user_view(instance, name, user, default = False):
         build = True
         root = view.portfolio
         view = root.create_view(name,user)
-    defaults = UserViewDefault.objects.filter(user = view.user, portfolio = view.portfolio)
+    defaults = _api.UserViewDefault.objects.filter(user = view.user, portfolio = view.portfolio)
     if default or not defaults:
         defaults.delete()
-        UserViewDefault(user = view.user, portfolio = view.portfolio, view = view).save()
+        _api.UserViewDefault(user = view.user, portfolio = view.portfolio, view = view).save()
     if build:
         return _api.build_new_view(view)
     else:

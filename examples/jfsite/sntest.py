@@ -5,6 +5,9 @@ import types
 import environment
 environment.setup('test')
 
+packages = ['jflow.db.portfolio',
+            'jflow.db.instdata']
+
 from jflow.utils.tests import jFlowTestSuiteRunner, defaultTestLoader
 from stdnet import tests
 from jflow import tests as ptests
@@ -26,7 +29,7 @@ class TestLoader(unittest.TestLoader):
 def run(verbosity = 1, interactive = True, failfast = False):
     test_runner = jFlowTestSuiteRunner(verbosity = verbosity, interactive = interactive, failfast = failfast)
     extra_tests = None
-    return test_runner.run_tests(['jflow'], extra_tests=extra_tests)
+    return test_runner.run_tests(packages, extra_tests=extra_tests)
 
 
     runner = jFlowTestSuite()

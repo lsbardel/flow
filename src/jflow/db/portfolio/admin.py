@@ -1,6 +1,6 @@
 from stdnet import orm
 
-from jflow.models import *
+from jflow.db.portfolio.models import *
 
 def register(**kwargs):
     '''Register Models'''

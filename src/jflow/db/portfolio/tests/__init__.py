@@ -1,5 +1,5 @@
 from jflow.utils.tests import jFlowTestSuite, unittest
-from jflow.admin import register
+from jflow.db.portfolio.admin import register
 register()
 
 #from portfolio import *

@@ -1,16 +1,18 @@
 import logging
 from datetime import date
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
+
 import stdnet
 
 from jflow.conf import settings
 from jflow.core import finins
 from jflow.utils.encoding import smart_str
 
-from jflow.db import User
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
-from jflow.models import PortfolioHolder, Portfolio, FinIns
-from jflow.models import UserViewDefault, PortfolioView
+from jflow.db.portfolio.models import PortfolioHolder, Portfolio, FinIns
+from jflow.db.portfolio.models import UserViewDefault, PortfolioView
 import jflow.db.instdata.signals
 
 
