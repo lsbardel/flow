@@ -104,7 +104,7 @@ class FormTests(TestCase):
         self.assertEqual(id.type,'bond')
         self.assertEqual(id.instrument.bond_class.code,'DBR')
         
-    def testAdmin(self):
+    def __testAdmin(self):
         if 'django.contrib.admin' in settings.INSTALLED_APPS:
             data = self.bond_data(code = 'dbr54')
             data['vendorid_set-TOTAL_FORMS'] = 3

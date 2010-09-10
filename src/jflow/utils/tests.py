@@ -1,7 +1,7 @@
 import unittest
 from django.test import TestCase
 from django.db.models import get_app, get_apps
-from django.test.simple import DjangoTestSuiteRunner, reorder_suite, get_tests
+from django.test.simple import DjangoTestSuiteRunner, reorder_suite, build_test, get_tests
 from django.contrib.contenttypes.models import ContentType
 
 from stdnet import orm

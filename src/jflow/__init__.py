@@ -35,12 +35,26 @@ def install_libs():
             __import__(package)
             
 
+
+def set_settings(setting_module):
+    import os
+    os.environ['JFLOW_SETTINGS_MODULE']   = setting_module
+    os.environ['STDNET_SETTINGS_MODULE']  = setting_module
+    os.environ['UNUK_SETTINGS_MODULE']    = setting_module
+    os.environ['DJANGO_SETTINGS_MODULE']  = setting_module
+            
+
 install_libs()
 
 
-def runtests(verbosity = 1, interactive = True, failfast = False):
-    from jfsite.sntest import run
-    run(verbosity = verbosity, interactive = interactive, failfast = failfast)
+def runtests(verbosity = 1, interactive = True,
+             failfast = False, packages = None, extra_tests = None):
+    from jflow.utils.tests import jFlowTestSuiteRunner
+    packages = ['portfolio','instdata','trade','web'] if not packages else packages.split(' ')
+    test_runner = jFlowTestSuiteRunner(verbosity = verbosity,
+                                       interactive = interactive,
+                                       failfast = failfast)
+    return test_runner.run_tests(packages, extra_tests=extra_tests)
 
 
 

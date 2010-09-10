@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'jflow.db.portfolio',
     'jflow.db.instdata',
     'jflow.db.trade',
+    'jflow.web',
     #
     #'south'
 ]

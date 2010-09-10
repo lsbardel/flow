@@ -11,7 +11,7 @@ from dateutil.parser import parse as DateFromString
 from unuk.core.jsonrpc import Proxy
 
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
-from jflow.web.applications.forms import NiceDataIdForm, EconometricForm, InstrumentForm
+from jflow.web.forms import NiceDataIdForm, EconometricForm, InstrumentForm
 
 
 def date2yyyymmdd(dte):

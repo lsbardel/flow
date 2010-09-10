@@ -15,11 +15,3 @@ pt.add(module='flowrepo',uplev = 3, down = ('django-flowrepo',))
 pt.add(module='ccy', uplev = 3, down = ('ccy',))
 
 
-def setup(setting_module):
-    s2 = 'jfsite.allsettings.%s' % setting_module 
-    os.environ['JFLOW_SETTINGS_MODULE']   = s2
-    os.environ['STDNET_SETTINGS_MODULE']  = s2
-    os.environ['UNUK_SETTINGS_MODULE']    = s2
-    os.environ['DJANGO_SETTINGS_MODULE']  = s2
-    
-

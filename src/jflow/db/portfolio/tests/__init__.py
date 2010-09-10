@@ -3,5 +3,5 @@ from jflow.db.portfolio.admin import register
 register()
 
 #from portfolio import *
-from fromdb import *
+#from fromdb import *
     

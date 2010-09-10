@@ -1,9 +1,4 @@
 from django import forms
-from django.contrib.contenttypes.models import ContentType
-from django.utils.text import capfirst
-from django.db.models import Q
-
-from tagging.forms import TagField
 
 from models import DataId, EconometricAnalysis
 from jflow.db.instdata.utils import ctids
