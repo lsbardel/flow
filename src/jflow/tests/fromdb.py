@@ -17,7 +17,7 @@ from jflow.db.trade.models import Fund, FundHolder, Trader
 from jflow.models import *
 from jflow.utils.anyjson import json
 from jflow.utils.tests import jFlowTest
-from jflow import api
+from jflow import pyapi as api
 
 
 class TestDatabaseCacheInteraction(jFlowTest):

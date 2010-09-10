@@ -2,7 +2,9 @@
 # PYTHON API
 ###########################################################
 import ccy
+import jflow
 from jflow.models import UserViewDefault
+
 
 def _api():
     from jflow.db import finins
@@ -30,6 +32,10 @@ def set_controller(controller):
 
 ###################################################################################
 # API START
+
+def get_version():
+    '''jflow version tuple'''
+    return jflow.get_version()
 
 def adddataid(code, curncy, country = None, **kwargs):
     '''Add new data id to database'''

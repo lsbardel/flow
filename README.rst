@@ -25,10 +25,14 @@ To use jflow you need to install redis__, which is the only database back-end su
 If you are working in linux, simply download the latest redis version and compile it. If you are working on windows
 you can get binaries here__. Make sure the version you are  installing is greater than 2.0.
 
-Start redis and on a separate shell move into the ``jflow.jfsite`` directory and type::
+Start redis and open a separate shell. You can run tests from the console from within the ``jflow`` source directory::
 
-    python sntest.py
-    
+	python runtests.py
+	
+or, once installed the package, from the interactive console::
+
+    import jflow
+    jflow.runtests()    
     
 Good luck
 

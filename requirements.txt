@@ -2,7 +2,7 @@ ccy>=0.3.2
 ply>=3.0
 python-stdnet
 dynts
-unuk
+unuk >= 0.2.2
 python-dateutil>=1.4.1
 django-piston
 -e svn+http://django-tagging.googlecode.com/svn/trunk#egg=tagging

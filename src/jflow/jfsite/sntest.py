@@ -2,11 +2,12 @@ import os
 import unittest
 import types
 
-from environment import setup
-setup('tests')
+import environment
+environment.setup('test')
 
+from jflow.utils.tests import jFlowTestSuiteRunner, defaultTestLoader
 from stdnet import tests
-#from jflow import tests as ptests
+from jflow import tests as ptests
 
 class TestLoader(unittest.TestLoader):
     
@@ -22,10 +23,17 @@ class TestLoader(unittest.TestLoader):
         return self.suiteClass(tests)
 
 
-def run():
+def run(verbosity = 1, interactive = True, failfast = False):
+    test_runner = jFlowTestSuiteRunner(verbosity = verbosity, interactive = interactive, failfast = failfast)
+    extra_tests = None
+    return test_runner.run_tests(['jflow'], extra_tests=extra_tests)
+
+
+    runner = jFlowTestSuite()
+    suite.run()
     loader = TestLoader()
-    suite  = loader.loadTestsFromModules(tests)
-    #suite  = loader.loadTestsFromModules(ptests)
+    #suite  = loader.loadTestsFromModules(tests)
+    suite  = loader.loadTestsFromModules(ptests)
     #suite  = loader.loadTestsFromModules(tests,ptests)
     runner = unittest.TextTestRunner()
     runner.run(suite)

@@ -2,8 +2,6 @@ import os
 local_dir = os.path.split(os.path.abspath(__file__))[0]
 
 RPC_SERVER_PORT = 9010
-
-TEST_RUNNER = 'jflow.utils.tests.jFlowTestSuiteRunner'
     
 ADMINS = (
      ('Luca Sbardella', 'luca.sbardella@gmail.com'),

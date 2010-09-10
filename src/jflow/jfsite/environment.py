@@ -5,6 +5,7 @@ local_dir = parentdir(os.path.abspath(__file__))
 
 pt = AddToPath(local_dir)
 
+pt.add(module='jflow', uplev = 2)
 pt.add(module='djpcms',uplev = 3, down = ('djpcms',))
 pt.add(module = 'ccy', uplev = 3, down = ('ccy',))
 
@@ -15,5 +16,9 @@ def setup(setting_module):
     os.environ['STDNET_SETTINGS_MODULE']  = s2
     os.environ['UNUK_SETTINGS_MODULE']    = s2
     os.environ['DJANGO_SETTINGS_MODULE']  = s2
+    
+    if setting_module == 'test':
+        from django.test.utils import setup_test_environment
+        setup_test_environment()
     
 
