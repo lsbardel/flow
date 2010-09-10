@@ -21,7 +21,7 @@ class AddToPath(object):
             try:
                 __import__(module)
                 return module
-            except:
+            except ImportError:
                 pass
             
         dir = uplevel(self.local_dir,uplev)

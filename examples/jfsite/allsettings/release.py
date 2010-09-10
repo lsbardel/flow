@@ -1,4 +1,4 @@
-from jflow.jfsite.global_settings import *
+from jfsite.global_settings import *
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

@@ -31,16 +31,11 @@ def makeoptions():
 if __name__ == '__main__':
     from environment import local_dir, setup
     options, args = makeoptions().parse_args()
-    base = 'allsettings'
     if options.debug:
         setting_module = 'debug'
     else:
         setting_module = 'release'
-    s2 = 'jflow.jfsite.allsettings.%s' % setting_module 
-    os.environ['JFLOW_SETTINGS_MODULE']   = s2
-    os.environ['STDNET_SETTINGS_MODULE']  = s2
-    os.environ['UNUK_SETTINGS_MODULE']    = s2
-    os.environ['DJANGO_SETTINGS_MODULE']  = s2
+    setup(setting_module)
     from jflow.conf import settings
    
     from unuk.contrib.txweb import jsonrpc, djangoapp, start

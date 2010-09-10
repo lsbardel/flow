@@ -12,7 +12,6 @@ from flowrepo.forms import FlowItemForm, add_related_upload
 from flowrepo import markups
 
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
-from jflow.db.instdata.forms import DataIdForm, EconometricForm
 
 
 CRL_HELP = htmlwrap('div',
@@ -21,18 +20,6 @@ CRL_HELP = htmlwrap('div',
 
 
 collapse = lambda title, html, c, cl: box(hd = title, bd = html, collapsable = c, collapsed = cl)
-
-
-class NiceDataIdForm(DataIdForm):
-    tags   = TagField()
-    
-    layout = FormLayout()
-    layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=4))
-
-
-class InstrumentForm(forms.ModelForm):
-    pass
-
 
 class ReportForm(FlowItemForm):
     authors  = ModelMultipleChoiceField(User.objects, required = False)
@@ -83,3 +70,4 @@ class ReportForm(FlowItemForm):
     
     class Meta:
         model = Report
+        

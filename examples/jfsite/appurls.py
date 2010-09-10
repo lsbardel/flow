@@ -8,8 +8,28 @@ from djpcms.views.apps.memcache import MemcacheApplication
 
 from jflow.db.instdata.models import DataId
 from flowrepo.models import Report, FlowItem
+from flowrepo.cms import FlowItemApplication, ReportApplication
 
-from jflow.jfsite.cms.applications import data
+from jflow.web.applications import data
+
+
+class BlogApplication(ReportApplication):
+    form_ajax = False
+    inherit   = True
+    _form_save       = 'save'
+    _form_continue   = 'save and continue'
+    name      = 'report'
+    form      = ReportForm
+    
+    class Media:
+        css = {
+            'all': ('flowrepo/flowrepo.css',)
+        }
+
+class ItemApplication(FlowItemApplication):
+    name      = 'items'
+    
+
 
 
 appsite.site.register('/tagging/', TagsApplication, model = Tag)
@@ -20,11 +40,10 @@ appsite.site.register('/data/', data.DataApplication, model = DataId)
 appsite.site.register('/econometric/', data.EconometricApplication,  model = data.EconometricAnalysis)
 appsite.site.register('/report/', data.BlogApplication, model = Report)
 #appsite.site.register('/items/', data.FlowItemApplication, model = FlowItem)
-appsite.site.register('/memcached/', MemcacheApplication)
 
 
 if 'jflow.db.trade' in settings.INSTALLED_APPS:
-    from jflow.jfsite.cms.applications import trade
+    from jflow.web.applications import trade
     appsite.site.register('/team/', trade.FundHolderApplication, model = trade.FundHolder)
     appsite.site.register('/portfolioview/', trade.PortfolioViewApplication, model = trade.PortfolioView)
     appsite.site.register('/portfolio/', trade.FundApplication, model = trade.Fund)
