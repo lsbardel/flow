@@ -50,7 +50,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "djpcms.core.context_processors.djpcms",
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,7 +73,7 @@ INSTALLED_APPS = (
     'jflow.db.trade',
     #
     #'south'
-)
+]
 
 
 # DJPCMS SETTINGS
@@ -89,8 +89,7 @@ DJPCMS_PLUGINS  = ['djpcms.plugins.*',
                    'djpcms.views.apps.tagging.plugins',
                    'flowrepo.cms',
                    'dynts.web.plugins',
-                   'jfsite.cms.plugins.*',
-                   'jfsite.applications.trade']
+                   'jflow.web.plugins.*']
 ROOT_URLCONF            = 'jfsite.urls'
 APPLICATION_URL_MODULE  = 'jfsite.appurls'
 

@@ -85,9 +85,9 @@ setup(
         package_dir  = {'': 'src'},
         data_files   = data_files,
         install_requires = ['ccy>=0.3.2',
-                            'ply>=3.0',
+                            'dynts',
                             'python-stdnet',
-                            'dynts'],
+                            'unuk'],
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
             'Environment :: Plugins',

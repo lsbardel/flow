@@ -12,6 +12,8 @@ from flowrepo.cms import FlowItemApplication, ReportApplication
 
 from jflow.web.applications import data
 
+from jfsite.forms import ReportForm
+
 
 class BlogApplication(ReportApplication):
     form_ajax = False
@@ -38,8 +40,8 @@ appsite.site.register('/tagging/', TagsApplication, model = Tag)
 appsite.site.register(settings.USER_ACCOUNT_HOME_URL, UserApplication, model = User)
 appsite.site.register('/data/', data.DataApplication, model = DataId)
 appsite.site.register('/econometric/', data.EconometricApplication,  model = data.EconometricAnalysis)
-appsite.site.register('/report/', data.BlogApplication, model = Report)
-#appsite.site.register('/items/', data.FlowItemApplication, model = FlowItem)
+appsite.site.register('/report/', BlogApplication, model = Report)
+#appsite.site.register('/items/', FlowItemApplication, model = FlowItem)
 
 
 if 'jflow.db.trade' in settings.INSTALLED_APPS:

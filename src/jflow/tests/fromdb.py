@@ -1,13 +1,13 @@
 from datetime import date,timedelta
 from itertools import izip
+from random import randint
 from timeit import default_timer as timer
 import logging
 
 logging.basicConfig(level = logging.DEBUG)
 logger = logging.getLogger('Portfolio Tests')
 
-from random import randint, uniform
-from django.conf import settings
+from jflow.conf import settings
 
 from stdnet import orm
 from stdnet.utils import populate

@@ -11,7 +11,7 @@ from equity import *
 from formatter import *
 from fields import *
 
-from jflow.log import LoggingClass
+from jflow.utils import LoggingClass
 from jflow.core.dates import date2yyyymmdd
 
 

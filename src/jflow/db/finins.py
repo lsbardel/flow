@@ -1,23 +1,17 @@
-'''Implementation of jflow.core.finins.Root methods for fetching
-portfolio data.
-'''
 import logging
 from datetime import date
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-
 import stdnet
 
-from jflow.core import finins
-from jflow.core.dates import yyyymmdd2date
 from jflow.conf import settings
+from jflow.core import finins
 from jflow.utils.encoding import smart_str
 
+from jflow.db import User
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
+from jflow.models import PortfolioHolder, Portfolio, FinIns
+from jflow.models import UserViewDefault, PortfolioView
 import jflow.db.instdata.signals
-from jflow.models import PortfolioHolder, Portfolio, FinIns, UserViewDefault, PortfolioView
 
 
 class AuthenticationError(Exception):
@@ -128,6 +122,7 @@ def build_view(view):
 
 
 def create_portfolio_from_fund(instance, dt):
+    '''Create a portfolio from a fund instance.'''
     try:
         holder = PortfolioHolder.objects.get(name = instance.code)
     except stdnet.ObjectNotFund:

@@ -6,7 +6,7 @@
 
 --
 
-Python package for quantitative finance and econometric analysis
+Python package for portfolio analysis.
 
 
 Requirements
