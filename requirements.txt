@@ -1,5 +1,4 @@
 ccy>=0.3.2
-ply>=3.0
 python-stdnet
 dynts
 unuk >= 0.2.2

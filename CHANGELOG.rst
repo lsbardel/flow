@@ -1,10 +1,12 @@
 
-jflow 0.4.a2
+jFlow 0.4.a2
 ===========================
+ * Added the ``libs`` directory containing external libraries which are not regularly updated.
+ * External libraries are added to the ``PYTHONPATH``, if needed, when importing ``jflow``.
  * Portfolio views are managed by python-stdnet__ ORM.
 
 
-jflow 0.4.a1 - (2010 July 17)
+jFlow 0.4.a1 - (2010 July 17)
 ================================
  * Added to PyPI
  * Refactored `instdata` and `trade` models. Not backward compatible
@@ -12,7 +14,7 @@ jflow 0.4.a1 - (2010 July 17)
  * Added `jfsite` application site with several `djpcms` plugins
 
 
-jflow 0.3 -  (2010 March 15)
+jFlow 0.3 -  (2010 March 15)
 ================================
  * First tagged release.
  * Added small management utility for cleaning stale instruments (python manage.py cleaninst)
