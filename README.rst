@@ -17,6 +17,7 @@ Requirements
  * stdnet__
  * dynts__
  * unuk__
+ * django-extracontent__
 
 
 Running Tests
@@ -38,6 +39,7 @@ __ http://code.google.com/p/ccy/
 __ http://packages.python.org/python-stdnet/
 __ http://code.google.com/p/dynts/
 __ http://packages.python.org/unuk/
+__ http://pypi.python.org/pypi/django-extracontent/
 __ http://code.google.com/p/redis/
 __ http://packages.python.org/python-stdnet/
 __ http://code.google.com/p/servicestack/wiki/RedisWindowsDownload
