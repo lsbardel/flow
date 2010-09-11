@@ -44,12 +44,12 @@ appsite.site.register('/report/', BlogApplication, model = Report)
 #appsite.site.register('/items/', FlowItemApplication, model = FlowItem)
 
 
-if 'jflow.db.trade' in settings.INSTALLED_APPS:
-    from jflow.web.applications import trade
-    appsite.site.register('/team/', trade.FundHolderApplication, model = trade.FundHolder)
-    appsite.site.register('/portfolioview/', trade.PortfolioViewApplication, model = trade.PortfolioView)
-    appsite.site.register('/portfolio/', trade.FundApplication, model = trade.Fund)
-    appsite.site.register('/manual-trade/', trade.ManualTradeApplication, model = trade.ManualTrade)
+#if 'jflow.db.trade' in settings.INSTALLED_APPS:
+#    from jflow.web.applications import trade
+#    appsite.site.register('/team/', trade.FundHolderApplication, model = trade.FundHolder)
+#    appsite.site.register('/portfolioview/', trade.PortfolioViewApplication, model = trade.PortfolioView)
+#    appsite.site.register('/portfolio/', trade.FundApplication, model = trade.Fund)
+#    appsite.site.register('/manual-trade/', trade.ManualTradeApplication, model = trade.ManualTrade)
 
 
     

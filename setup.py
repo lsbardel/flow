@@ -87,7 +87,8 @@ setup(
         install_requires = ['ccy>=0.3.2',
                             'dynts',
                             'python-stdnet',
-                            'unuk'],
+                            'unuk',
+                            'django-extracontent'],
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
             'Environment :: Plugins',

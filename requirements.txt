@@ -3,3 +3,4 @@ python-stdnet
 dynts
 unuk >= 0.2.2
 django-piston
+django-extracontent

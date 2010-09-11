@@ -133,18 +133,19 @@ class DataApplication(TagApplication):
             return None
         
     def get_form(self, djp, withdata = True, initial = None, **kwargs):
-        initial = initial or {}
         if not withdata:
+            initial = initial or {}
             initial.update(dict(djp.request.POST.items()))
         f = super(DataApplication,self).get_form(djp, initial = initial, withdata = withdata, **kwargs)
         dataform = f.forms[0][1]
-        iform    = dataform.content_form
+        iform    = dataform.content_form()
         if iform:
             f.add(iform)
         return f
     
     def object_from_form(self, form):
-        form.forms.pop()
+        if len(form.forms) == 2:
+            form.forms.pop()
         return super(DataApplication,self).object_from_form(form)
     
 

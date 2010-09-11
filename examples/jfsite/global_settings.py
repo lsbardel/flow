@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'flowrepo',
     'dynts',
     #
+    'extracontent',
     'ccy.basket',
     'jflow.db.portfolio',
     'jflow.db.instdata',

@@ -13,5 +13,6 @@ pt.add(module='unuk', uplev = 3, down = ('unuk','src'))
 pt.add(module='djpcms',uplev = 3, down = ('djpcms',))
 pt.add(module='flowrepo',uplev = 3, down = ('django-flowrepo',))
 pt.add(module='ccy', uplev = 3, down = ('ccy',))
+pt.add(module='extracontent', uplev = 3, down = ('django-extracontent',))
 
 

@@ -15,6 +15,14 @@ class FormTests(TestCase):
         self.ct.save()
         self.su = User.objects.create_superuser('superuser', 'test@example.com', 'superpw')
         self.client.login(username='superuser', password='superpw')
+        
+    def get_form(self, data = None, instance = None):
+        from jflow.db.instdata.forms import DataIdForm
+        return DataIdForm(data = data, instance = instance)
+    
+    def instrument_ct(self, name):
+        from jflow.db.instdata.utils import instrument_ct
+        return instrument_ct(name)
     
     def bond_data(self, code = 'A_BOND_CODE', country = 'GE', curncy = 'EUR'):
         ct = ContentType.objects.get_for_model(models.Bond)
@@ -32,14 +40,14 @@ class FormTests(TestCase):
     def create_equity(self, code = 'abcd', country = 'US', curncy = 'EUR', instance = None):
         from jflow.db.instdata.forms import DataIdForm
         ct = ContentType.objects.get_for_model(models.Equity)
-        f = DataIdForm({'code': code,
-                        'country': country,
-                        'content_type': '%s' % ct.id,
-                        'curncy': curncy,
-                        'multiplier': 1,
-                        'settlement_delay': 2,
-                        'live': True},
-                        instance = instance)
+        f = self.get_form(data = {'code': code,
+                           'country': country,
+                           'content_type': '%s' % ct.id,
+                           'curncy': curncy,
+                           'multiplier': 1,
+                           'settlement_delay': 2,
+                           'live': True},
+                           instance = instance)
         self.assertTrue(f.is_valid())
         return f.save()
     
@@ -60,6 +68,22 @@ class FormTests(TestCase):
         self.assertEqual(id.code,'SPXT')
     
     def testAddEquity(self):
+        '''Add a new equity instrument. Testing the all process.'''
+        data = {'code':'GOOG',
+                'content_type':self.instrument_ct('equity').id,
+                'curncy':'USD'}
+        form = self.get_form(data = data)
+        self.assertTrue(form.content_form)
+        self.assertFalse(form.is_valid())
+        data.update({'country':'US'})
+        self.assertFalse(self.get_form(data = data).is_valid())
+        data.update({'multiplier':1})
+        self.assertFalse(self.get_form(data = data).is_valid())
+        data.update({'settlement_delay':2})
+        form = self.get_form(data = data)
+        self.assertTrue(form.is_valid())
+        
+    def _testAddEquity2(self):
         id = self.create_equity()
         self.assertEqual(id.code,'ABCD')
         self.assertEqual(id.curncy,'EUR')
@@ -72,7 +96,7 @@ class FormTests(TestCase):
         self.assertEqual(id.instrument.ccy(),id.curncy)
         self.assertEqual(id.type,'equity')
         
-    def testModifyEquity(self):
+    def _testModifyEquity(self):
         '''
         Modify an equity object
         '''
@@ -89,12 +113,12 @@ class FormTests(TestCase):
         self.assertEqual(nid.instrument.ccy(),nid.curncy)
         self.assertEqual(nid.type,'equity')
         
-    def testAddBond(self):
+    def _testAddBond(self):
         id = self.create_bond(code='dbrbond')
         self.assertEqual(id.type,'bond')
         self.assertEqual(id.instrument.bond_class.code,'DBR')
         
-    def testModifyEquityBond(self):
+    def _testModifyEquityBond(self):
         id = self.create_equity(code='vod_ln', curncy = 'EUR')
         id = models.DataId.objects.get(code = 'VOD_LN')
         nid = self.create_bond(code = 'VODBOND', instance = id)

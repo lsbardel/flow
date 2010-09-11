@@ -12,7 +12,7 @@ from jflow.core import frequency, dayCount_choices
 from jflow.db import geo
 from jflow.db.instdata import managers
 from jflow.db.instdata.fields import SlugCode, LazyForeignKey, slugify
-from jflow.db.instdata.dynct import ExtraContentModel
+from extracontent.models import ExtraContentBase
 
 
 field_type = (('numeric','Numeric'),
@@ -79,7 +79,7 @@ class Vendor(BaseModel):
         return module.get_vendor(self.code)
 
 
-class DataId(ExtraContentModel):
+class DataId(ExtraContentBase):
     '''
     Database ID
     '''
@@ -127,15 +127,13 @@ class DataId(ExtraContentModel):
         else:
             return u'%s' % self.code
 
-    def _denormalize(self, ec = None):
+    def _denormalise(self, ec = None):
+        ec = ec or self.extra_content
         if ec:
             ec.dataid = self
             ec.code   = self.code
-        else:
-            ec = self._new_content
-            ec.dataid = self
-            ec.code   = self.code
             self.curncy = ec.ccy()
+            return True
     
     def issuer(self, dt = None):
         inst = self.instrument
@@ -197,6 +195,9 @@ class DataId(ExtraContentModel):
             vid = VendorId(ticker = ticker, vendor = vc, dataid = self)
             vid.save()
         return vid
+
+
+DataId.register_one2one()
 
 
 class VendorId(models.Model):

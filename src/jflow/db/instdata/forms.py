@@ -1,8 +1,10 @@
 from django import forms
 
-from models import DataId, EconometricAnalysis
+from extracontent.forms import ExtraContentForm
+
+from jflow.db.instdata.models import DataId, EconometricAnalysis
 from jflow.db.instdata.utils import ctids
-from jflow.db.instdata.dynct import ExtraContentForm
+
 
 class DataIdForm(ExtraContentForm):
     content_type = forms.ModelChoiceField(queryset = ctids(), 
