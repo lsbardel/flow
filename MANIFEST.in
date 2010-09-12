@@ -3,13 +3,16 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 include requirements.txt
+include runtests.py
 recursive-include src/jflow/db/instdata/media *
 recursive-include src/jflow/db/instdata/templates *
 recursive-include src/jflow/db/instdata/fixtures *
 recursive-include src/jflow/db/trade/media *
 recursive-include src/jflow/db/trade/templates *
 recursive-include src/jflow/db/trade/fixtures *
-recursive-include examples *
+recursive-include examples *.py
+recursive-include examples/jfsite/media *
+recursive-include examples/jfsite/templates *
 include docs/make.bat
 include docs/Makefile
 include docs/source/conf.py

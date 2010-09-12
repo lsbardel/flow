@@ -17,8 +17,8 @@ class TimeserieView(TimeserieViewBase):
         if server:
             proxy = server.get_proxy()
             try:
-                return proxy.raw_history(cts,start,end)
-            except IOError:
+                return proxy.raw_history(code,start,end)
+            except IOError, e:
                 return ''
         else:
             return ''

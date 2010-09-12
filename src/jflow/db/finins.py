@@ -4,6 +4,7 @@ from datetime import date
 from django.contrib.auth.models import User
 
 import stdnet
+import dynts
 
 from jflow.conf import settings
 from jflow.core import finins
@@ -16,6 +17,13 @@ import jflow.db.instdata.signals
 
 class AuthenticationError(Exception):
     pass
+
+
+class jFlowLoader(dynts.TimeSerieLoader):
+    
+    def parse_symbol(self, symbol, provider =None):
+        provider = provider or settings.default_provider
+        return str(symbol), None, provider
 
 
 def get_user(user, force = True):

@@ -1,6 +1,8 @@
 #
 #    JSON RPC API
 #
+from datetime import datetime
+
 from unuk.core.jsonrpc import JSONRPC
 from unuk.contrib import tasks
 
@@ -31,6 +33,7 @@ class JFlowRPC(JSONRPC):
     def jsonrpc_info(self, request):
         info = []
         addinfo(info,'version',pyapi.get_version())
+        addinfo(info,'started',self.started)
         return info
     
     def jsonrpc_history(self, request, code, start, end, period = 'd'):
