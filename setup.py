@@ -14,11 +14,12 @@ package_name = 'jflow'
 root_dir     = os.path.join(os.path.dirname(__file__),'src')
 package_dir  = os.path.join(root_dir, package_name)
  
-def get_version():
+def get_module():
     if root_dir not in sys.path:
         sys.path.insert(0,root_dir)
-    import jflow
-    return jflow.get_version()
+    return __import__(package_name)
+
+mod = get_module()
  
  
 def read(fname):
@@ -74,12 +75,12 @@ if os.name == 'nt':
 
 setup(
         name         = package_name,
-        version      = get_version(),
-        author       = 'Luca Sbardella',
-        author_email = 'luca.sbardella@gmail.com',
-        url          = 'http://github.com/lsbardel/jflow',
-        license      = 'BSD',
-        description  = 'Quantitative finance and econometric analysis',
+        version      = mod.__version__,
+        author       = mod.__author__,
+        author_email = mod.__contact__,
+        url          = mod.__homepage__,
+        license      = mod.__license__,
+        description  = mod.__doc__,
         long_description = read('README.rst'),
         packages     = packages,
         package_dir  = {'': 'src'},
