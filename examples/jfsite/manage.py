@@ -7,5 +7,5 @@ from django.core.management import execute_manager
 
 if __name__ == "__main__":
     jflow.set_settings('jfsite.allsettings.debug')
-    from jflow.conf import settings
+    import global_settings as settings
     execute_manager(settings)

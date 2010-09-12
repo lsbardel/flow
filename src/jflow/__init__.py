@@ -1,13 +1,9 @@
- 
-VERSION = (0, 4, 'a1')
+'''Portfolio analysis'''
+VERSION = (0, 4, 'a2')
  
 def get_version():
     if len(VERSION) == 3:
-        try:
-            int(VERSION[2])
-            v  = '%s.%s.%s' % VERSION
-        except:
-            v = '%s.%s.%s' % VERSION
+        v = '%s.%s.%s' % VERSION
     else:
         v = '%s.%s' % VERSION[:2]
     return v

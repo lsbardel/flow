@@ -15,6 +15,9 @@ def get_controller():
         pyapi.set_controller(c)
     return c
 
+def addinfo(info,name,value):
+    if value and name:
+        info.append({'name':name,'value':value})
 
 class JFlowRPC(JSONRPC):
     
@@ -24,6 +27,11 @@ class JFlowRPC(JSONRPC):
     
     def jsonrpc_version(self, request, full = False):
         pyapi.get_version(full)
+        
+    def jsonrpc_info(self, request):
+        info = []
+        addinfo(info,'version',pyapi.get_version())
+        return info
     
     def jsonrpc_history(self, request, code, start, end, period = 'd'):
         '''Retrive historical dataseries'''

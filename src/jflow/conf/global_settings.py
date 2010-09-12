@@ -1,6 +1,7 @@
 import logging
 
 LIVE_CALCULATION = False
+RPC_SERVER_PORT = 9010
 
 LOGGING_LEVEL   = logging.INFO
 if logging.thread:

@@ -1,3 +1,7 @@
+from django import http
+from django.contrib.contenttypes.models import ContentType
+from django.forms.models import modelform_factory
+
 from djpcms.conf import settings
 from djpcms.utils.ajax import jhtmls
 from djpcms.views import appsite, appview
@@ -8,6 +12,7 @@ from dynts.web.views import TimeserieView as TimeserieViewBase
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
 from jflow.db.netdata.forms import ServerForm, ServerMachine
 from jflow.web import forms
+
 
 
 class TimeserieView(TimeserieViewBase):
@@ -76,6 +81,31 @@ class DataApplication(TagApplication):
             id = kwargs.get('id',None)
             return self.model.objects.get(code = id)
         except:
+            return None
+    
+    def instrument_form(self, request, instance, bound):
+        data     = request.POST or request.GET
+        initial  = dict(data.items())
+        ct = initial.get('content_type',None)
+        instrument = None
+        imodel     = None
+        if not ct and instance:
+            instrument = instance.instrument
+            if instrument:
+                imodel = instrument.__class__
+        if not imodel and ct:
+            try:
+                ct = ContentType.objects.get(id = ct)
+                imodel = ct.model_class()
+            except:
+                pass
+        if imodel:
+            f = modelform_factory(imodel, InstrumentForm)
+            if bound:
+                return f(data = data, instance = instrument)
+            else:
+                return f(initial = initial, instance = instrument)
+        else:
             return None
         
     def get_form(self, djp, withdata = True, initial = None, **kwargs):

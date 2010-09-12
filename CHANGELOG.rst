@@ -1,10 +1,11 @@
 
 jFlow 0.4.a2
 ===========================
- * Spin-off of django-extracontent__ from ``jflow.db.instdata``.
- * Added the ``libs`` directory containing external libraries which are not regularly updated.
- * External libraries are added to the ``PYTHONPATH``, if needed, when importing ``jflow``.
- * Portfolio views are managed by python-stdnet__ ORM.
+ * Timeseries view derived from ``dynts.web.views.TimeserieView``
+ * Spin-off of django-extracontent__ from ``jflow.db.instdata``
+ * Added the ``libs`` directory containing external libraries which are not regularly updated
+ * External libraries are added to the ``PYTHONPATH``, if needed, when importing ``jflow``
+ * Portfolio views are managed by python-stdnet__ ORM
 
 
 jFlow 0.4.a1 - (2010 July 17)

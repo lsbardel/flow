@@ -61,14 +61,15 @@ INSTALLED_APPS = [
     'django.contrib.markup',
     #
     'djpcms',
-    #'djpcms.contrib.admin',
-    'django.contrib.admin',
+    'djpcms.contrib.admin',
+    #'django.contrib.admin',
     'tagging',
     'flowrepo',
     'dynts',
     #
     'extracontent',
     'ccy.basket',
+    'jflow.db.netdata',
     'jflow.db.portfolio',
     'jflow.db.instdata',
     'jflow.db.trade',
@@ -77,6 +78,11 @@ INSTALLED_APPS = [
     #'south'
 ]
 
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+CACHE_BACKEND      = 'memcached://localhost:11211/'
+DEFAULT_BACKEND    = 'redis://127.0.0.1:6379/?db=6'
+NUM_PROCESSES_PER_CPU = 0
 
 # DJPCMS SETTINGS
 TEMPLATE_DIRS       = (os.path.join(local_dir, 'templates'),)

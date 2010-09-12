@@ -1,14 +1,12 @@
-from django.conf import settings
-from django import forms
-from django.template import loader
-
-from djpcms.utils import mark_safe
+from djpcms import forms
+from djpcms.template import loader
 from djpcms.plugins import DJPplugin
 from djpcms.views import appsite
 
-from jflow.conf import settings as jflow_settings 
+from jflow.conf import settings 
 from jflow.db.instdata.models import DataId
-from jflow.core.timeseries import operators
+from jflow.db.netdata.models import ServerMachine
+#from jflow.core.timeseries import operators
 
     
 class DataIdVendors(DJPplugin):
@@ -33,3 +31,5 @@ class DataIdVendors(DJPplugin):
             return loader.render_to_string('instdata/dataid_vendors.html', {'items': cts})
         else:
             return u''
+
+    

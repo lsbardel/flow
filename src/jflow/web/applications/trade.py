@@ -41,7 +41,7 @@ class PortfolioViewView(appview.ViewView):
 
 
 class FundHolderApplication(appsite.ModelApplication):
-    search = appview.SearchView(in_navigation = False)
+    search = appview.SearchView()
     data   = PortfolioData(regex = 'data')
     view   = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
     
@@ -57,7 +57,7 @@ class FundHolderApplication(appsite.ModelApplication):
         
 
 class FundApplication(appsite.ModelApplication):
-    search = appview.SearchView(in_navigation = False)
+    search = appview.SearchView()
     data   = PortfolioData(regex = 'data')
     view   = PortfolioViewView(regex = '(?P<id>[-\.\w]+)')
     #view2  = PortfolioViewView(regex = '(?P<view_id>\d+)', parent = 'view')

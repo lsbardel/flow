@@ -1,0 +1,8 @@
+<div class="server-information">
+<h3>{{ item }}</h3>{% if info %}
+<table class="plain">
+<tbody>{% for data in info %}
+<tr><td>{{ data.name }}:</td><td>{{ data.value }}</td></tr>{% endfor %}
+</tbody>
+</table>{% endif %}
+</div>
