@@ -9,6 +9,7 @@ import dynts
 from jflow.conf import settings
 from jflow.core import finins
 
+from jflow.db.instdata.is import get_id
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
 from jflow.db.portfolio.models import PortfolioHolder, Portfolio, FinIns
 from jflow.db.portfolio.models import UserViewDefault, PortfolioView
@@ -22,7 +23,8 @@ class AuthenticationError(Exception):
 class jFlowLoader(dynts.TimeSerieLoader):
     
     def parse_symbol(self, symbol, provider =None):
-        provider = provider or settings.default_provider
+        id = get_id(symbol)
+        provider = provider or settings.DEFAULT_VENDOR_FOR_SITE
         return str(symbol), None, provider
 
 
