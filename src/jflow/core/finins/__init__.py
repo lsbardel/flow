@@ -11,9 +11,8 @@ from equity import *
 from formatter import *
 from fields import *
 
-from jflow.utils import LoggingClass
-from jflow.core.dates import date2yyyymmdd
-
+from unuk.utils import LoggingClass
+from ccy import date2yyyymmdd
 
 
 class portfolio_generator(object):

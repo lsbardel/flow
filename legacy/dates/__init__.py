@@ -1,5 +1,5 @@
 
-
+raise ImportError
 from parser import DateTimeFromString, DateFromString
 from base import *
 from frequency import *

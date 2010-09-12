@@ -11,7 +11,7 @@ from dateutil.parser import parse as DateFromString
 from unuk.core.jsonrpc import Proxy
 
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
-from jflow.web.forms import NiceDataIdForm, EconometricForm, InstrumentForm
+from jflow.web import forms
 
 
 def date2yyyymmdd(dte):
@@ -87,7 +87,7 @@ slug_regex = '(?P<id>[-\.\w]+)'
 
 class DataApplication(TagApplication):
     inherit   = True
-    form      = NiceDataIdForm
+    form      = forms.NiceDataIdForm
     form_template = 'instdata/dataid_change_form.html'
     search_fields = ['code','name','description','tags','isin']
     
@@ -151,7 +151,7 @@ class DataApplication(TagApplication):
 
 class EconometricApplication(TagApplication):
     inherit = True
-    form = EconometricForm
+    form = forms.EconometricForm
     form_withrequest = True
     
     add     = appview.AddView(regex = 'add')

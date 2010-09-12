@@ -7,7 +7,6 @@ import stdnet
 
 from jflow.conf import settings
 from jflow.core import finins
-from jflow.utils.encoding import smart_str
 
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
 from jflow.db.portfolio.models import PortfolioHolder, Portfolio, FinIns

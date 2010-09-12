@@ -1,19 +1,14 @@
 import datetime
 
-from django import forms, http
+from django import http
 
 from djpcms.template import loader
 from djpcms.views import appsite, appview
-from djpcms.utils import mark_safe
-from djpcms.utils.html import ModelChoiceField
-from djpcms.utils.uniforms import FormLayout, Fieldset, inlineLabels
 
-from jflow.db import geo
 from jflow.utils.anyjson import json
 from jflow.db.finins import finins
-from jflow.db.instdata.models import DataId, Cash
 from jflow.db.trade.models import FundHolder, Fund, PortfolioView, ManualTrade
-from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
+from jflow.web import forms
 
 
 class PortfolioData(appview.AppView):
@@ -31,6 +26,20 @@ class PortfolioData(appview.AppView):
         return http.HttpResponse(newdata, mimetype='application/javascript')
 
 
+class PortfolioViewView(appview.ViewView):
+    
+    def title(self, page, instance = None, **urlargs):
+        obj = instance
+        if page.application == 'fund-view': 
+            if isinstance(instance,PortfolioView):
+                obj = instance.fund
+        return super(PortfolioViewView,self).title(page, instance = obj, **urlargs)
+
+
+#    APPLICATIONS
+##################################################################
+
+
 class FundHolderApplication(appsite.ModelApplication):
     search = appview.SearchView(in_navigation = False)
     data   = PortfolioData(regex = 'data')
@@ -46,16 +55,6 @@ class FundHolderApplication(appsite.ModelApplication):
         except:
             return None
         
-
-class PortfolioViewView(appview.ViewView):
-    
-    def title(self, page, instance = None, **urlargs):
-        obj = instance
-        if page.application == 'fund-view': 
-            if isinstance(instance,PortfolioView):
-                obj = instance.fund
-        return super(PortfolioViewView,self).title(page, instance = obj, **urlargs)
-
 
 class FundApplication(appsite.ModelApplication):
     search = appview.SearchView(in_navigation = False)
@@ -108,12 +107,11 @@ class FundApplication(appsite.ModelApplication):
     def render_object(self, djp):
         pass
         
-
     
 class PortfolioViewApplication(appsite.ModelApplication):
     '''Main Application for portfolios
     '''
-    form = PortfolioViewForm
+    form = forms.PortfolioViewForm
     form_withrequest = True
     _form_add        = 'add'
     
@@ -124,45 +122,14 @@ class PortfolioViewApplication(appsite.ModelApplication):
         if isinstance(instance,PortfolioView):
             obj = instance
         return super(PortfolioViewApplication,self).submit(obj, own_view)
-
-
-class SecurityTradeForm(ManualTradeForm):
-    dataid = ModelChoiceField(DataId.objects, label = 'security')
-    add_cash_trade = forms.BooleanField(initial = False, required = False)
-    
-    layout = FormLayout(Fieldset('dataid'),
-                        Fieldset('fund','open_date','quantity','price','add_cash_trade',
-                                 css_class = inlineLabels))
-    
-    class Meta:
-        fields = ['fund','open_date','quantity','price']
-    
-    def save(self, commit = True):
-        self.instance.dataid = self.cleaned_data['dataid']
-        return super(SecurityTradeForm,self).save(commit = commit)
-        
-class CashTradeForm(ManualTradeForm):
-    currency = forms.ChoiceField(choices = geo.currency_tuples())
-    
-    layout = FormLayout(Fieldset('currency','fund','open_date','quantity',
-                                 css_class = inlineLabels))
-    
-    class Meta:
-        fields = ['fund','open_date','quantity']
-    
-    def save(self, commit = True):
-        if commit:
-            dataid = Cash.objects.create(curncy = self.cleaned_data['currency'])
-            self.instance.dataid = dataid
-        return super(CashTradeForm,self).save(commit = commit)
     
 
 class ManualTradeApplication(appsite.ModelApplication):
-    form = SecurityTradeForm
+    form = forms.SecurityTradeForm
     form_withrequest = True
     search   = appview.SearchView()
     add      = appview.AddView()
-    add_cash = appview.AddView(regex = 'addcash', form = CashTradeForm)
+    add_cash = appview.AddView(regex = 'addcash', form = forms.CashTradeForm)
     
 
     
