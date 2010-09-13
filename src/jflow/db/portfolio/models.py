@@ -1,5 +1,6 @@
-from ccy import currency
 from datetime import date, datetime
+
+import ccy
 
 from stdnet import orm
 from stdnet.contrib.timeserie.models import TimeSerieField
@@ -16,21 +17,25 @@ __all__ = ['FinIns',
 class FinIns(orm.StdModel):
     '''Financial instrument base class. Contains a time-serie field.                
     '''
-    name    = orm.AtomField(unique = True)
-    ccy     = orm.AtomField()
-    country = orm.AtomField()
-    type    = orm.AtomField()
-    data    = TimeSerieField()
+    code      = orm.AtomField(unique = True)
+    firm_code = orm.AtomField()
+    curncy    = orm.AtomField()
+    country   = orm.AtomField()
+    type      = orm.AtomField(required = False)
+    data      = TimeSerieField()
         
-    def __init__(self, multiplier = 1.0, description = '', ccy = None, country = None, **kwargs):
-        c = currency(ccy)
+    def __init__(self, curncy = None, country = None, metadata = None, **kwargs):
+        c = ccy.currency(curncy)
         if not c:
             raise ValueError('currency must be defined')
         if not country:
             country = c.default_country
-        self.multiplier    = multiplier
-        self.description   = description
-        super(FinIns,self).__init__(ccy = c.code, country = country, **kwargs)
+        self.metadata = metadata or {}
+        self.vendors  = metadata.pop('vendors',{})
+        super(FinIns,self).__init__(curncy = c.code, country = country, **kwargs)
+        
+    def __str__(self):
+        return self.code
         
     def pv01(self):
         '''Present value of a basis point. This is a Fixed Income notation which we try to extrapolate to

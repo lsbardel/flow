@@ -6,6 +6,13 @@
 Python API
 ===================
 
-.. autofunction:: jflow.api.add_new_portfolio_view
+Add new Portfolio View
+==========================
 
-.. autofunction:: jflow.api.get_portfolio_object
+.. autofunction:: jflow.pyapi.add_new_portfolio_view
+
+
+Get Portfolio Object
+==========================
+
+.. autofunction:: jflow.pyapi.get_portfolio_object

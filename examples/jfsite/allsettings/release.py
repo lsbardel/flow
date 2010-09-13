@@ -4,7 +4,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 SEND_BROKEN_LINK_EMAILS = True
 
-CACHE_BACKEND      = 'memcached://localhost:11211/'
+#CACHE_BACKEND      = 'memcached://localhost:11211/'
 DEFAULT_BACKEND    = 'redis://127.0.0.1:6379/?db=1'
 
 

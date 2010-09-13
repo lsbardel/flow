@@ -28,16 +28,20 @@ def makeoptions():
    return parser
 
 
-if __name__ == '__main__':
+def run(settings = None):
     from environment import local_dir
     options, args = makeoptions().parse_args()
-    if options.debug:
-        setting_module = 'debug'
-    else:
-        setting_module = 'release'
+    if not settings:
+        if options.debug:
+            setting_module = 'debug'
+        else:
+            setting_module = 'release'
+        settings = 'jfsite.allsettings.%s' % setting_module
     import jflow
-    jflow.set_settings('jfsite.allsettings.%s' % setting_module)
+    jflow.set_settings(settings)
     from jflow.conf import settings
+    from jflow.db.portfolio.admin import register
+    register()
    
     from unuk.contrib.txweb import jsonrpc, djangoapp, start
     from unuk.utils import get_logger
@@ -62,4 +66,6 @@ if __name__ == '__main__':
         exit()
     
     start()
-    
+
+if __name__ == '__main__':
+    run()    

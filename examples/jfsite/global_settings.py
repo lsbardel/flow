@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE':   'sqlite3',
-        'NAME':     'testdb.sqlite'
+        'NAME':     os.path.join(local_dir,'testdb.sqlite')
     }
 }
 
@@ -80,7 +80,7 @@ INSTALLED_APPS = [
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-CACHE_BACKEND      = 'memcached://localhost:11211/'
+#CACHE_BACKEND      = 'memcached://localhost:11211/'
 DEFAULT_BACKEND    = 'redis://127.0.0.1:6379/?db=6'
 NUM_PROCESSES_PER_CPU = 0
 

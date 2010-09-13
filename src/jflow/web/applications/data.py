@@ -1,3 +1,5 @@
+import platform
+
 from djpcms.conf import settings
 from djpcms.utils.ajax import jhtmls
 from djpcms.views import appsite, appview
@@ -105,7 +107,6 @@ class EconometricApplication(TagApplication):
     view      = appview.ViewView(regex = '(?P<id>[-\.\w]+)')
     
 
-
 class ServerApplication(appsite.ModelApplication):
     name    = 'Server Monitor'
     form    = ServerForm
@@ -116,4 +117,7 @@ class ServerApplication(appsite.ModelApplication):
         c = super(ServerApplication,self).object_content(djp, obj)
         c['info'] = obj.get_info()
         return c
-         
+    
+    def basequery(self, request, **kwargs):
+        return self.model.objects.filter(machine = platform.node())
+        

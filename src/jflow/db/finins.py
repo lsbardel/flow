@@ -9,11 +9,10 @@ import dynts
 from jflow.conf import settings
 from jflow.core import finins
 
-from jflow.db.instdata.is import get_id
+from jflow.db.instdata.models import DataId
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
 from jflow.db.portfolio.models import PortfolioHolder, Portfolio, FinIns
 from jflow.db.portfolio.models import UserViewDefault, PortfolioView
-import jflow.db.instdata.signals
 
 
 class AuthenticationError(Exception):
@@ -23,10 +22,47 @@ class AuthenticationError(Exception):
 class jFlowLoader(dynts.TimeSerieLoader):
     
     def parse_symbol(self, symbol, provider =None):
-        id = get_id(symbol)
-        provider = provider or settings.DEFAULT_VENDOR_FOR_SITE
-        return str(symbol), None, provider
+        symbols = symbol.split(':')
+        field, vendor = None, None
+        if len(symbols) == 3:
+            symbol, field, vendor = symbols
+        elif len(symbols) == 2:
+            symbol, field = symbols
+        fid = get_finins(symbol)
+        return self.get_vendor(fid, field, vendor)
+    
+    def get_vendor(self, fid, field, vendor):
+        '''Given a vendor code or ``None`` and a field code or ``None``
+get the vendor object to use to retrive data.'''
+        ticker = None
+        if vendor:
+            ticker = fid.vendors.get('vendor',None)
+        if not ticker:
+            vendor = settings.DEFAULT_VENDOR_FOR_SITE
+            ticker = fid.vendors.get(vendor,None)
+        if not ticker:
+            return 
+        return fid, field, vendor
 
+
+def get_finins(symbol):
+    symbol = symbol.upper()
+    try:
+        return FinIns.objects.get(code = symbol)
+    except stdnet.ObjectNotFund:
+        try:
+            id = DataId.objects.get(code = symbol)
+        except Exception, e:
+            return None
+        fi = FinIns(id = id.id,
+                    code = id.code,
+                    country = id.country,
+                    curncy = id.curncy,
+                    firm_code = id.firm_code,
+                    type = id.type,
+                    metadata = id.metadata())
+        return fi.save()
+        
 
 def get_user(user, force = True):
     if not user:

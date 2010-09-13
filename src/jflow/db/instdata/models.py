@@ -144,7 +144,7 @@ class DataId(ExtraContentBase):
         
     @property
     def instrument(self):
-        return self.extra_content()
+        return self.extra_content
     
     @property
     def multiplier(self):
@@ -195,6 +195,24 @@ class DataId(ExtraContentBase):
             vid = VendorId(ticker = ticker, vendor = vc, dataid = self)
             vid.save()
         return vid
+    
+    def metadata(self):
+        dv = self.default_vendor
+        if dv:
+            dv = dv.code
+        else:
+            dv = settings.DEFAULT_VENDOR_FOR_SITE
+        data = {'multiplier': self.multiplier,
+                'description': self.description,
+                'default_vendor': dv}
+        inst = self.extra_content
+        if inst:
+            data.update(inst.metadata())
+        vendors = {}
+        data['vendors'] = vendors
+        for vid in id.vendors.all():
+            vendors[vid.vendor.code] = vid.ticker
+        return data
 
 
 DataId.register_one2one()
@@ -459,8 +477,7 @@ class InstrumentInterface(models.Model):
         pass
     
     def metadata(self):
-        return []
-                 
+        return None                 
     
 
 class Security(InstrumentInterface):
@@ -471,12 +488,10 @@ class Security(InstrumentInterface):
     class Meta:
         abstract = True
         
-    
     def metadata(self):
-        data = []
-        if self.exchange:
-            data.append({'name':'exchange','value':self.exchange})
-        return data
+        return {'exchange': None if not self.exchange else self.exchange.code,
+                'CUSIP': self.CUSIP,
+                'SEDOL': self.SEDOL}
     
 
 class EquityBase(Security):
@@ -498,6 +513,11 @@ class EquityBase(Security):
     
     def get_multiplier(self):
         return self.multiplier
+    
+    def metadata(self):
+        data = super(EquityBase,self).metadata()
+        data['settlement_delay'] = self.settlement_delay
+        return data
     
     def infodict(self):
         df = settings.DATE_FORMAT
@@ -523,6 +543,16 @@ class Future(InstrumentInterface):
     ###Added here ####
     objects = managers.FutureManager()
     ##################
+    
+    def metadata(self):
+        return {'contract': self.contract.code,
+                'first_trade': self.first_trade,
+                'last_trade': self.last_trade,
+                'first_notice': self.first_notice,
+                'first_delivery': self.first_delivery,
+                'last_delivery': self.last_delivery}
+    
+    
 class Equity(EquityBase):
     industry_code     = models.ForeignKey(IndustryCode,null=True,blank=True)
     security_type     = models.SmallIntegerField(choices = equity_type, default = 1, null = True, blank = True)
@@ -552,6 +582,12 @@ class Equity(EquityBase):
         if 'equity' not in keys:
             keys.append('equity')
         return keys
+
+    def metadata(self):
+        data = super(Equity,self).metadata()
+        data['industry_code'] = self.industry_code
+        data['security_type'] = self.security_type
+        return data
 
 
 class Etf(EquityBase):
@@ -585,6 +621,10 @@ class Fund(EquityBase):
             r['Type'] = self.type.name
             r['Open ended'] = self.type.openended
         return r
+    
+    def metadata(self):
+        data = super(Fund,self).metadata()
+        return data
 
 
 class Bond(Security):
@@ -630,6 +670,10 @@ class Bond(Security):
         if 'bond' not in keys:
             keys.append('bond')
         return keys
+    
+    def metadata(self):
+        data = super(Bond,self).metadata()
+        return data
 
 
 class BondIssuer(models.Model):
@@ -688,6 +732,10 @@ class Cash(InstrumentInterface):
         
     def make_position(self, **kwargs):
         return FACTORY.cash(inst = self, **kwargs)
+    
+    def metadata(self):
+        return {'cash_type': self.cash_type,
+                'extended': self.extended}
 
 
 class FwdCash(InstrumentInterface):
@@ -715,6 +763,9 @@ class FwdCash(InstrumentInterface):
     def make_position(self, **kwargs):
         return FACTORY.cash(inst = self, value_date = self.value_date, **kwargs)
     
+    def metadata(self):
+        return {'value_date': self.value_date}
+    
 
 class Depo(InstrumentInterface):
     curncy = models.CharField(max_length=3,choices=geo.currency_tuples(),verbose_name="currency")
@@ -736,13 +787,15 @@ class Depo(InstrumentInterface):
     
     def make_position(self, **kwargs):
         return FACTORY.cash(inst = self, value_date = self.value_date, **kwargs)
+    
+    def metadata(self):
+        return {'value_date': self.value_date}
 
-##### Added here to manage generic securities
+
 class GenericOTC(InstrumentInterface):
     
     objects = managers.GenericOTCManager()
 
-######       
 
 class InstDecomp(models.Model):
     code         = models.CharField(max_length = 255, blank = True)
