@@ -1,1 +1,1 @@
-from jflow.web.tests.forms import *
+from jflow.web.tests.data_application import *

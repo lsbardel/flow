@@ -1,4 +1,8 @@
 
+.. rubric:: Portfolio analysis and risk management financial library.
+
+--
+
 :Documentation: http://packages.python.org/jflow/
 :Dowloads: http://pypi.python.org/pypi/jflow/
 :Source: http://github.com/lsbardel/jflow
@@ -12,37 +16,39 @@ Python package for portfolio analysis.
 Requirements
 ======================
 
- * django__
- * ccy__
- * stdnet__
- * dynts__
- * unuk__
- * django-extracontent__
+ * Django_ for database and web-framework.
+ * ccy_ for currency and date manipulation.
+ * stdnet_ for fast in-memory and persistent data-structures using redis_.
+ * dynts_ for timeseries analysis.
+ * unuk_ for creating ``rpc`` servers.
+ * django-extracontent_ an utility for django.
 
 
 Running Tests
 ==================
 
-To use jflow you need to install redis__, which is the only database back-end supported by stdnet__.
-If you are working in linux, simply download the latest redis version and compile it. If you are working on windows
-you can get binaries here__. Make sure the version you are  installing is greater than 2.0.
+To use jflow you need to install redis_, which is the only database back-end supported by stdnet_.
+If you are working in linux, simply download the latest redis version and compile it.
+If you are working on windows you can get binaries here__.
+Make sure the version you are  installing is greater than 2.0.
 
-Start redis and open a separate shell. You can run tests from the console from within the ``jflow`` source directory::
+__ http://code.google.com/p/servicestack/wiki/RedisWindowsDownload
+
+Start redis_ and open a separate shell. You can run tests from the console from within the
+``jflow`` source directory::
 
 	python runtests.py
  
     
 Good luck
 
-__ http://www.djangoproject.com/
-__ http://code.google.com/p/ccy/
-__ http://packages.python.org/python-stdnet/
-__ http://code.google.com/p/dynts/
-__ http://packages.python.org/unuk/
-__ http://pypi.python.org/pypi/django-extracontent/
-__ http://code.google.com/p/redis/
-__ http://packages.python.org/python-stdnet/
-__ http://code.google.com/p/servicestack/wiki/RedisWindowsDownload
+.. _Django: http://www.djangoproject.com/
+.. _ccy: http://code.google.com/p/ccy/
+.. _stdnet: http://packages.python.org/python-stdnet/
+.. _dynts: http://code.google.com/p/dynts/
+.. _unuk: http://packages.python.org/unuk/
+.. _django-extracontent: http://pypi.python.org/pypi/django-extracontent/
+.. _redis: http://code.google.com/p/redis/
 
 
 

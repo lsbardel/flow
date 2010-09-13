@@ -9,12 +9,13 @@ from jflow.db.instdata.forms import DataIdForm, EconometricForm
 from jflow.db.trade.forms import PortfolioViewForm, ManualTradeForm
 from jflow.db import geo
 
+num_vendor_inlines = 4
 
 class NiceDataIdForm(DataIdForm):
     tags   = TagField()
     
     layout = FormLayout()
-    layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=4))
+    layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=num_vendor_inlines))
 
 
 class InstrumentForm(forms.ModelForm):
