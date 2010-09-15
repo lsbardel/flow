@@ -5,14 +5,14 @@ from djpcms.utils.ajax import jhtmls
 from djpcms.views import appsite, appview
 from djpcms.views.apps.tagging import TagApplication
 
-from dynts.web.views import TimeserieView as TimeserieViewBase
+from dynts.web.views import TimeSeriesView as TimeSeriesViewBase
 
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
 from jflow.db.netdata.forms import ServerForm, ServerMachine
 from jflow.web import forms
 
 
-class TimeserieView(TimeserieViewBase):
+class TimeSeriesView(TimeSeriesViewBase):
     
     def getdata(self, code, start, end):
         server = ServerMachine.objects.get_for_machine('jflow-rpc')
@@ -64,7 +64,7 @@ class DataApplication(TagApplication):
     form_template = 'instdata/dataid_change_form.html'
     search_fields = ['code','name','description','tags','isin']
     
-    timeserie = TimeserieView(regex = 'timeseries')
+    timeserie = TimeSeriesView(regex = 'timeseries')
     complete  = appview.AutocompleteView()
     add       = DataAddView(regex = 'add', isplugin = False)
     view      = appview.ViewView(regex = slug_regex, parent = None)
