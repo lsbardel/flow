@@ -1,22 +1,16 @@
 {% extends "djpcms/base.html" %}{% load djpcmstags %}
 
-{% block branding-banner %}
+{% block pre-banner %}
 <div id="top-banner">
  <div class="{{ grid.container_class }}">
   <div class="{{ grid.column1 }}">
-   <ul class="simple-nav right user">{% if edit_content_url %}
-    <li class="secondary"><a href="{{ edit_content_url }}">edit</a></li>{% else %}{% if exit_edit_url %}
-    <li class="secondary"><a href="{{ exit_edit_url }}">exit</a></li>{% endif %}{% endif %}{% if user.is_authenticated %}
-    <li class="secondary"><a href="/accounts/">{{ user.username }}</a></li>{% if user.is_staff %}
-    <li class="secondary"><a href="{{ site_admin_url }}">admin</a></li>{% endif %}
-    <li class="secondary"><a href="{{ logout_url }}?next={{ djp.url }}">logout</a></li> {% else %}{% if login_url %}
-    <li class="secondary"><a href="{{ login_url }}?next={{ djp.url }}">login</a></li>{% if register_url %} 
-    <li class="secondary"><a href="{{ register_url }}">register</a></li>{% endif %}{% endif %}{% endif %}
-   </ul>
+  {% include "djpcms/bits/uservan.html" %}
   </div>
   {{ grid.clear }}
  </div>
 </div>
+{% endblock %}
+{% block branding-banner %}
 <div id="middle-banner" class="{{ grid.container_class }}">
  <div class="{{ grid.column1 }}">
    <h1>
@@ -30,7 +24,7 @@
 {% block post-banner %}
 <div class="{{ grid.container_class }} nav-container">
 <div class="{{ grid.column1 }}">
-{% include "djpcms/bits/navigation2.html" %}
+{{ sitenav.render }}
 </div>
 {{ grid.clear }}
 </div>{% endblock %}
