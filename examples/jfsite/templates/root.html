@@ -6,8 +6,9 @@
 <link rel="stylesheet" type="text/css" media = "screen" href="{{ MEDIA_URL }}djpcms/colorpicker/css/colorpicker.css"/>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}site/jflow.css"/>{% endblock %}
 
-{% block extra-scripts %}
-<script type="text/javascript" src="{{ MEDIA_URL }}djpcms/colorpicker/js/colorpicker.js"></script>{% endblock %}
+{% block end-page-scripts %}
+<script type="text/javascript" src="{{ MEDIA_URL }}djpcms/colorpicker/js/colorpicker.js"></script>
+{{ block.super }}{% endblock %}
 
 {% block decorator-scripts %}{{ block.super }}
 <script type="text/javascript" src="{{ MEDIA_URL }}site/djpcms.js"></script>{% endblock %}
