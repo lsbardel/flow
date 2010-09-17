@@ -2,7 +2,7 @@ from datetime import date
 from itertools import izip
 
 from base import *
-import bloomberg
+from bloomberg import BloombergClient 
 
 
 def yyyymmdd2date(dte):
@@ -19,7 +19,7 @@ def yyyymmdd2date(dte):
 class blb(DataVendor):
 
     def __init__(self):
-        self.server = bloomberg.BloombergClient()
+        self.server = BloombergClient()
     
     def hasfeed(self, live = False):
         return True
@@ -67,7 +67,6 @@ class blb(DataVendor):
                 continue
         return ts
         
-            
     def weblink(self, ticker):
         '''
         link to a page on www.bloomberg.com
