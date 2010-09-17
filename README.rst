@@ -13,6 +13,8 @@
 Python package for portfolio analysis.
 
 
+.. _jflow-requirements:
+
 Requirements
 ======================
 
@@ -39,6 +41,11 @@ Start redis_ and open a separate shell. You can run tests from the console from 
 
 	python runtests.py
  
+
+Application Example
+========================
+
+In the ``example`` directory you can find an application of the library.
     
 Good luck
 

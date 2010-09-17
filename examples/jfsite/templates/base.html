@@ -1,24 +1,24 @@
-{% extends "djpcms/base.html" %}{% load djpcmstags %}
+{% extends "djpcms/base.html" %}{% load djpcmstags flowgallery %}
 
 {% block pre-banner %}
-<div id="top-banner">
+<div class="nav-container">
  <div class="{{ grid.container_class }}">
   <div class="{{ grid.column1 }}">
-  {% include "djpcms/bits/uservan.html" %}
+	{% include "djpcms/bits/usernav.html" %}
   </div>
   {{ grid.clear }}
  </div>
-</div>
-{% endblock %}
+</div>{% endblock %}
+
 {% block branding-banner %}
-<div id="middle-banner" class="{{ grid.container_class }}">
- <div class="{{ grid.column1 }}">
-   <h1>
-	<a href="/">jFlow</a>
-   </h1>
+ <div class="{{ grid.container_class }} main-body">
+   <div class="{{ grid.column_1 }}">
+    <h1>
+		<a href="/">jFlow</a>
+    </h1>
+   </div>
+   {{ grid.clear }}
  </div>
- {{ grid.clear }}
-</div>
 {% endblock %}
 
 {% block post-banner %}
@@ -29,21 +29,7 @@
 {{ grid.clear }}
 </div>{% endblock %}
 
-{% block site-content-class %} class="{{ grid.container_class }}"{% endblock %}
 
 {% block page-footer %}
- <div class="{{ grid.container_class }}">
-  <div id="copy" class="{{ grid.column1 }}">
-   Copyright &copy; 2008-{{ now.year }} <a href="http://www.quantmind.com/">quantmind</a>
-   <br{{ htmldoc.slash }}>
-   <a href="http://creativecommons.org/licenses/by/2.0/uk/" title="Licensed under a Creative Commons Attributes license" rel="license" target="_blank">Some right reserved</a>
-  </div>
-  {{ grid.clear }}{% if user.is_staff %}
-  <div id="validators" class="{{ grid.column1 }}">
-  {{ htmldoc.bluevalidator }}
-  {% blue_css_validator %}
-  </div>{% endif %}
- </div>
-</div>
-{% endblock %}
+{% include "footer.html" %}{% endblock %}
 

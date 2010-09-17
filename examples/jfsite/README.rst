@@ -1,21 +1,26 @@
-==========================
-JFLOW SITE
-==========================
 
-A battery included django site for jflow
+.. rubric:: A django site for jflow
+
+
+The web site
+=======================
+There is a standard django web site available with a sqlite_
+database already available. To run the web-server, within the ``jfsite`` directory
+type::
+
+	python manage.py runserver 
+
 
 
 Requirements
 =======================
- On top of jflow you need
+ On top of :ref:`jflow requirements <jflow-requirements>` you need:
  
- * djpcms
- * django-flowrepo
- * django-piston
- * docutils
+* djpcms_
+* django-flowrepo_
 
 
-==================
-Running Tests
-==================
 
+.. _djpcms: http://pypi.python.org/pypi/djpcms/
+.. _django-flowrepo: http://pypi.python.org/pypi/django-flowrepo
+.. _sqlite: http://www.sqlite.org/

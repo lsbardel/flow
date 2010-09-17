@@ -21,7 +21,7 @@ difference and jflow aim is to achieve that status.
    pyapi
    intro/index
    database/index
-   misc/index
+   example
 
 Indices and tables
 ==================
