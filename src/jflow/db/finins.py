@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 import stdnet
 import dynts
 
+from dynts.data import TimeSerieLoader 
 from jflow.conf import settings
 from jflow.core import finins
 
@@ -19,17 +20,7 @@ class AuthenticationError(Exception):
     pass
 
 
-class jFlowLoader(dynts.TimeSerieLoader):
-    
-    def parse_symbol(self, symbol, provider =None):
-        symbols = symbol.split(':')
-        field, vendor = None, None
-        if len(symbols) == 3:
-            symbol, field, vendor = symbols
-        elif len(symbols) == 2:
-            symbol, field = symbols
-        fid = get_finins(symbol)
-        return self.get_vendor(fid, field, vendor)
+class jFlowLoader(TimeSerieLoader):
     
     def get_vendor(self, fid, field, vendor):
         '''Given a vendor code or ``None`` and a field code or ``None``
