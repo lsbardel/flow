@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 
+from dynts.data import providers
 from tagging.fields import TagField
 
 from jflow.conf import settings
@@ -75,8 +76,7 @@ class Vendor(BaseModel):
         return mark_safe(self.description)
     
     def interface(self):
-        module   = __import__(settings.VENDOR_MODULE,globals(),locals(),[''])
-        return module.get_vendor(self.code)
+        return providers.get(self.code)
 
 
 class DataId(ExtraContentBase):
