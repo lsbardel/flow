@@ -23,13 +23,13 @@ Requirements
  * stdnet_ for fast in-memory and persistent data-structures using redis_.
  * dynts_ for timeseries analysis.
  * unuk_ for creating ``rpc`` servers.
- * django-extracontent_ an utility for django.
+ * django-extracontent_ a django utility application.
 
 
 Running Tests
 ==================
 
-To use jflow you need to install redis_, which is the only database back-end supported by stdnet_.
+To use ``jflow`` you need to install redis_, which is the only database back-end supported by stdnet_.
 If you are working in linux, simply download the latest redis version and compile it.
 If you are working on windows you can get binaries here__.
 Make sure the version you are  installing is greater than 2.0.
