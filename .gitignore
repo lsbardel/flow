@@ -1,6 +1,9 @@
 .settings
 .project
 .pydevproject
+MANIFEST
+examples/jfsite/parser.out
+examples/jfsite/parsetab.py
 *.pyc
 build/*
 dist/*
