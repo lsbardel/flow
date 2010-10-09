@@ -1,6 +1,6 @@
 import json
 
-from jflow.utils.tx import pb, runInThread
+from bloomberg.utils.tx import pb, runInThread
 
 live_key = 'blb_live_feed'
 

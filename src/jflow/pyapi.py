@@ -5,6 +5,7 @@ import ccy
 import jflow
 import dynts
 from jflow.db import finins as _api
+import jflow.data
 
 class holder:
     controller = None
@@ -86,8 +87,11 @@ def create_user_view(instance, name, user, default = False):
         return view
 
 
-def get_analysis(code, start, end, format = 'flot', **kwargs):
+def get_analysis(code = None, start = None, end = None, format = None, **kwargs):
     '''Econometric analysis'''
-    res = dynts.evaluate(code, start = start, end = end, loader = _api.jFlowLoader)
-    return res.unwind(format = format)
+    res = dynts.evaluate(code, start = start, end = end)
+    if format:
+        return res.dump(format = format)
+    else:
+        return res
     

@@ -3,8 +3,7 @@ import time
 from twisted.internet import defer
 from twisted.internet import threads
 
-from jflow.utils.decorators import threadSafe
-from jflow.utils.serialize import baseArgs, errorArg, Result
+from bloomberg.utils.serialize import baseArgs, errorArg, Result
 
 
 __all__ = ['isdefer',

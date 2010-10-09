@@ -8,13 +8,17 @@ from django.contrib.auth.models import User
 from dynts.data import providers
 from tagging.fields import TagField
 
+import ccy
+
 from jflow.conf import settings
-from jflow.core import frequency, dayCount_choices
+from jflow.core import frequency
 from jflow.db import geo
 from jflow.db.instdata import managers
 from jflow.db.instdata.fields import SlugCode, LazyForeignKey, slugify
 from extracontent.models import ExtraContentBase
 
+
+dayCount_choices = [(k,v.name) for k,v in ccy.alldc().items()]
 
 field_type = (('numeric','Numeric'),
               ('string','String'),

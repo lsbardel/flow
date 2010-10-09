@@ -1,6 +1,6 @@
 from twisted.internet import task
 
-from jflow.utils import servers
+from bloomberg.utils import servers
 
 
 class ConnectionPool(servers.ConnectionPool):

@@ -1,7 +1,7 @@
 from twisted.internet import defer
 from twisted.spread.pb import *
 
-from jflow.utils.observer import observer
+from bloomberg.utils.observer import observer
 
 
 class tempref(Referenceable):

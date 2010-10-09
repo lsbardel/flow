@@ -1,7 +1,7 @@
 from threading import Lock
 
-from jflow.utils.tx import runInThread
-from jflow.utils.decorators import threadSafe
+from bloomberg.utils.tx import runInThread
+from bloomberg.utils import threadSafe
 
 
 class SingleThreadQueueUpdate(object):

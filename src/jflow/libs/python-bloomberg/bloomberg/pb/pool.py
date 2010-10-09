@@ -1,8 +1,6 @@
-from jflow.utils.servers import txconnsettings
-from jflow.utils.tx import ConnectionPool
-from jflow.utils.tx import pb
-
-from queue import SingleThreadQueueUpdate
+from bloomberg.utils.servers import txconnsettings
+from bloomberg.utils.tx import ConnectionPool, pb
+from bloomberg.pb.queue import SingleThreadQueueUpdate
 import client
 
 
@@ -26,13 +24,18 @@ class BloombergPool(ConnectionPool):
     Bloomberg Connection Manager.
     It mainatins a pool of bloomberg connections
     '''
-    def __init__(self,*args,**kwargs):
+    def __init__(self,servers,*args,**kwargs):
+        self._servers = servers
         super(BloombergPool,self).__init__(*args,**kwargs)
         self.livethread = SingleThreadQueueUpdate()
     
     def get_servers(self):
-        from jflow.db.trade.tools import get_user_servers
-        return get_user_servers(BlbConnFactory)
+        serv = {}
+        for name,address in self._servers():
+            serv[name] = txconnsettings(address = t.servername(),
+                                        factory_class = BlbConnFactory,
+                                        method = 'tcp')
+        return serv
     
     def history(self, ticker, startdate, enddate, field):
         server = self.get()

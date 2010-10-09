@@ -2,13 +2,13 @@ from datetime import date
 from itertools import izip
 
 from dynts.data import DataProvider
-from bloomberg import BloombergClient
+from bloomberg.client import BloombergClient
 
 
 class blb(DataProvider):
 
-    def __init__(self):
-        self.server = BloombergClient()
+    def __init__(self, servers):
+        self.server = BloombergClient(servers)
     
     def hasfeed(self, live = False):
         return True
@@ -67,6 +67,4 @@ class blb(DataProvider):
         web_ticker = ':'.join(tks)
         return 'http://www.bloomberg.com/apps/quote?ticker=%s' % web_ticker
     
-    
-register(blb)
     

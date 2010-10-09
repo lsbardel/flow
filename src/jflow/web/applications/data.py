@@ -1,5 +1,6 @@
 import platform
 
+from djpcms.core.exceptions import ObjectDoesNotExist
 from djpcms.conf import settings
 from djpcms.utils.ajax import jhtmls
 from djpcms.views import appsite, appview
@@ -7,23 +8,24 @@ from djpcms.views.apps.tagging import TagApplication
 
 from dynts.web.views import TimeSeriesView as TimeSeriesViewBase
 
+import unuk
+from unuk.http import httplib
+from unuk.core.jsonrpc import Proxy, dumpobj
+unuk.importlib('servermachine')
+from servermachine.forms import ServerForm, ServerMachine
+
 from jflow.db.instdata.models import DataId, EconometricAnalysis, VendorId
-from jflow.db.netdata.forms import ServerForm, ServerMachine
 from jflow.web import forms
 
 
 class TimeSeriesView(TimeSeriesViewBase):
     
-    def getdata(self, code, start, end):
-        server = ServerMachine.objects.get_for_machine('jflow-rpc')
-        if server:
-            proxy = server.get_proxy()
-            try:
-                return proxy.raw_history(code,start,end)
-            except IOError, e:
-                return ''
-        else:
-            return ''
+    def getdata(self, request, code, start, end):
+        try:
+            p = self.appmodel.proxy()
+            return p.raw_parsets(code = code, start = code, end = code)
+        except Exception, e:
+            return dumpobj(e)
     
     def codeobject(self, object):
         return object.code
@@ -63,6 +65,8 @@ class DataApplication(TagApplication):
     form      = forms.NiceDataIdForm
     form_template = 'instdata/dataid_change_form.html'
     search_fields = ['code','name','description','tags','isin']
+    rpc_server_name = 'jflow-rpc'
+    rpc_server_timeout = None
     
     timeserie = TimeSeriesView(regex = 'timeseries')
     complete  = appview.AutocompleteView()
@@ -95,6 +99,13 @@ class DataApplication(TagApplication):
         if len(form.forms) == 2:
             form.forms.pop()
         return super(DataApplication,self).object_from_form(form)
+    
+    def proxy(self, client = 'web'):
+        server = ServerMachine.objects.get_for_machine(self.rpc_server_name)
+        if not server:
+            raise ObjectDoesNotExist('Server %s is not in database' % self.rpc_server_name)
+        http = httplib(timeout = self.rpc_server_timeout, cache = '.cache')
+        return Proxy(server.path(), http = http)
     
 
 class EconometricApplication(TagApplication):

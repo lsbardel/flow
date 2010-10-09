@@ -42,14 +42,3 @@ def user_can_view_fund(user,fund):
         return False
     
     
-def get_user_servers(factory):
-    from models import Trader
-    from jflow.utils.servers import txconnsettings
-    tr = Trader.objects.filter(server_active = True)
-    serv = {}
-    for t in tr:
-        serv[str(t.user)] = txconnsettings(address = t.servername(),
-                                           factory_class = factory,
-                                           method = 'tcp') 
-    return serv
-    

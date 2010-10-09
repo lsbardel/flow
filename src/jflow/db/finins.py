@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 import stdnet
 import dynts
 
-from dynts.data import TimeSerieLoader 
 from jflow.conf import settings
 from jflow.core import finins
 
@@ -18,22 +17,6 @@ from jflow.db.portfolio.models import UserViewDefault, PortfolioView
 
 class AuthenticationError(Exception):
     pass
-
-
-class jFlowLoader(TimeSerieLoader):
-    
-    def get_vendor(self, fid, field, vendor):
-        '''Given a vendor code or ``None`` and a field code or ``None``
-get the vendor object to use to retrive data.'''
-        ticker = None
-        if vendor:
-            ticker = fid.vendors.get('vendor',None)
-        if not ticker:
-            vendor = settings.DEFAULT_VENDOR_FOR_SITE
-            ticker = fid.vendors.get(vendor,None)
-        if not ticker:
-            return 
-        return fid, field, vendor
 
 
 def get_finins(symbol):

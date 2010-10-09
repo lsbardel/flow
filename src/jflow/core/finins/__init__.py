@@ -11,7 +11,6 @@ from equity import *
 from formatter import *
 from fields import *
 
-from unuk.utils import LoggingClass
 from ccy import date2yyyymmdd
 
 
@@ -25,7 +24,7 @@ class portfolio_generator(object):
 
 
 
-class Root(LoggingClass):
+class Root(object):
     keyprefix = 'jflow-finins'
     
     InstrumentFactory = {'equity':equity,
