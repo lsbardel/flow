@@ -1,6 +1,4 @@
-ccy>=0.3.7
-python-stdnet
-dynts>=0.3.1
-unuk >= 0.3.2
-django-piston
 django-extracontent
+python-stdnet==0.3.3
+dynts==0.3.1
+unuk==0.3.2

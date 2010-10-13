@@ -19,7 +19,6 @@ Requirements
 ======================
 
  * Django_ for database and web-framework.
- * ccy_ for currency and date manipulation.
  * stdnet_ for fast in-memory and persistent data-structures using redis_.
  * dynts_ for timeseries analysis.
  * unuk_ for creating ``rpc`` servers.
