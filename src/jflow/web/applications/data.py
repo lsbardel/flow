@@ -23,7 +23,7 @@ class TimeSeriesView(TimeSeriesViewBase):
     def getdata(self, request, code, start, end):
         try:
             p = self.appmodel.proxy()
-            return p.raw_parsets(code = code, start = code, end = code)
+            return p.raw_parsets(code = code, start = start, end = end)
         except Exception, e:
             return dumpobj(e)
     

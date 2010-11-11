@@ -1,10 +1,10 @@
 ###########################################################
-# PYTHON API
+# JFLOW PYTHON API
 ###########################################################
 import ccy
 import jflow
 import dynts
-from jflow.db import finins as _api
+from jflow.db import dbapi as _api
 import jflow.data
 
 class holder:

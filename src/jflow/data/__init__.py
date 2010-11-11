@@ -1,10 +1,7 @@
-from stdnet import orm 
+from stdnet import orm, ObjectNotFund 
 from dynts.conf import settings as dynts_settings
 from dynts.data import TimeSerieLoader, register
-
-from jflow.conf import settings
-from jflow.db.instdata.models import DataId
-from jflow.db.trade.models import Trader
+from jflow.db import dbapi
 
 from jflow.data.blb import blb
 
@@ -17,6 +14,7 @@ def get_user_servers():
         yield tr.user.username, tr.servername()
 
 
+# Register Bloomberg data provider
 register(blb(get_user_servers))
 
 
@@ -27,22 +25,32 @@ class DataIdCache(orm.StdModel):
 
 class jFlowLoader(TimeSerieLoader):
     
-    def get_id(self, ticker):
+    def get_ticker(self, ticker):
         try:
             id = DataId.objects.get(code = ticker)
         except:
             return None
         
-    def preprocess(self, ticker, start, end, field, provider, logger, backend, **kwargs):
+    def parse_symbol(self, symbol):
+        ticker,field,provider = super(jFlowLoader,self).parse_symbol(symbol)
         try:
-            id = DatIdCache.objects.get(code = ticker)
+            id = dbapi.get_data(code = ticker)
+        except ObjectNotFund:
+            id = ticker
+        return id,field,provider
+        
+    def preprocess(self, symbol, start, end, field, provider, logger, backend, **kwargs):
+        try:
+            intervals = id.intervals(start,end)
         except:
-            id = self.get_id(ticker)
-        if not id:
-            return super(jFlowLoader,self).preprocess(ticker, start, end, field, provider, logger, backend, **kwargs)
-        if provider is None:
-            provider = settings.DEFAULT_VENDOR_FOR_SITE
-        return id
+            intervals = ((start,end),)
+        return self.preprocessdata(intervals)
+        #if provider is None:
+        #    provider = settings.DEFAULT_VENDOR_FOR_SITE
+        
+    def onresult(self, symbol, field, provider, result, logger, backend, **kwargs):
+        '''We are going to store data into cache'''
+        return result
     
     
     

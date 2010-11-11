@@ -1,23 +1,46 @@
+'''
+Database API
+'''
 import logging
 from datetime import date
 
 from django.contrib.auth.models import User
 
 import stdnet
+from stdnet import ObjectNotFund
+from stdnet.contrib.djstdnet.djlink import link_models
 import dynts
 
 from jflow.conf import settings
-from jflow.core import finins
+#from jflow.core import finins
 
 from jflow.db.instdata.models import DataId
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
-from jflow.db.portfolio.models import PortfolioHolder, Portfolio, FinIns
-from jflow.db.portfolio.models import UserViewDefault, PortfolioView
+from jflow.db.portfolio.models import *
+
+
+link_models(DataId,MktData)
 
 
 class AuthenticationError(Exception):
     pass
 
+
+def get_data(**kwargs):
+    try:
+        return MktData.objects.get(**kwargs)
+    except ObjectNotFund:
+        try:
+            id = DataId.objects.get(**kwargs)
+            did = MktData(id = id.id, code = id.code, djobject = id).save()
+            vendors = did.vendors
+            for vid in id.vendors.all():
+                t = VendorTicker(code = vid.ticker).save()
+                vendors[vid.vendor.code] = t
+            did.save()
+            return did
+        except Exception, e:
+            raise ObjectNotFund
 
 def get_finins(symbol):
     symbol = symbol.upper()

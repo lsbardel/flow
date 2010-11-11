@@ -3,9 +3,11 @@ from datetime import date, datetime
 import ccy
 
 from stdnet import orm
-from stdnet.contrib.timeserie.models import TimeSerieField
+from stdnet.contrib.timeserie.models import DateTimeSeries
 
-__all__ = ['FinIns',
+__all__ = ['VendorTicker',
+           'MktData',
+           'FinIns',
            'PortfolioHolder',
            'Portfolio',
            'Position',
@@ -14,25 +16,31 @@ __all__ = ['FinIns',
            'UserViewDefault']
 
 
+
+class VendorTicker(DateTimeSeries):
+    code = orm.SymbolField(index = False)
+    
+    def __str__(self):
+        return self.code
+
+
+class MktData(orm.StdModel):
+    code    = orm.SymbolField(unique = True)
+    vendors = orm.HashField(VendorTicker)
+    
+    def __str__(self):
+        return self.code
+    
+
 class FinIns(orm.StdModel):
     '''Financial instrument base class. Contains a time-serie field.                
     '''
-    code      = orm.AtomField(unique = True)
-    firm_code = orm.AtomField()
-    curncy    = orm.AtomField()
-    country   = orm.AtomField()
-    type      = orm.AtomField(required = False)
-    data      = TimeSerieField()
-        
-    def __init__(self, curncy = None, country = None, metadata = None, **kwargs):
-        c = ccy.currency(curncy)
-        if not c:
-            raise ValueError('currency must be defined')
-        if not country:
-            country = c.default_country
-        self.metadata = metadata or {}
-        self.vendors  = metadata.pop('vendors',{})
-        super(FinIns,self).__init__(curncy = c.code, country = country, **kwargs)
+    code      = orm.SymbolField(unique = True)
+    firm_code = orm.SymbolField()
+    curncy    = orm.SymbolField()
+    country   = orm.SymbolField()
+    type      = orm.SymbolField(required = False)
+    data      = orm.ForeignKey(MktData)
         
     def __str__(self):
         return self.code
@@ -47,9 +55,9 @@ class FinIns(orm.StdModel):
     
     
 class PortfolioHolder(orm.StdModel):
-    name       = orm.AtomField(unique = True)
-    group      = orm.AtomField()
-    ccy        = orm.AtomField()
+    name       = orm.SymbolField(unique = True)
+    group      = orm.SymbolField()
+    ccy        = orm.SymbolField()
     parent     = orm.ForeignKey('self',
                                 required = False,
                                 related_name = 'children')
@@ -183,8 +191,8 @@ class Position(FinPositionBase):
         
     
 class PortfolioView(FinPositionBase):
-    name = orm.AtomField()
-    user = orm.AtomField(required = False)
+    name = orm.SymbolField()
+    user = orm.SymbolField(required = False)
     portfolio = orm.ForeignKey(Portfolio, related_name = 'views')
     
     def __str__(self):
@@ -214,7 +222,7 @@ class PortfolioView(FinPositionBase):
     
 class PortfolioViewFolder(FinPositionBase):
     '''A Folder within a portfolio view'''
-    name   = orm.AtomField()
+    name   = orm.SymbolField()
     parent = orm.ForeignKey('self',
                             required = False,
                             related_name = 'children')
@@ -246,7 +254,19 @@ class PortfolioViewFolder(FinPositionBase):
     
     
 class UserViewDefault(orm.StdModel):
-    user = orm.AtomField()
+    user = orm.SymbolField()
     portfolio = orm.ForeignKey(Portfolio, related_name = 'user_defaults')
     view = orm.ForeignKey(PortfolioView, related_name = 'user_defaults')
 
+
+def register(backend = None, keyprefix = None):
+    orm.register(VendorTicker, backend, keyprefix)
+    orm.register(MktData, backend, keyprefix)
+    orm.register(FinIns, backend, keyprefix)
+    orm.register(PortfolioHolder, backend, keyprefix)
+    orm.register(Portfolio, backend, keyprefix)
+    orm.register(Position, backend, keyprefix)
+    orm.register(PortfolioView, backend, keyprefix)
+    orm.register(PortfolioViewFolder, backend, keyprefix)
+    orm.register(UserViewDefault, backend, keyprefix)
+    
