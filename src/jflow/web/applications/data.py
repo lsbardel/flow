@@ -84,11 +84,11 @@ class DataApplication(TagApplication):
         except:
             return None
         
-    def get_form(self, djp, withdata = True, initial = None, **kwargs):
+    def get_form(self, djp, form_class, withdata = True, initial = None, **kwargs):
         if not withdata:
             initial = initial or {}
             initial.update(dict(djp.request.POST.items()))
-        f = super(DataApplication,self).get_form(djp, initial = initial, withdata = withdata, **kwargs)
+        f = super(DataApplication,self).get_form(djp, form_class, initial = initial, withdata = withdata, **kwargs)
         dataform = f.forms[0][1]
         iform    = dataform.content_form()
         if iform:

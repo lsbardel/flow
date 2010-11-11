@@ -12,7 +12,7 @@ from jflow.db import geo
 num_vendor_inlines = 4
 
 class NiceDataIdForm(DataIdForm):
-    tags   = TagField()
+    tags   = TagField(required = False)
     
     layout = FormLayout()
     layout.inlines.append(ModelFormInlineHelper(DataId,VendorId,extra=num_vendor_inlines))

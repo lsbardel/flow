@@ -5,7 +5,6 @@ from djpcms.views import appsite
 
 from jflow.conf import settings 
 from jflow.db.instdata.models import DataId
-from jflow.db.netdata.models import ServerMachine
 #from jflow.core.timeseries import operators
 
     
