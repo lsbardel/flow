@@ -6,7 +6,7 @@ from bloomberg.client import BloombergClient
 
 
 class blb(DataProvider):
-
+    '''Bloomberg :class:`dynts.data.DataProvider`.'''
     def __init__(self, servers):
         self.server = BloombergClient(servers)
     

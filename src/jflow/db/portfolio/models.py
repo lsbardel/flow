@@ -28,6 +28,11 @@ class MktData(orm.StdModel):
     code    = orm.SymbolField(unique = True)
     vendors = orm.HashField(VendorTicker)
     
+    def get_ticker_and_provider(self, field, provider, providers):
+        '''Given a field a provider and a dictionary of available providers, return the best possible
+match as 3 elements tuple (provider ticker, provider field, provider object)'''
+        pass
+    
     def __str__(self):
         return self.code
     

@@ -31,13 +31,21 @@ class jFlowLoader(TimeSerieLoader):
         except:
             return None
         
-    def parse_symbol(self, symbol):
-        ticker,field,provider = super(jFlowLoader,self).parse_symbol(symbol)
+    def parse_symbol(self, symbol, providers):
+        code,field,provider = super(jFlowLoader,self).parse_symbol(symbol)
         try:
-            id = dbapi.get_data(code = ticker)
+            id = dbapi.get_data(code = code)
         except ObjectNotFund:
-            id = ticker
-        return id,field,provider
+            ticker = code
+            provider = settings.default_provider
+            if provider:
+                provider = providers.get(provider,None)
+        else:
+            ticker,provider = id.get_ticker_and_provider(field, provider, providers)
+        return id,ticker,field,provider
+    
+    def default_provider_for_ticker(self, ticker, field):
+        return None
         
     def preprocess(self, symbol, start, end, field, provider, logger, backend, **kwargs):
         try:
