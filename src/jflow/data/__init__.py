@@ -1,4 +1,4 @@
-from stdnet import orm, ObjectNotFund 
+from stdnet import orm, ObjectNotFound 
 from dynts.conf import settings as dynts_settings
 from dynts.data import TimeSerieLoader, register
 from jflow.db import dbapi
@@ -32,17 +32,17 @@ class jFlowLoader(TimeSerieLoader):
             return None
         
     def parse_symbol(self, symbol, providers):
-        code,field,provider = super(jFlowLoader,self).parse_symbol(symbol)
+        sd = super(jFlowLoader,self).parse_symbol(symbol, providers)
         try:
-            id = dbapi.get_data(code = code)
+            id = dbapi.get_data(code = sd.ticker)
         except ObjectNotFund:
-            ticker = code
-            provider = settings.default_provider
-            if provider:
-                provider = providers.get(provider,None)
+            ticker = sd.code
+        provider = settings.default_provider
+        if provider:
+            provider = providers.get(provider,None)
         else:
             ticker,provider = id.get_ticker_and_provider(field, provider, providers)
-        return id,ticker,field,provider
+        return sd
     
     def default_provider_for_ticker(self, ticker, field):
         return None

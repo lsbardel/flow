@@ -7,7 +7,7 @@ from datetime import date
 from django.contrib.auth.models import User
 
 import stdnet
-from stdnet import ObjectNotFund
+from stdnet import ObjectNotFound
 from stdnet.contrib.djstdnet.djlink import link_models
 import dynts
 
