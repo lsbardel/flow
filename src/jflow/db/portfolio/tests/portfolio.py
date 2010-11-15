@@ -1,6 +1,7 @@
 from datetime import date,timedelta
 from itertools import izip
 from timeit import default_timer as timer
+import json
 import logging
 
 logging.basicConfig(level = logging.DEBUG)
@@ -13,10 +14,9 @@ from stdnet import orm
 from stdnet.utils import populate
 
 import ccy
-from jflow.models import *
-from jflow.utils.anyjson import json
-from jflow.utils.tests import jFlowTest
-from jflow import api
+from jflow import api, test
+from jflow.db.instdata.populate import stocks_from_index
+from jflow.db.portfolio.models import * 
 
 # Number of instruments
 NUMINSTS = 100
@@ -41,16 +41,17 @@ fundgroups = populate('choice',NUMFUNDS,choice_from=groupnames)
 dates      = populate('date',NUMDATES,start=date.today()-timedelta(3*360))
 
 
-class FinInsTest(jFlowTest):
+class FinInsTest(test.TestCase):
     
     def setUp(self):
         self.user  = 'superman'
         
     def fill(self):
-        t = timer()
+        for stock in stocks_from_index('FTSE'):
+            pass
         for name,curncy,typ in izip(instnames,instccys,insttypes):
-            FinIns(name = name, ccy = curncy, type = typ).save()
-        logger.info('Built %s instruments in %s seconds' % (NUMINSTS,timer()-t))
+            FinIns(name = name, ccy = curncy, type = typ).save(False)
+        FinIns.commit()
         n = 0
         t = timer()
         for name,ccy,group in izip(fundnames,fundccys,fundgroups):
@@ -116,9 +117,6 @@ class FinInsTest(jFlowTest):
         except:
             self.fail("A value Error should have occurred")
         v = api.add_new_portfolio_view(id,self.user.username,'test-view')
-        
-        
-        
         
     def _testwhat(self):
         self.assertEqual(portfolio.name,name)

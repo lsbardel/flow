@@ -263,15 +263,4 @@ class UserViewDefault(orm.StdModel):
     portfolio = orm.ForeignKey(Portfolio, related_name = 'user_defaults')
     view = orm.ForeignKey(PortfolioView, related_name = 'user_defaults')
 
-
-def register(backend = None, keyprefix = None):
-    orm.register(VendorTicker, backend, keyprefix)
-    orm.register(MktData, backend, keyprefix)
-    orm.register(FinIns, backend, keyprefix)
-    orm.register(PortfolioHolder, backend, keyprefix)
-    orm.register(Portfolio, backend, keyprefix)
-    orm.register(Position, backend, keyprefix)
-    orm.register(PortfolioView, backend, keyprefix)
-    orm.register(PortfolioViewFolder, backend, keyprefix)
-    orm.register(UserViewDefault, backend, keyprefix)
     

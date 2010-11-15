@@ -42,6 +42,7 @@ def get_data(**kwargs):
         except Exception, e:
             raise ObjectNotFund
 
+
 def get_finins(symbol):
     symbol = symbol.upper()
     try:
@@ -59,7 +60,20 @@ def get_finins(symbol):
                     type = id.type,
                     metadata = id.metadata())
         return fi.save()
-        
+
+
+
+def create_finins(data = None, ccy = None, **kwargs):
+    '''Create a new FinIns instance'''
+    if not data:
+        data = create_mktdata(ccy = ccy, **kwargs)
+    k = kwargs.get
+    return FinIns(code      = data.code,
+                  data      = data,
+                  type      = k('type',''),
+                  firm_code = k('firm_code',''),
+                  curncy    = ccy,
+                  country   = data.country).save()
 
 def get_user(user, force = True):
     if not user:

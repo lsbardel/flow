@@ -1,5 +1,5 @@
 import unittest
-from django.test import TestCase
+from django import test
 from django.db.models import get_app, get_apps
 from django.test.simple import DjangoTestSuiteRunner, reorder_suite, build_test, get_tests
 from django.contrib.contenttypes.models import ContentType
@@ -7,12 +7,12 @@ from django.contrib.contenttypes.models import ContentType
 from stdnet import orm
 
 
-class jFlowTest(TestCase):
+class TestCase(test.TestCase):
     loadonce = False
     
     def __init__(self,*args,**kwargs):
         self.started = False
-        super(jFlowTest,self).__init__(*args,**kwargs)
+        super(TestCase,self).__init__(*args,**kwargs)
         
     def setUp(self):
         if not self.loadonce:
@@ -26,7 +26,7 @@ class jFlowTest(TestCase):
             self._pre_setup_real()
     
     def _pre_setup_real(self):
-        super(jFlowTest,self)._pre_setup()
+        super(TestCase,self)._pre_setup()
         
     def _post_teardown(self):
         orm.clearall()
@@ -34,25 +34,25 @@ class jFlowTest(TestCase):
             self._post_teardown_real()
     
     def _post_teardown_real(self):
-        super(jFlowTest,self)._post_teardown()
+        super(TestCase,self)._post_teardown()
     
         
 
-class jFlowTestSuite(unittest.TestSuite):
+class TestCaseSuite(unittest.TestSuite):
     '''A specialized test suite'''
     
     def __init__(self, *args, **kwargs):
         self.testCaseClass = None
-        super(jFlowTestSuite,self).__init__(*args, **kwargs)
+        super(TestCaseSuite,self).__init__(*args, **kwargs)
         
     def addTest(self, test):
-        if isinstance(test,jFlowTest):
+        if isinstance(test,TestCase):
             name = test.__class__.__name__
             if self.testCaseClass is None:
                 self.testCaseClass = name
             elif self.testCaseClass != name:
                 self.testCaseClass = False
-        super(jFlowTestSuite,self).addTest(test)
+        super(TestCaseSuite,self).addTest(test)
             
     def run(self, result):
         if self.testCaseClass:
@@ -72,11 +72,11 @@ class jFlowTestSuite(unittest.TestSuite):
                 test._post_teardown_real()
             return result
         else:
-            return super(jFlowTestSuite,self).run(result)
+            return super(TestCaseSuite,self).run(result)
 
 
 defaultTestLoader = unittest.TestLoader()
-defaultTestLoader.suiteClass = jFlowTestSuite
+defaultTestLoader.suiteClass = TestCaseSuite
 
 
 def build_suite(app_module):
@@ -87,7 +87,7 @@ def build_suite(app_module):
         if hasattr(test_module, 'suite'):
             suite = test_module.suite()
         else:
-            suite = jFlowTestSuite()
+            suite = TestCaseSuite()
             suite.addTest(defaultTestLoader.loadTestsFromModule(test_module))
     return suite
     
@@ -103,7 +103,7 @@ class jFlowTestSuiteRunner(DjangoTestSuiteRunner):
         return old_names, mirrors
     
     def build_suite(self, test_labels, extra_tests=None, **kwargs):
-        suite = jFlowTestSuite()
+        suite = TestCaseSuite()
 
         if test_labels:
             for label in test_labels:
