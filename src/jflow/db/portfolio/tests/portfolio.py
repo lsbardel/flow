@@ -29,7 +29,7 @@ MAX_POSITIONS_PER_FUND = 30
 
 #Create Random Data
 ccys       = ccy.all()
-instnames  = populate('string',NUMINSTS,min_len = 3, max_len = 10)
+instnames  = populate('string',NUMINSTS,min_len = 5, max_len = 12)
 insttypes  = populate('choice',NUMINSTS,choice_from=['equity','bond','future'])
 instccys   = populate('choice',NUMINSTS,choice_from=ccys)
 
@@ -47,9 +47,8 @@ class FinInsTest(test.TestCase):
         self.user  = 'superman'
         
     def fill(self):
-        for stock in stocks_from_index('FTSE'):
-            pass
         for name,curncy,typ in izip(instnames,instccys,insttypes):
+            api.
             FinIns(name = name, ccy = curncy, type = typ).save(False)
         FinIns.commit()
         n = 0
