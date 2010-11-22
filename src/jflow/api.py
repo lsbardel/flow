@@ -4,8 +4,8 @@
 import ccy
 import jflow
 import dynts
-from jflow.db import dbapi as _api
 import jflow.data
+from jflow.db.api import *
 
 class holder:
     controller = None
