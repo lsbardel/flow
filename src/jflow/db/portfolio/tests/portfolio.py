@@ -48,7 +48,6 @@ class FinInsTest(test.TestCase):
         
     def fill(self):
         for name,curncy,typ in izip(instnames,instccys,insttypes):
-            api.
             FinIns(name = name, ccy = curncy, type = typ).save(False)
         FinIns.commit()
         n = 0

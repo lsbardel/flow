@@ -10,7 +10,8 @@ from dynts.web.views import TimeSeriesView as TimeSeriesViewBase
 
 import unuk
 from unuk.http import httplib
-from unuk.core.jsonrpc import Proxy, dumpobj
+from unuk.core.jsonrpc import Proxy
+
 unuk.importlib('servermachine')
 from servermachine.forms import ServerForm, ServerMachine
 
@@ -25,7 +26,7 @@ class TimeSeriesView(TimeSeriesViewBase):
             p = self.appmodel.proxy()
             return p.raw_parsets(code = code, start = start, end = end)
         except Exception, e:
-            return dumpobj(e)
+            return str(e)
     
     def codeobject(self, object):
         return object.code

@@ -3,7 +3,7 @@ from datetime import date, datetime
 import ccy
 
 from stdnet import orm
-from stdnet.contrib.timeserie.models import DateTimeSeries
+from stdnet.contrib.timeserie.models import TimeSeries
 
 __all__ = ['VendorTicker',
            'MktData',
@@ -17,7 +17,7 @@ __all__ = ['VendorTicker',
 
 
 
-class VendorTicker(DateTimeSeries):
+class VendorTicker(TimeSeries):
     code = orm.SymbolField(index = False)
     
     def __str__(self):
