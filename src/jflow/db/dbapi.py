@@ -1,25 +1,17 @@
-'''
-Database API
-'''
 import logging
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.models import User
 
 import stdnet
-from stdnet import ObjectNotFound
-from stdnet.contrib.djstdnet.djlink import link_models
 import dynts
-
-from jflow.conf import settings
-#from jflow.core import finins
 
 from jflow.db.instdata.models import DataId
 from jflow.db.trade.models import FundHolder, Fund, Position, ManualTrade, Trader
 from jflow.db.portfolio.models import *
 
 
-link_models(DataId,MktData)
+#link_models(DataId,MktData)
 
 
 class AuthenticationError(Exception):
@@ -74,6 +66,7 @@ def create_finins(data = None, ccy = None, **kwargs):
                   firm_code = k('firm_code',''),
                   curncy    = ccy,
                   country   = data.country).save()
+
 
 def get_user(user, force = True):
     if not user:
